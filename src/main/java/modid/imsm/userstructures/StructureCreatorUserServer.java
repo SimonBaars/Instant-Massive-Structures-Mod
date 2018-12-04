@@ -1,8 +1,5 @@
 package modid.imsm.userstructures;
 
-import java.io.File;
-
-import modid.imsm.core.IMSM;
 import modid.imsm.core.StructureCreator;
 import modid.imsm.structureloader.SchematicStructure;
 import net.minecraft.client.Minecraft;

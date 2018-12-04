@@ -14,7 +14,7 @@ import net.minecraft.world.World;
 
 public class LiveStructureRemover extends Block {
 	public LiveStructureRemover(){
-		super(Material.rock);
+		super(Material.ROCK);
 	}
 	
 	@Override

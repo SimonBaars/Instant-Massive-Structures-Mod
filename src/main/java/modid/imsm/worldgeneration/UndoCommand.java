@@ -4,15 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import modid.imsm.core.IMSM;
-import modid.imsm.core.StructureCreator;
 import modid.imsm.core.StructureRemover;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
 
 public class UndoCommand implements ICommand
 {

@@ -19,10 +19,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.translation.LanguageMap;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 
 public class EventHandler {
 	public ArrayList<SchematicStructure> postProcessors = new ArrayList<SchematicStructure>();
@@ -75,9 +73,12 @@ public class EventHandler {
 	
 	private void loadLanguageFile() {
 		try {
-			InputStream languageFile = new FileInputStream(new File("structures/en_US.lang"));
+			File file = new File("structures/en_US.lang");
+			if(file.exists()){
+			InputStream languageFile = new FileInputStream(file);
 			LanguageMap.inject(languageFile);
 			languageFile.close();
+			}
 		} catch (Exception e2) {
 			e2.printStackTrace();
 		}
@@ -103,7 +104,7 @@ public class EventHandler {
 				if(Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().playerEntities==null){
 			for(Object playerObject : Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().playerEntities){
 				EntityPlayerMP player = (EntityPlayerMP)playerObject;
-				if(ySync.isVehicle==null || (/*Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY-1,player.posZ)).getBlock()!=Blocks.air ||*/ Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY,player.posZ)).getBlock()!=Blocks.air)){
+				if(ySync.isVehicle==null || (/*Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY-1,player.posZ)).getBlock()!=Blocks.air ||*/ Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY,player.posZ)).getBlock()!=Blocks.AIR)){
 				player.posY=/*isRiding.y+isRiding.ride.getHeight()+isRiding.ride.animation[0][isRiding.ride.progress]*/ySync.getY();
 				if(player.getName().equals(Minecraft.getMinecraft().thePlayer.getName())){
 					Minecraft.getMinecraft().thePlayer.posY=/*isRiding.y+isRiding.ride.getHeight()+isRiding.ride.animation[0][isRiding.ride.progress]*/ySync.getY();
@@ -115,7 +116,7 @@ public class EventHandler {
 			}
 			} else {
 				EntityPlayerMP player = (EntityPlayerMP) Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getPlayerEntityByName(Minecraft.getMinecraft().thePlayer.getName());
-				if(ySync.isVehicle==null || (/*Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY-1,player.posZ)).getBlock()!=Blocks.air ||*/ Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY,player.posZ)).getBlock()!=Blocks.air)){
+				if(ySync.isVehicle==null || (/*Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY-1,player.posZ)).getBlock()!=Blocks.air ||*/ Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY,player.posZ)).getBlock()!=Blocks.AIR)){
 				player.posY=/*isRiding.y+isRiding.ride.getHeight()+isRiding.ride.animation[0][isRiding.ride.progress]*/ySync.getY();
 				//if(player.getName().equals(Minecraft.getMinecraft().thePlayer.getName())){
 					Minecraft.getMinecraft().thePlayer.posY=/*isRiding.y+isRiding.ride.getHeight()+isRiding.ride.animation[0][isRiding.ride.progress]*/ySync.getY();

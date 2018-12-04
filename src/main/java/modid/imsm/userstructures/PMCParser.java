@@ -27,7 +27,6 @@ import net.minecraft.item.Item;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.LanguageMap;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.common.registry.PersistentRegistryManager;
 
 public class PMCParser extends Thread {
 	PMCParserIntent intent;

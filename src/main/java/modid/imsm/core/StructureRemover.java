@@ -1,14 +1,7 @@
 package modid.imsm.core;
 
-import modid.imsm.structureloader.SchematicStructure;
-import modid.imsm.userstructures.StructureCreatorUserServer;
 import modid.imsm.worldgeneration.UndoCommand;
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
 
 public class StructureRemover implements ICreatorBlock{
 //StructureCreator structure;

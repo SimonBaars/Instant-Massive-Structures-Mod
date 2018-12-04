@@ -66,7 +66,7 @@ public class SchematicStructure extends Structure
 	{
 		this.world=world;this.posX=posX;this.posY=posY;this.posZ=posZ;
 		//Minecraft.getMinecraft().thePlayer.sendChatMessage("Please be patient, I'm just creating "+(height*width*length)+" blocks for the structure...");
-		Block blk = Blocks.air;
+		Block blk = Blocks.AIR;
 		   // Make a position.
 		   BlockPos pos0 = new BlockPos(posX,posY,posZ);
 		   // Get the default state(basically metadata 0)
@@ -90,7 +90,7 @@ public class SchematicStructure extends Structure
 				for (int x = 0; x < this.length; x++)
 				{
 					//System.out.println("DATA=="+this.blocks[y][z][x]+blockPlacer+this.getCenterPos()+harvestPos);
-					if (this.blockMode.equals("overlay") && this.blocks[y][z][x] == Blocks.air) continue;
+					if (this.blockMode.equals("overlay") && this.blocks[y][z][x] == Blocks.AIR) continue;
 					//StructureUtils.setBlock(blockPlacer2, this.blocks[y][z][x].getStateFromMeta(this.blockData[y][z][x]), new BlockPos(x, y, z), this.getCenterPos(), harvestPos);
 					StructureUtils.setBlock(blockPlacer, this.blocks[y][z][x].getStateFromMeta(this.blockData[y][z][x]), new BlockPos(x, y, z), this.getCenterPos(), harvestPos);
 				}
@@ -103,7 +103,7 @@ public class SchematicStructure extends Structure
 	public void initSingleBlockPlacer(World world, int posX, int posY, int posZ){
 		this.world=world;this.posX=posX;this.posY=posY;this.posZ=posZ;
 		//Minecraft.getMinecraft().thePlayer.sendChatMessage("Please be patient, I'm just creating "+(height*width*length)+" blocks for the structure...");
-		Block blk = Blocks.air;
+		Block blk = Blocks.AIR;
 		
 		   // Make a position.
 		   BlockPos pos0 = new BlockPos(this.posX,this.posY,this.posZ);
@@ -132,7 +132,7 @@ public class SchematicStructure extends Structure
 			//System.out.println("Block array is NULL!");
 			return false;
 		}
-					if (this.blockMode.equals("overlay") && this.blocks[daddy.i][daddy.j][daddy.k] == Blocks.air){
+					if (this.blockMode.equals("overlay") && this.blocks[daddy.i][daddy.j][daddy.k] == Blocks.AIR){
 						
 					} else {
 						BlockPos position = new BlockPos(daddy.k, daddy.i,daddy.j);
@@ -194,7 +194,7 @@ public class SchematicStructure extends Structure
 				//System.out.println("Tile entity at "+Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(StructureUtils.getWorldPos(new BlockPos(tileEntity.getInteger("x"), tileEntity.getInteger("y"), tileEntity.getInteger("z")), this.getCenterPos(), this.harvestPos)).getBlock().tile);
 				tE=chestEntity;
 			}else {
-			tE=TileEntity.createTileEntity(Minecraft.getMinecraft().getIntegratedServer(), tileEntity);
+			tE=TileEntity.func_190200_a(Minecraft.getMinecraft().getIntegratedServer().getEntityWorld(), tileEntity);
 			}
 			
 			StructureUtils.setTileEntity(Minecraft.getMinecraft().theWorld, tE, this.getCenterPos(), harvestPos);
@@ -227,7 +227,7 @@ public class SchematicStructure extends Structure
 				//System.out.println("Tile entity at "+Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(StructureUtils.getWorldPos(new BlockPos(tileEntity.getInteger("x"), tileEntity.getInteger("y"), tileEntity.getInteger("z")), this.getCenterPos(), this.harvestPos)).getBlock().tile);
 				tE=chestEntity;
 			}else {
-		tE=TileEntity.createTileEntity(Minecraft.getMinecraft().getIntegratedServer(), tileEntity);
+		tE=TileEntity.func_190200_a(Minecraft.getMinecraft().getIntegratedServer().getEntityWorld(), tileEntity);
 		}
 			StructureUtils.setTileEntity(Minecraft.getMinecraft().getIntegratedServer().getEntityWorld(), tE, this.getCenterPos(), harvestPos);
 			//TODO: THE ABOVE LINE SHOULD NOT BE COMMENTED!!
@@ -266,7 +266,7 @@ public class SchematicStructure extends Structure
 					UndoCommand.removedPositions.add(pos0);
 				}
 				
-			Block blk = Blocks.glass;
+			Block blk = Blocks.GLASS;
 			   // Make a position.
 			   
 			   
@@ -293,7 +293,7 @@ public class SchematicStructure extends Structure
 			if(i==0||j==0||k==0){
 			if(i==modifierx&&j==modifiery&&k==modifierz) continue;
 			//if(Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(pos))
-			Block blk = Blocks.air;
+			Block blk = Blocks.AIR;
 			   // Make a position.
 			   BlockPos pos0 = new BlockPos(x-i+modifierx,y+j+modifiery,z-k+modifierz);
 			   // Get the default state(basically metadata 0)

@@ -100,7 +100,7 @@ public class BlockPlacer
 			//specialBlockPos.add(blockPos);
 			//return false;
 		}
-		if(isLive && blockState.getMaterial()==Material.lava){
+		if(isLive && blockState.getMaterial()==Material.LAVA){
 			return false;
 		}
 		boolean blockAdded = DropFuncBlock.setBlock(this.world, blockState, blockPos, false, isLive);

@@ -30,7 +30,7 @@ public class BlockUserStructure extends Block {
 	private int modifierz=0;
 
 	public BlockUserStructure(String name){
-		super(Material.rock);
+		super(Material.ROCK);
 		this.name=name;
 	}
 	
@@ -81,7 +81,7 @@ public class BlockUserStructure extends Block {
 		for(int x = 0; x<struct.length; x++){
 			for(int y =0; y<struct.height; y++){
 				for(int z =0; z<struct.width; z++){
-					Block blk = Blocks.air;
+					Block blk = Blocks.AIR;
 					   // Make a position.
 					   BlockPos pos0 = new BlockPos(structure.x-x, structure.y+y ,structure.z-z);
 					   // Get the default state(basically metadata 0)

@@ -23,7 +23,7 @@ public class BlockCloud extends Block
 
   public BlockCloud(int i)
     {
-        super(Material.rock);
+        super(Material.ROCK);
         this.name="BlockCloud";
     }
   

@@ -20,7 +20,7 @@ public class BlockAtlantis extends Block
 
   public BlockAtlantis(int i)
     {
-        super(Material.rock);
+        super(Material.ROCK);
         this.name="BlockAtlantis";
     }
   

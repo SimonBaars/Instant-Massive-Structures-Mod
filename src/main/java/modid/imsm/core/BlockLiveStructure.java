@@ -9,7 +9,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
@@ -27,7 +26,7 @@ public class BlockLiveStructure extends Block {
 	private boolean doLoop;
 
 	public BlockLiveStructure(String name, boolean doReplaceAir, int amountOfSlides, int waitTime, int modifierx, int modifiery, int modifierz,int spawnPosModifierX,int spawnPosModifierY,int spawnPosModifierZ, boolean doLoop){
-		super(Material.rock);
+		super(Material.ROCK);
 		this.name=name;
 		this.doReplaceAir=doReplaceAir;
 		this.modifierx=modifierx;

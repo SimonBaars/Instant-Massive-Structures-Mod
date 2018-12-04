@@ -127,7 +127,7 @@ public class LiveStructure {
 						double thisY = player.posY;
 					if(relativeSpawnPointY>0){
 						if(IMSM.eventHandler.ySync!=null){
-							if(Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY-1,player.posZ)).getBlock()!=Blocks.air || Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY,player.posZ)).getBlock()!=Blocks.air){
+							if(Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY-1,player.posZ)).getBlock()!=Blocks.AIR || Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY,player.posZ)).getBlock()!=Blocks.AIR){
 						thisY=IMSM.eventHandler.ySync.getY()+1;
 							} 
 							IMSM.eventHandler.ySync.setY(thisY);	
@@ -451,8 +451,8 @@ public class LiveStructure {
 	for(int x = 0; x<removeX; x++){
 		for(int y =0; y<removeY; y++){
 			for(int z =0; z<removeZ; z++){
-				setBlock(Minecraft.getMinecraft().theWorld, new BlockPos(posx-x,posy+y,posz-z), Blocks.air.getDefaultState());
-				setBlock(world, new BlockPos(posx-x,posy+y,posz-z), Blocks.air.getDefaultState());
+				setBlock(Minecraft.getMinecraft().theWorld, new BlockPos(posx-x,posy+y,posz-z), Blocks.AIR.getDefaultState());
+				setBlock(world, new BlockPos(posx-x,posy+y,posz-z), Blocks.AIR.getDefaultState());
 				
 			}
 		}

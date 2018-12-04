@@ -22,7 +22,7 @@ public class BlockCheckerboard extends Block
 
   public BlockCheckerboard(int i)
     {
-        super(Material.rock);
+        super(Material.ROCK);
         this.name="BlockCheckerboard";
     }
   

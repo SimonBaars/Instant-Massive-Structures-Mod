@@ -4,20 +4,13 @@
 
 package modid.imsm.structures;
 
-import modid.imsm.core.IMSM;
-import modid.imsm.core.StructureCreator;
-import modid.imsm.core.StructureRemover;
-import modid.imsm.structureloader.SchematicStructure;
 import modid.imsm.worldgeneration.UndoCommand;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 
@@ -25,7 +18,7 @@ public class RemoverLast extends Block
 {
 	public RemoverLast(int i)
     {
-		super(Material.rock);
+		super(Material.ROCK);
 		//remove(IMSM.lastPlaced);
     }
 	

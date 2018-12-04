@@ -3,7 +3,6 @@ package modid.imsm.core;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import modid.imsm.livestructures.BlockFerrisWheel;
@@ -2971,39 +2970,39 @@ public class IMSM {
 		}
 	 
 		GameRegistry.addRecipe(new ItemStack(BlockPyramid, 1), new Object[] { 
-			      " % ", " * ", "*&*",    Character.valueOf('&'), Blocks.glowstone, Character.valueOf('*'), Blocks.sandstone, Character.valueOf('%'), Blocks.torch
+			      " % ", " * ", "*&*",    Character.valueOf('&'), Blocks.GLOWSTONE, Character.valueOf('*'), Blocks.SANDSTONE, Character.valueOf('%'), Blocks.TORCH
 			      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockTower, 1), new Object[] { 
-			      "%&%", "%&%", "* *",    Character.valueOf('&'), Blocks.planks, Character.valueOf('*'), Blocks.log, Character.valueOf('%'), Blocks.cobblestone
+			      "%&%", "%&%", "* *",    Character.valueOf('&'), Blocks.PLANKS, Character.valueOf('*'), Blocks.LOG, Character.valueOf('%'), Blocks.COBBLESTONE
 			      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockEnchantmentRoom, 1), new Object[] { 
-			      "***", "*&*", "***",    Character.valueOf('&'), Blocks.enchanting_table, Character.valueOf('*'), Blocks.bookshelf
+			      "***", "*&*", "***",    Character.valueOf('&'), Blocks.ENCHANTING_TABLE, Character.valueOf('*'), Blocks.BOOKSHELF
 			      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockLighthouse, 1), new Object[] { 
-			      "%&%", " * ", " * ",    Character.valueOf('&'), Blocks.glowstone, Character.valueOf('*'), Blocks.stone, Character.valueOf('%'), Blocks.glass
+			      "%&%", " * ", " * ",    Character.valueOf('&'), Blocks.GLOWSTONE, Character.valueOf('*'), Blocks.STONE, Character.valueOf('%'), Blocks.GLASS
 			      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockHouse, 1), new Object[] { 
-			      " & ", "*%*", "*&*",    Character.valueOf('&'), Blocks.planks, Character.valueOf('*'), Blocks.cobblestone, Character.valueOf('%'), Blocks.glass
+			      " & ", "*%*", "*&*",    Character.valueOf('&'), Blocks.PLANKS, Character.valueOf('*'), Blocks.COBBLESTONE, Character.valueOf('%'), Blocks.GLASS
 			      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockGiantTree, 1), new Object[] { 
-			      " & ", "&&&", " * ",    Character.valueOf('&'), Blocks.leaves, Character.valueOf('*'), Blocks.log
+			      " & ", "&&&", " * ",    Character.valueOf('&'), Blocks.LEAVES, Character.valueOf('*'), Blocks.LOG
 			      });
 				  
 				 // GameRegistry.addRecipe(new ItemStack(TreeHouse, 1), new Object[] { 
-			      //" & ", "&&&", " * ",    Character.valueOf('&'), IMSM.leaves2, Character.valueOf('*'), Blocks.log
+			      //" & ", "&&&", " * ",    Character.valueOf('&'), IMSM.leaves2, Character.valueOf('*'), Blocks.LOG
 			     // });
 				  
 				  /*GameRegistry.addRecipe(new ItemStack(BlockPenWood, 1), new Object[] { 
-			      "***", "* *", "***",    Character.valueOf('*'), Blocks.oak_fence
+			      "***", "* *", "***",    Character.valueOf('*'), Blocks.OAK_FENCE
 			      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockPenIron, 1), new Object[] { 
-			      "***", "* *", "***",    Character.valueOf('*'), Blocks.iron_bars
+			      "***", "* *", "***",    Character.valueOf('*'), Blocks.IRON_BARS
 			      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockPenNether, 1), new Object[] { 
@@ -3011,196 +3010,196 @@ public class IMSM {
 			      });*/
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockFarm, 1), new Object[] { 
-			      "***", "&&&",     Character.valueOf('*'), Items.wheat_seeds, Character.valueOf('&'), Blocks.dirt
+			      "***", "&&&",     Character.valueOf('*'), Items.WHEAT_SEEDS, Character.valueOf('&'), Blocks.DIRT
 			      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockStoreHouse, 1), new Object[] { 
-			      "%&%", "%&%", "***",    Character.valueOf('&'), Blocks.planks, Character.valueOf('*'), Blocks.cobblestone, Character.valueOf('%'), Blocks.log
+			      "%&%", "%&%", "***",    Character.valueOf('&'), Blocks.PLANKS, Character.valueOf('*'), Blocks.COBBLESTONE, Character.valueOf('%'), Blocks.LOG
 			      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockHouseTrap2, 1), new Object[] { 
-			      "***", "*&*", "***",    Character.valueOf('&'), IMSM.BlockHouse, Character.valueOf('*'), Blocks.cactus, Character.valueOf('%'), Blocks.log
+			      "***", "*&*", "***",    Character.valueOf('&'), IMSM.BlockHouse, Character.valueOf('*'), Blocks.CACTUS, Character.valueOf('%'), Blocks.LOG
 			      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockHouseTrap1, 1), new Object[] { 
-			      "***", "*&*", "***",    Character.valueOf('&'), IMSM.BlockHouse, Character.valueOf('*'), Items.lava_bucket, Character.valueOf('%'), Blocks.log
+			      "***", "*&*", "***",    Character.valueOf('&'), IMSM.BlockHouse, Character.valueOf('*'), Items.LAVA_BUCKET, Character.valueOf('%'), Blocks.LOG
 			      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockWaterSlide, 1), new Object[] { 
-			      "&*&", "& &", "& &",    Character.valueOf('&'), Blocks.planks, Character.valueOf('*'), Items.water_bucket, Character.valueOf('%'), Blocks.log
+			      "&*&", "& &", "& &",    Character.valueOf('&'), Blocks.PLANKS, Character.valueOf('*'), Items.WATER_BUCKET, Character.valueOf('%'), Blocks.LOG
 			      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockBunker, 1), new Object[] { 
-			      "&&&", "   ", "&&&",    Character.valueOf('&'), Blocks.cobblestone, Character.valueOf('*'), Items.water_bucket, Character.valueOf('%'), Blocks.log
+			      "&&&", "   ", "&&&",    Character.valueOf('&'), Blocks.COBBLESTONE, Character.valueOf('*'), Items.WATER_BUCKET, Character.valueOf('%'), Blocks.LOG
 			      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockArena1, 1), new Object[] { 
-			      "&&&", "&%&", "&&&",    Character.valueOf('&'), Blocks.cobblestone, Character.valueOf('*'), Blocks.sand, Character.valueOf('%'), Blocks.sand
+			      "&&&", "&%&", "&&&",    Character.valueOf('&'), Blocks.COBBLESTONE, Character.valueOf('*'), Blocks.SAND, Character.valueOf('%'), Blocks.SAND
 			      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockArena2, 1), new Object[] { 
-			      "&&&", "&%&", "&&&",    Character.valueOf('&'), Blocks.cobblestone, Character.valueOf('*'), Items.lava_bucket, Character.valueOf('%'), Items.lava_bucket
+			      "&&&", "&%&", "&&&",    Character.valueOf('&'), Blocks.COBBLESTONE, Character.valueOf('*'), Items.LAVA_BUCKET, Character.valueOf('%'), Items.LAVA_BUCKET
 			      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockFarm2, 1), new Object[] { 
-			      "***", "&&&",     Character.valueOf('*'), Items.reeds, Character.valueOf('&'), Blocks.dirt
+			      "***", "&&&",     Character.valueOf('*'), Items.REEDS, Character.valueOf('&'), Blocks.DIRT
 			      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockFarm3, 1), new Object[] { 
-			      "***", "&&&",     Character.valueOf('*'), Items.melon_seeds, Character.valueOf('&'), Blocks.dirt
+			      "***", "&&&",     Character.valueOf('*'), Items.MELON_SEEDS, Character.valueOf('&'), Blocks.DIRT
 			      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockFarm4, 1), new Object[] { 
-			      "***", "&&&",     Character.valueOf('*'), Items.pumpkin_seeds, Character.valueOf('&'), Blocks.dirt
+			      "***", "&&&",     Character.valueOf('*'), Items.PUMPKIN_SEEDS, Character.valueOf('&'), Blocks.DIRT
 			      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockPrison, 1), new Object[] { 
-			      "&&&", "%%%", "&&&",    Character.valueOf('&'), Blocks.cobblestone, Character.valueOf('*'), Items.water_bucket, Character.valueOf('%'), Blocks.iron_bars
+			      "&&&", "%%%", "&&&",    Character.valueOf('&'), Blocks.COBBLESTONE, Character.valueOf('*'), Items.WATER_BUCKET, Character.valueOf('%'), Blocks.IRON_BARS
 			      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockPrison2, 1), new Object[] { 
-			      "&&&", "%%%", "&&&",    Character.valueOf('&'), Blocks.obsidian, Character.valueOf('*'), Items.water_bucket, Character.valueOf('%'), Blocks.iron_bars
+			      "&&&", "%%%", "&&&",    Character.valueOf('&'), Blocks.OBSIDIAN, Character.valueOf('*'), Items.WATER_BUCKET, Character.valueOf('%'), Blocks.IRON_BARS
 			      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockRollercoaster, 1), new Object[] { 
-			      "%%%", "&*&", "%%%",    Character.valueOf('&'), Blocks.rail, Character.valueOf('*'), Blocks.golden_rail, Character.valueOf('%'), Blocks.log
+			      "%%%", "&*&", "%%%",    Character.valueOf('&'), Blocks.RAIL, Character.valueOf('*'), Blocks.GOLDEN_RAIL, Character.valueOf('%'), Blocks.LOG
 			      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockSkyscraper, 1), new Object[] { 
-			      "&&&", "&%&", "&&&",    Character.valueOf('&'), Blocks.glass, Character.valueOf('*'), Blocks.golden_rail, Character.valueOf('%'), Blocks.stone
+			      "&&&", "&%&", "&&&",    Character.valueOf('&'), Blocks.GLASS, Character.valueOf('*'), Blocks.GOLDEN_RAIL, Character.valueOf('%'), Blocks.STONE
 			      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockTorch2, 1), new Object[] { 
-			      "%%%", "%%%", "%%%",    Character.valueOf('&'), Blocks.glass, Character.valueOf('*'), Blocks.golden_rail, Character.valueOf('%'), Blocks.torch
+			      "%%%", "%%%", "%%%",    Character.valueOf('&'), Blocks.GLASS, Character.valueOf('*'), Blocks.GOLDEN_RAIL, Character.valueOf('%'), Blocks.TORCH
 			      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockAirplane, 1), new Object[] { 
-			      "%*&", "**&", "***",    Character.valueOf('&'), Blocks.glass, Character.valueOf('*'), Blocks.stonebrick, Character.valueOf('%'), Blocks.glowstone
+			      "%*&", "**&", "***",    Character.valueOf('&'), Blocks.GLASS, Character.valueOf('*'), Blocks.STONEBRICK, Character.valueOf('%'), Blocks.GLOWSTONE
 			      });
 				  
 				  /*GameRegistry.addRecipe(new ItemStack(BlockCave, 1), new Object[] { 
-			      "###", "# #", "###",    Character.valueOf('#'), Blocks.stone, Character.valueOf('*'), Blocks.stonebrick, Character.valueOf('%'), Blocks.glowstone
+			      "###", "# #", "###",    Character.valueOf('#'), Blocks.STONE, Character.valueOf('*'), Blocks.STONEBRICK, Character.valueOf('%'), Blocks.GLOWSTONE
 			      });*/
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockBoat, 1), new Object[] { 
-			      "121", "343", "333",    Character.valueOf('1'), Blocks.iron_bars, Character.valueOf('2'), Blocks.glass_pane, Character.valueOf('3'), Blocks.wool, Character.valueOf('4'), Blocks.log
+			      "121", "343", "333",    Character.valueOf('1'), Blocks.IRON_BARS, Character.valueOf('2'), Blocks.GLASS_PANE, Character.valueOf('3'), Blocks.WOOL, Character.valueOf('4'), Blocks.LOG
 			      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockAirBalloon, 1), new Object[] { 
-			      "###", "###", " X ",    Character.valueOf('#'), Blocks.wool, Character.valueOf('X'), Blocks.planks, Character.valueOf('%'), Blocks.glowstone
+			      "###", "###", " X ",    Character.valueOf('#'), Blocks.WOOL, Character.valueOf('X'), Blocks.PLANKS, Character.valueOf('%'), Blocks.GLOWSTONE
 			      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockAirBalloon, 1), new Object[] { 
-			      "###", " # ", "###",    Character.valueOf('#'), Blocks.cobblestone, Character.valueOf('X'), Blocks.planks, Character.valueOf('%'), Blocks.glowstone
+			      "###", " # ", "###",    Character.valueOf('#'), Blocks.COBBLESTONE, Character.valueOf('X'), Blocks.PLANKS, Character.valueOf('%'), Blocks.GLOWSTONE
 			      });
 				  
 				  /*GameRegistry.addRecipe(new ItemStack(BlockHouse2, 1), new Object[] { 
-			      " % ", "%%%", "%%%",    Character.valueOf('%'), Blocks.brick_block, Character.valueOf('X'), Blocks.planks, Character.valueOf('C'), Blocks.glowstone
+			      " % ", "%%%", "%%%",    Character.valueOf('%'), Blocks.BRICK_BLOCK, Character.valueOf('X'), Blocks.PLANKS, Character.valueOf('C'), Blocks.GLOWSTONE
 			      });*/
 				  GameRegistry.addRecipe(new ItemStack(BlockBigPyramid, 1), new Object[] { 
-			      " % ", "XYX", "%%%",    Character.valueOf('%'), Blocks.sandstone, Character.valueOf('X'), Items.gold_ingot, Character.valueOf('Y'), Items.diamond
+			      " % ", "XYX", "%%%",    Character.valueOf('%'), Blocks.SANDSTONE, Character.valueOf('X'), Items.GOLD_INGOT, Character.valueOf('Y'), Items.DIAMOND
 			      });
 				  GameRegistry.addRecipe(new ItemStack(BlockCastleTower, 1), new Object[] { 
-			      "PPP", "CCC", "CCC",    Character.valueOf('P'), Blocks.planks, Character.valueOf('C'), Blocks.cobblestone, Character.valueOf('Y'), Items.diamond
+			      "PPP", "CCC", "CCC",    Character.valueOf('P'), Blocks.PLANKS, Character.valueOf('C'), Blocks.COBBLESTONE, Character.valueOf('Y'), Items.DIAMOND
 			      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockDungeon, 1), new Object[] { 
-				      "PPP", "PCP", "PPP",    Character.valueOf('P'), Blocks.cobblestone, Character.valueOf('C'), Blocks.chest, Character.valueOf('Y'), Items.diamond
+				      "PPP", "PCP", "PPP",    Character.valueOf('P'), Blocks.COBBLESTONE, Character.valueOf('C'), Blocks.CHEST, Character.valueOf('Y'), Items.DIAMOND
 				      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockMegaTower, 1), new Object[] { 
-				      "PCP", "PCP", "PCP",    Character.valueOf('P'), Blocks.ice, Character.valueOf('C'), Blocks.quartz_block, Character.valueOf('Y'), Items.diamond
+				      "PCP", "PCP", "PCP",    Character.valueOf('P'), Blocks.ICE, Character.valueOf('C'), Blocks.QUARTZ_BLOCK, Character.valueOf('Y'), Items.DIAMOND
 				      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockHountedHouse, 1), new Object[] { 
-				      "YPY", "PYP", "CCC",    Character.valueOf('P'), Blocks.vine, Character.valueOf('C'), Blocks.stonebrick, Character.valueOf('Y'), Blocks.cobblestone
+				      "YPY", "PYP", "CCC",    Character.valueOf('P'), Blocks.VINE, Character.valueOf('C'), Blocks.STONEBRICK, Character.valueOf('Y'), Blocks.COBBLESTONE
 				      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockPlane, 1), new Object[] { 
-				      "PYP", "PCP", "PCP",    Character.valueOf('P'), Blocks.stonebrick, Character.valueOf('C'), Items.redstone, Character.valueOf('Y'), Blocks.glass_pane
+				      "PYP", "PCP", "PCP",    Character.valueOf('P'), Blocks.STONEBRICK, Character.valueOf('C'), Items.REDSTONE, Character.valueOf('Y'), Blocks.GLASS_PANE
 				      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockRollerCoaster2, 1), new Object[] { 
-				      "ABA", "CDC", "EFE",    Character.valueOf('A'), Blocks.oak_fence, Character.valueOf('B'), Items.minecart, Character.valueOf('C'), Blocks.planks, Character.valueOf('D'), Blocks.golden_rail, Character.valueOf('E'), Blocks.redstone_torch, Character.valueOf('F'), Blocks.stone_slab
+				      "ABA", "CDC", "EFE",    Character.valueOf('A'), Blocks.OAK_FENCE, Character.valueOf('B'), Items.MINECART, Character.valueOf('C'), Blocks.PLANKS, Character.valueOf('D'), Blocks.GOLDEN_RAIL, Character.valueOf('E'), Blocks.REDSTONE_TORCH, Character.valueOf('F'), Blocks.STONE_SLAB
 				      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockRollerCoaster2, 1), new Object[] { 
-					      "ABA", "CDC", "EFE",    Character.valueOf('A'), Blocks.spruce_fence, Character.valueOf('B'), Items.minecart, Character.valueOf('C'), Blocks.planks, Character.valueOf('D'), Blocks.golden_rail, Character.valueOf('E'), Blocks.redstone_torch, Character.valueOf('F'), Blocks.stone_slab
+					      "ABA", "CDC", "EFE",    Character.valueOf('A'), Blocks.SPRUCE_FENCE, Character.valueOf('B'), Items.MINECART, Character.valueOf('C'), Blocks.PLANKS, Character.valueOf('D'), Blocks.GOLDEN_RAIL, Character.valueOf('E'), Blocks.REDSTONE_TORCH, Character.valueOf('F'), Blocks.STONE_SLAB
 					      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockRollerCoaster2, 1), new Object[] { 
-					      "ABA", "CDC", "EFE",    Character.valueOf('A'), Blocks.birch_fence, Character.valueOf('B'), Items.minecart, Character.valueOf('C'), Blocks.planks, Character.valueOf('D'), Blocks.golden_rail, Character.valueOf('E'), Blocks.redstone_torch, Character.valueOf('F'), Blocks.stone_slab
+					      "ABA", "CDC", "EFE",    Character.valueOf('A'), Blocks.BIRCH_FENCE, Character.valueOf('B'), Items.MINECART, Character.valueOf('C'), Blocks.PLANKS, Character.valueOf('D'), Blocks.GOLDEN_RAIL, Character.valueOf('E'), Blocks.REDSTONE_TORCH, Character.valueOf('F'), Blocks.STONE_SLAB
 					      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockRollerCoaster2, 1), new Object[] { 
-					      "ABA", "CDC", "EFE",    Character.valueOf('A'), Blocks.jungle_fence, Character.valueOf('B'), Items.minecart, Character.valueOf('C'), Blocks.planks, Character.valueOf('D'), Blocks.golden_rail, Character.valueOf('E'), Blocks.redstone_torch, Character.valueOf('F'), Blocks.stone_slab
+					      "ABA", "CDC", "EFE",    Character.valueOf('A'), Blocks.JUNGLE_FENCE, Character.valueOf('B'), Items.MINECART, Character.valueOf('C'), Blocks.PLANKS, Character.valueOf('D'), Blocks.GOLDEN_RAIL, Character.valueOf('E'), Blocks.REDSTONE_TORCH, Character.valueOf('F'), Blocks.STONE_SLAB
 					      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockRollerCoaster2, 1), new Object[] { 
-					      "ABA", "CDC", "EFE",    Character.valueOf('A'), Blocks.acacia_fence, Character.valueOf('B'), Items.minecart, Character.valueOf('C'), Blocks.planks, Character.valueOf('D'), Blocks.golden_rail, Character.valueOf('E'), Blocks.redstone_torch, Character.valueOf('F'), Blocks.stone_slab
+					      "ABA", "CDC", "EFE",    Character.valueOf('A'), Blocks.ACACIA_FENCE, Character.valueOf('B'), Items.MINECART, Character.valueOf('C'), Blocks.PLANKS, Character.valueOf('D'), Blocks.GOLDEN_RAIL, Character.valueOf('E'), Blocks.REDSTONE_TORCH, Character.valueOf('F'), Blocks.STONE_SLAB
 					      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockRollerCoaster2, 1), new Object[] { 
-					      "ABA", "CDC", "EFE",    Character.valueOf('A'), Blocks.dark_oak_fence, Character.valueOf('B'), Items.minecart, Character.valueOf('C'), Blocks.planks, Character.valueOf('D'), Blocks.golden_rail, Character.valueOf('E'), Blocks.redstone_torch, Character.valueOf('F'), Blocks.stone_slab
+					      "ABA", "CDC", "EFE",    Character.valueOf('A'), Blocks.DARK_OAK_FENCE, Character.valueOf('B'), Items.MINECART, Character.valueOf('C'), Blocks.PLANKS, Character.valueOf('D'), Blocks.GOLDEN_RAIL, Character.valueOf('E'), Blocks.REDSTONE_TORCH, Character.valueOf('F'), Blocks.STONE_SLAB
 					      });
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockStadium, 1), new Object[] { 
-				      "AAA", "BBB", "CCC",    Character.valueOf('A'), Blocks.wool, Character.valueOf('B'), Blocks.glowstone, Character.valueOf('C'), Blocks.stone, Character.valueOf('D'), Blocks.golden_rail, Character.valueOf('E'), Blocks.redstone_torch, Character.valueOf('F'), Blocks.stone_slab
+				      "AAA", "BBB", "CCC",    Character.valueOf('A'), Blocks.WOOL, Character.valueOf('B'), Blocks.GLOWSTONE, Character.valueOf('C'), Blocks.STONE, Character.valueOf('D'), Blocks.GOLDEN_RAIL, Character.valueOf('E'), Blocks.REDSTONE_TORCH, Character.valueOf('F'), Blocks.STONE_SLAB
 				      });
 				  
 				  /*GameRegistry.addRecipe(new ItemStack(BlockFloatingSphere, 1), new Object[] { 
-				      " A ", "ACA", " A ",    Character.valueOf('A'), Blocks.glass, Character.valueOf('B'), Items.minecart, Character.valueOf('C'), Blocks.grass, Character.valueOf('D'), Blocks.golden_rail, Character.valueOf('E'), Blocks.redstone_torch, Character.valueOf('F'), Blocks.stone_slab
+				      " A ", "ACA", " A ",    Character.valueOf('A'), Blocks.GLASS, Character.valueOf('B'), Items.MINECART, Character.valueOf('C'), Blocks.GRASS, Character.valueOf('D'), Blocks.GOLDEN_RAIL, Character.valueOf('E'), Blocks.REDSTONE_TORCH, Character.valueOf('F'), Blocks.STONE_SLAB
 				      });*/
 				  
 				  GameRegistry.addRecipe(new ItemStack(BlockMegaHouse, 1), new Object[] { 
-					      " A ", "AAA", "AAA",    Character.valueOf('A'), Blocks.planks, Character.valueOf('B'), Items.minecart, Character.valueOf('C'), Blocks.grass, Character.valueOf('D'), Blocks.golden_rail, Character.valueOf('E'), Blocks.redstone_torch, Character.valueOf('F'), Blocks.stone_slab
+					      " A ", "AAA", "AAA",    Character.valueOf('A'), Blocks.PLANKS, Character.valueOf('B'), Items.MINECART, Character.valueOf('C'), Blocks.GRASS, Character.valueOf('D'), Blocks.GOLDEN_RAIL, Character.valueOf('E'), Blocks.REDSTONE_TORCH, Character.valueOf('F'), Blocks.STONE_SLAB
 					      });
 					  
 					  GameRegistry.addRecipe(new ItemStack(BlockMegaHouse2, 1), new Object[] { 
-					      " A ", "AAA", "AAA",    Character.valueOf('A'), Blocks.log, Character.valueOf('B'), Items.minecart, Character.valueOf('C'), Blocks.grass, Character.valueOf('D'), Blocks.golden_rail, Character.valueOf('E'), Blocks.redstone_torch, Character.valueOf('F'), Blocks.stone_slab
+					      " A ", "AAA", "AAA",    Character.valueOf('A'), Blocks.LOG, Character.valueOf('B'), Items.MINECART, Character.valueOf('C'), Blocks.GRASS, Character.valueOf('D'), Blocks.GOLDEN_RAIL, Character.valueOf('E'), Blocks.REDSTONE_TORCH, Character.valueOf('F'), Blocks.STONE_SLAB
 					      });
 						GameRegistry.addRecipe(new ItemStack(OtherGrandHouse, 1), new Object[] { 
-					      "BAB", "BCB", "BAB",    Character.valueOf('A'), Blocks.stonebrick, Character.valueOf('B'), Blocks.quartz_block, Character.valueOf('C'), Blocks.yellow_flower, Character.valueOf('D'), Blocks.golden_rail, Character.valueOf('E'), Blocks.redstone_torch, Character.valueOf('F'), Blocks.stone_slab
+					      "BAB", "BCB", "BAB",    Character.valueOf('A'), Blocks.STONEBRICK, Character.valueOf('B'), Blocks.QUARTZ_BLOCK, Character.valueOf('C'), Blocks.YELLOW_FLOWER, Character.valueOf('D'), Blocks.GOLDEN_RAIL, Character.valueOf('E'), Blocks.REDSTONE_TORCH, Character.valueOf('F'), Blocks.STONE_SLAB
 						});
 						 GameRegistry.addRecipe(new ItemStack(OtherSurvivorHouse6, 1), new Object[] { 
-					      " A ", "ABA", "ABA",    Character.valueOf('A'), Blocks.log, Character.valueOf('B'), Blocks.planks, Character.valueOf('C'), Blocks.grass, Character.valueOf('D'), Blocks.golden_rail, Character.valueOf('E'), Blocks.redstone_torch, Character.valueOf('F'), Blocks.stone_slab
+					      " A ", "ABA", "ABA",    Character.valueOf('A'), Blocks.LOG, Character.valueOf('B'), Blocks.PLANKS, Character.valueOf('C'), Blocks.GRASS, Character.valueOf('D'), Blocks.GOLDEN_RAIL, Character.valueOf('E'), Blocks.REDSTONE_TORCH, Character.valueOf('F'), Blocks.STONE_SLAB
 						 });
 							GameRegistry.addRecipe(new ItemStack(OtherSurvivorHouse7, 1), new Object[] { 
-					      " B ", "ABA", "ABA",    Character.valueOf('A'), Blocks.log, Character.valueOf('B'), Blocks.planks, Character.valueOf('C'), Blocks.grass, Character.valueOf('D'), Blocks.golden_rail, Character.valueOf('E'), Blocks.redstone_torch, Character.valueOf('F'), Blocks.stone_slab
+					      " B ", "ABA", "ABA",    Character.valueOf('A'), Blocks.LOG, Character.valueOf('B'), Blocks.PLANKS, Character.valueOf('C'), Blocks.GRASS, Character.valueOf('D'), Blocks.GOLDEN_RAIL, Character.valueOf('E'), Blocks.REDSTONE_TORCH, Character.valueOf('F'), Blocks.STONE_SLAB
 							});
 						  GameRegistry.addRecipe(new ItemStack(SurvivalSmallBuilding, 1), new Object[] { 
-					      "BAB", "BAB", "BAB",    Character.valueOf('A'), Blocks.stonebrick, Character.valueOf('B'), Blocks.sandstone, Character.valueOf('C'), Blocks.grass, Character.valueOf('D'), Blocks.golden_rail, Character.valueOf('E'), Blocks.redstone_torch, Character.valueOf('F'), Blocks.stone_slab
+					      "BAB", "BAB", "BAB",    Character.valueOf('A'), Blocks.STONEBRICK, Character.valueOf('B'), Blocks.SANDSTONE, Character.valueOf('C'), Blocks.GRASS, Character.valueOf('D'), Blocks.GOLDEN_RAIL, Character.valueOf('E'), Blocks.REDSTONE_TORCH, Character.valueOf('F'), Blocks.STONE_SLAB
 						  });
 						  GameRegistry.addRecipe(new ItemStack(SurvivalWoodenHouse, 1), new Object[] { 
-					      " B ", "BAB", "BBB",    Character.valueOf('A'), Blocks.glass, Character.valueOf('B'), Blocks.planks, Character.valueOf('C'), Blocks.grass, Character.valueOf('D'), Blocks.golden_rail, Character.valueOf('E'), Blocks.redstone_torch, Character.valueOf('F'), Blocks.stone_slab
+					      " B ", "BAB", "BBB",    Character.valueOf('A'), Blocks.GLASS, Character.valueOf('B'), Blocks.PLANKS, Character.valueOf('C'), Blocks.GRASS, Character.valueOf('D'), Blocks.GOLDEN_RAIL, Character.valueOf('E'), Blocks.REDSTONE_TORCH, Character.valueOf('F'), Blocks.STONE_SLAB
 						  });
 						  GameRegistry.addRecipe(new ItemStack(WoodenHouse, 1), new Object[] { 
-					      "CBC", "ABA", "ABA",    Character.valueOf('A'), Blocks.log, Character.valueOf('B'), Blocks.planks, Character.valueOf('C'), Blocks.oak_stairs, Character.valueOf('D'), Blocks.golden_rail, Character.valueOf('E'), Blocks.redstone_torch, Character.valueOf('F'), Blocks.stone_slab
+					      "CBC", "ABA", "ABA",    Character.valueOf('A'), Blocks.LOG, Character.valueOf('B'), Blocks.PLANKS, Character.valueOf('C'), Blocks.OAK_STAIRS, Character.valueOf('D'), Blocks.GOLDEN_RAIL, Character.valueOf('E'), Blocks.REDSTONE_TORCH, Character.valueOf('F'), Blocks.STONE_SLAB
 						  });
 						  GameRegistry.addRecipe(new ItemStack(RandomAirballoon2, 1), new Object[] { 
-					      "ABA", " B ", "ABA",    Character.valueOf('A'), Blocks.wool, Character.valueOf('B'), Blocks.planks, Character.valueOf('C'), Blocks.oak_stairs, Character.valueOf('D'), Blocks.golden_rail, Character.valueOf('E'), Blocks.redstone_torch, Character.valueOf('F'), Blocks.stone_slab
+					      "ABA", " B ", "ABA",    Character.valueOf('A'), Blocks.WOOL, Character.valueOf('B'), Blocks.PLANKS, Character.valueOf('C'), Blocks.OAK_STAIRS, Character.valueOf('D'), Blocks.GOLDEN_RAIL, Character.valueOf('E'), Blocks.REDSTONE_TORCH, Character.valueOf('F'), Blocks.STONE_SLAB
 						  });
 						   GameRegistry.addRecipe(new ItemStack(RandomFlyingShip, 1), new Object[] { 
-					      "ABA", "AAA", "ABA",    Character.valueOf('A'), Blocks.wool, Character.valueOf('B'), Blocks.planks, Character.valueOf('C'), Blocks.oak_stairs, Character.valueOf('D'), Blocks.golden_rail, Character.valueOf('E'), Blocks.redstone_torch, Character.valueOf('F'), Blocks.stone_slab
+					      "ABA", "AAA", "ABA",    Character.valueOf('A'), Blocks.WOOL, Character.valueOf('B'), Blocks.PLANKS, Character.valueOf('C'), Blocks.OAK_STAIRS, Character.valueOf('D'), Blocks.GOLDEN_RAIL, Character.valueOf('E'), Blocks.REDSTONE_TORCH, Character.valueOf('F'), Blocks.STONE_SLAB
 						   });
 						  GameRegistry.addRecipe(new ItemStack(RandomGreenTent, 1), new Object[] { 
-					      " A ", "AAA", "ABA",    Character.valueOf('A'), Blocks.wool, Character.valueOf('B'), Items.bed, Character.valueOf('C'), Blocks.oak_stairs, Character.valueOf('D'), Blocks.golden_rail, Character.valueOf('E'), Blocks.redstone_torch, Character.valueOf('F'), Blocks.stone_slab
+					      " A ", "AAA", "ABA",    Character.valueOf('A'), Blocks.WOOL, Character.valueOf('B'), Items.BED, Character.valueOf('C'), Blocks.OAK_STAIRS, Character.valueOf('D'), Blocks.GOLDEN_RAIL, Character.valueOf('E'), Blocks.REDSTONE_TORCH, Character.valueOf('F'), Blocks.STONE_SLAB
 						  });
 						  GameRegistry.addRecipe(new ItemStack(RandomGreyTent, 1), new Object[] { 
-					      " A ", "ABA", "AAA",    Character.valueOf('A'), Blocks.wool, Character.valueOf('B'), Blocks.planks, Character.valueOf('C'), Blocks.oak_stairs, Character.valueOf('D'), Blocks.golden_rail, Character.valueOf('E'), Blocks.redstone_torch, Character.valueOf('F'), Blocks.stone_slab
+					      " A ", "ABA", "AAA",    Character.valueOf('A'), Blocks.WOOL, Character.valueOf('B'), Blocks.PLANKS, Character.valueOf('C'), Blocks.OAK_STAIRS, Character.valueOf('D'), Blocks.GOLDEN_RAIL, Character.valueOf('E'), Blocks.REDSTONE_TORCH, Character.valueOf('F'), Blocks.STONE_SLAB
 						  });
 						  GameRegistry.addRecipe(new ItemStack(RandomLightHouse, 1), new Object[] { 
-					      "CDC", "AAA", "ABA",    Character.valueOf('A'), Blocks.wool, Character.valueOf('B'), Blocks.quartz_block, Character.valueOf('C'), Blocks.oak_fence, Character.valueOf('D'), Blocks.redstone_lamp, Character.valueOf('E'), Blocks.redstone_torch, Character.valueOf('F'), Blocks.stone_slab
+					      "CDC", "AAA", "ABA",    Character.valueOf('A'), Blocks.WOOL, Character.valueOf('B'), Blocks.QUARTZ_BLOCK, Character.valueOf('C'), Blocks.OAK_FENCE, Character.valueOf('D'), Blocks.REDSTONE_LAMP, Character.valueOf('E'), Blocks.REDSTONE_TORCH, Character.valueOf('F'), Blocks.STONE_SLAB
 						  });
 						  GameRegistry.addRecipe(new ItemStack(RandomLittleWoodenCabin, 1), new Object[] { 
-					      " A ", "ACA", "ABA",    Character.valueOf('A'), Blocks.log, Character.valueOf('B'), Blocks.enchanting_table, Character.valueOf('C'), Blocks.iron_block, Character.valueOf('D'), Blocks.redstone_lamp, Character.valueOf('E'), Blocks.redstone_torch, Character.valueOf('F'), Blocks.stone_slab
+					      " A ", "ACA", "ABA",    Character.valueOf('A'), Blocks.LOG, Character.valueOf('B'), Blocks.ENCHANTING_TABLE, Character.valueOf('C'), Blocks.IRON_BLOCK, Character.valueOf('D'), Blocks.REDSTONE_LAMP, Character.valueOf('E'), Blocks.REDSTONE_TORCH, Character.valueOf('F'), Blocks.STONE_SLAB
 						  });
 						  GameRegistry.addRecipe(new ItemStack(RandomWoodenStonebrickHouse, 1), new Object[] { 
-					      "CAC", "ABA", "ABA",    Character.valueOf('A'), Blocks.stonebrick, Character.valueOf('B'), Blocks.planks, Character.valueOf('C'), Blocks.stone_brick_stairs, Character.valueOf('D'), Blocks.redstone_lamp, Character.valueOf('E'), Blocks.redstone_torch, Character.valueOf('F'), Blocks.stone_slab
+					      "CAC", "ABA", "ABA",    Character.valueOf('A'), Blocks.STONEBRICK, Character.valueOf('B'), Blocks.PLANKS, Character.valueOf('C'), Blocks.STONE_BRICK_STAIRS, Character.valueOf('D'), Blocks.REDSTONE_LAMP, Character.valueOf('E'), Blocks.REDSTONE_TORCH, Character.valueOf('F'), Blocks.STONE_SLAB
 						  
 					      });
 					  GameRegistry.addRecipe(new ItemStack(BlockCosyHouse, 1), new Object[] { 
-						      "ABA", "BCB", "BDB",    Character.valueOf('A'), Blocks.snow, Character.valueOf('B'), Blocks.brick_block, Character.valueOf('C'), Blocks.glass, Character.valueOf('D'), Blocks.oak_door, Character.valueOf('E'), Blocks.redstone_torch, Character.valueOf('F'), Blocks.stone_slab
+						      "ABA", "BCB", "BDB",    Character.valueOf('A'), Blocks.SNOW, Character.valueOf('B'), Blocks.BRICK_BLOCK, Character.valueOf('C'), Blocks.GLASS, Character.valueOf('D'), Blocks.OAK_DOOR, Character.valueOf('E'), Blocks.REDSTONE_TORCH, Character.valueOf('F'), Blocks.STONE_SLAB
 							  
 						      });
 	

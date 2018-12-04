@@ -1,5 +1,1142 @@
 Changelog:
-Build 1859:
+Build 2007:
+	LexManos:
+		Fix hopper extract behavior being broken on edge cases due to
+		IItemHandler capability. Closes #3062
+
+Build 1.10.2-12.18.0.2006-1.10.0:
+	LexManos:
+		Fixed FPS graph and new debug lines not being rendered in Debug screen.
+		Closes #3054
+
+Build 1.10.2-12.18.0.2005-1.10.0:
+	diesieben07:
+		Restore (buggy?) behavior of vanilla BlockPistonMoving and ignore drop
+		chance (#3052)
+
+Build 1.10.2-12.18.0.2004-1.10.0:
+	LexManos:
+		Fix villages generating to high when using a cusom sea level. Closes
+		#3050
+
+Build 1.10.2-12.18.0.2003-1.10.0:
+	LexManos:
+		Forge will now load extra mods from mods/mod_list.json and
+		mods/mc_version/mod_list.json. As defined by the same json spec as
+		--modListFile. And now if repositoryRoot is prefixed with absolute: the
+		path will NOT be relative to the MC directory.
+	LexManos:
+		Update build.gradle to have single line for specifying minecraft
+		version, and will update ForgeVersion.java as needed.
+
+Build 1.10.2-12.18.0.2002-1.10.0:
+	LexManos:
+		Fixed MC version number... I could of SWORN we removed this in favor of
+		a automated system...
+
+Build 1.10.2-12.18.0.2001-1.10.0:
+	LexManos: 1.10.2 Update
+
+Build 1.10-12.18.0.2000-1.10.0:
+	diesieben07:
+		Fix mob-spawners crashing for non-living entities and simply the patch
+		in the process (#3042)
+
+Build 1.10-12.18.0.1999-1.10.0:
+	mezz:
+		Fix legacy handling for ItemBucket subclasses and non-universal buckets
+		(#3038)
+	mezz:
+		Fix milk bucket is fillable with water or lava when milk is unregistered
+		(#3039)
+
+Build 1.10-12.18.0.1998-1.10.0:
+	mezz: Remove duplicated universal buckets from the creative list (#3035)
+	mezz: Fix FluidContainerRegistry handling potions as water bottles (#3037)
+
+Build 1.10-12.18.0.1997-1.10.0:
+	cpw:
+		Big warning for recipe types found without being registered, it turns
+		out this is pretty severe, modders need to fix it.
+
+Build 1.10-12.18.0.1996-1.10.0:
+	mezz:
+		Fix comparison stability of the Recipe Sorter with unknown recipes #2962
+		(#3030)
+
+Build 1.10-12.18.0.1995-1.10.0:
+	LexManos: Fixed Husks rendering as standard zombies. Closes #3028
+
+Build 1.10-12.18.0.1994-1.10.0:
+	LexManos: Fixed chests being replaced when trees grew.
+
+Build 1.10-12.18.0.1993-1.10.0:
+	luacs1998: Simple implementation of a Open/Close container event (#3017)
+
+Build 1.10-12.18.0.1991-1.10.0:
+	LexManos:
+		Fixed shifted patch in GameSettings causing settings to not load
+		properly. Closes #3025 #3022
+	LexManos: Fixed incorrect variable being sent to doSpecialSpawn. Closes #2986
+	LexManos: Fix incorrect logic in ChunkCache.isSideSolid. Closes #3026
+	LexManos: Provide 'cleaner' version of TextureMap.setTextureEntry. Closes #1385
+
+Build 1.9.4-12.17.0.1990:
+	LexManos: Fixed incorrect variable being sent to doSpecialSpawn. Closes #2986
+	LexManos: Fix incorrect logic in ChunkCache.isSideSolid. Closes #3026
+
+Build 1.10-12.18.0.1989-1.10.0:
+	cpw: Fix doors popping off solid sides.
+
+Build 1.10-12.18.0.1988-1.10.0:
+	cpw: Fix that the Missing blocks/items/registries prompt often got stuck.
+
+Build 1.9.4-12.17.0.1987:
+	LexManos:
+		Set ModelLoader.WHITE's texture size iniatlly instead of defaulting to
+		zero and being set later.
+
+Build 1.10-12.18.0.1986-1.10.0:
+	cpw: Fix Realms button text to be shorter again. Closes #3019
+
+Build 1.10-12.18.0.1985-1.10.0:
+	cpw: Fix item pickup dupe bugs. Closes #3015
+
+Build 1.10-12.18.0.1984-1.10.0:
+	blay09:
+		[1.10] Fix keys with KeyModifier failing to load (#3018)
+		Fix key options with KeyModifier failing to load due to
+		NumberFormatException
+
+Build 1.10-12.18.0.1983-1.10.0:
+	cpw:
+		Accept more 1.9.4 version strings. Fix NPE for custom villager types and
+		their associated zombie spawns. Still needs review.
+
+Build 1.10-12.18.0.1982-1.10.0:
+	mezz: Fix all guis closing as soon as they are opened (#3013)
+
+Build 1.10-12.18.0.1981-1.10.0:
+	cpw: Update to 1.10
+	LexManos: Fix version number.
+
+Build 1.9.4-12.17.0.1980-1.10.0:
+	cpw: Fix the MDK - it gets the license too!
+
+Build 1.9.4-12.17.0.1979-1.10.0:
+	cpw:
+		Update the build.gradle script to ship the new license and stop shipping
+		the old licenses.
+
+Build 1.9.4-12.17.0.1978-1.10.0:
+	cpw:
+		In accordance with our stated goal of relicensing Forge to LGPL v2.1,
+		this commit enacts that change. Although it is using the 1.9.4 codebase,
+		it is intended that this branch become public with the 1.10 changes, as
+		such the license will take effect at that time. The three commits from
+		persons who have failed to accept the new license, as documented in
+		#2789, have had their commits reverted. This should complete the license
+		transition. Commits after the commit date of this commit should be
+		considered licensed by LGPLv2.1, as indicated in LICENSE-new.txt. All
+		patches are now considered owned by the Forge project and Forge
+		Development LLC in particular (note that they will not get the license
+		boilerplate, as they are machine generated files).
+
+Build 1.9.4-12.17.0.1976:
+	GirafiStudios:
+		Made forge-type spawn eggs spawn childs, when right clicking
+		EntityAgeable again. (#2982)
+
+Build 1.9.4-12.17.0.1975:
+	shadowfacts: Fix broken EntityItem merging for Items with capabilities
+	diesieben07:
+		Make ASMDataTable more useful: (#2911)
+		- EnumHolder now has getters for it's data
+		- enum arrays work now
+		- nested annotations work now outside of being in arrays
+		(cherry picked from commit f10f750)
+
+Build 1.9.4-12.17.0.1974-1.9.4:
+	diesieben07:
+		Make ASMDataTable more useful: (#2911)
+		- EnumHolder now has getters for it's data
+		- enum arrays work now
+		- nested annotations work now outside of being in arrays
+
+Build 1.9.4-12.17.0.1973:
+	mezz: Fix incorrect FluidUtil doc (#2996)
+
+Build 1.9.4-12.17.0.1972:
+	mezz: Fix ItemStack deserialization can't clear nbt (#3005)
+	mezz: Improve the "missing mods" on-screen error message (#2997)
+
+Build 1.9.4-12.17.0.1970:
+	cpw: Update CONTRIBUTING.md
+
+Build 1.9.4-12.17.0.1969:
+	cpw: Update CONTRIBUTING.md
+
+Build 1.9.4-12.17.0.1968:
+	mezz: Fix #2918 Make dispensers with buckets work with modded fluids (#2947)
+
+Build 1.9.4-12.17.0.1967:
+	LexManos: Fixed brewing stand returning incorrect solts for side inventories.
+
+Build 1.9.4-12.17.0.1966:
+	LexManos: Fixed villager career display names being off by one.
+
+Build 1.9.4-12.17.0.1965:
+	diesieben07:
+		Fix DataParameter mixup when vanilla clients are connected causing CCE
+		in zombie renderer (#2992)
+
+Build 1.9.4-12.17.0.1964:
+	williewillus: Fix AnimationItemOverrideList not falling back to super (#2990)
+
+Build 1.9.4-12.17.0.1963:
+	mezz:
+		Fix #2961 Capability data is not preserved by fluid handler interactions
+		(#2976)
+
+Build 1.9.4-12.17.0.1962:
+	cpw: Slight tweak to early loading, to accommodate FMP
+
+Build 1.9.4-12.17.0.1961:
+	LexManos:
+		Fixed Fernflower decompile issue in AnvilChunkLoader.saveExtraData()
+		Closes #2985
+
+Build 1.9.4-12.17.0.1960:
+	cpw:
+		Mute the connection reset by peer exception - it's spamilicious for the
+		most part.
+
+Build 1.9.4-12.17.0.1959:
+	cpw: Fix missing IMC message query.
+
+Build 1.9.4-12.17.0.1958:
+	man.of.j: Read a Update JSON in UTF-8 (#2978)
+
+Build 1.9.4-12.17.0.1957:
+	williewillus: Add getter for the world to LootContext (#2954)
+
+Build 1.9.4-12.17.0.1956:
+	gurreja: Fixed arrows not showing in non default AchievementPages (#2968)
+
+Build 1.9.4-12.17.0.1955:
+	mezz: Add methods to Fluid to allow custom vaporization overrides (#2959)
+
+Build 1.9.4-12.17.0.1954:
+	fry: Fixes #1984.
+
+Build 1.9.4-12.17.0.1953:
+	fry:
+		Modified SimpleModelState to ignore the parts it doesn't know about.
+		Fixes model part hiding always applying to some models when
+		transformations are specified in the blockstate json.
+
+Build 1.9.4-12.17.0.1952:
+	fry:
+		Pass the GL context back from the splash screen during the
+		EntityRenderer init.
+
+Build 1.9.4-12.17.0.1951:
+	cpw:
+		Fire ChunkWatchEvent.Watch event, closes #2767. Based on @sfPlayer1
+		patch suggestion. It looks like this logic has shifted relative to 1.8,
+		so there may be differences in event behaviour now.
+
+Build 1.9.4-12.17.0.1950:
+	minecrell:
+		Fix asynchronous chunk loading (#2946)
+		Since the update to Minecraft 1.9.4 chunks were actually never loaded
+		asynchronously because a sync request was always made from the
+		PlayerChunkMap shortly after the chunk had been queued.
+		
+		- PlayerChunkMapEntry now only loads chunks synchronously *after* the
+		 chunk failed to load asynchronously.
+		- Fixed some minor bugs that caused "Attempted to dequeue chunk"
+		messages
+		- Simplified ChunkProviderServer patch. loadChunk no longer generates
+		chunks,
+		 so there is no need to handle that.
+		- Moved loader and provider to ChunkIOProvider so there is no need for
+		 "hashCode abuse"
+
+Build 1.9.4-12.17.0.1949:
+	mezz:
+		Make it easier to use FluidTanks that have input/output restrictions
+		(#2945)
+		These internal function should NOT be used by anything except the owner
+		of the tank.
+
+Build 1.9.4-12.17.0.1948:
+	LexManos: Fixed BiomeProvider.getModdedBiomeGenerators method name. Closes #2937
+
+Build 1.9.4-12.17.0.1947:
+	williewillus:
+		Several bugfixes for PlayerInteractEvent (#2943)
+		* Don't change Result if setCanceled(false) called
+		
+		* Fix RightClickEmpty firing even when targeting a block or entity
+		
+		* Add a left click empty event
+		
+		* Move hook point for EntityInteractSpecific to the right place
+		
+		* Fix LeftClickBlock not firing clientside in creative, and clarify docs
+		about creative
+
+Build 1.9.4-12.17.0.1946:
+	mezz:
+		Add new IFluidHandler for capabilities. (#2942)
+		Old fluid system is deprecated and slated for removal in the next
+		cleanup cycle.
+
+Build 1.9.4-12.17.0.1945:
+	matti.j.ruohonen:
+		Add a Slot#isSameInventory() method (#2884)
+		This fixes shift + double clicking items in Containers that use
+		SlotItemHandler slots.
+
+Build 1.9.4-12.17.0.1944:
+	LexManos:
+		Fixed POTENTIAL issue where mods would query world infrom from TEs
+		before they are set. Closes #2863
+
+Build 1.9.4-12.17.0.1943:
+	LexManos:
+		Fixed client side ticking TileEntites after they are unloaded. Closes
+		#2852
+	LexManos:
+		Expanded custom villagers to Zombies and world gen. Fixed edge cases
+		where custom professiosn wernt being used correctly. Closes #2862
+
+Build 1.9-12.16.0.1942-1.9:
+	ljfa-ag: Fix forge:default-tool transformation (#2795)
+
+Build 1.9.4-12.17.0.1941:
+	LexManos: Fixed position sent to sanSustainPlant from cactus. Closes #2941
+
+Build 1.9.4-12.17.0.1940:
+	LexManos:
+		Forge will now warn the user and ask permission to load a world with
+		unknown registries. Closes #2934
+
+Build 1.9.4-12.17.0.1939:
+	LexManos: Fix BlockFluidBase having collision. Closes #2932
+
+Build 1.9.4-12.17.0.1937:
+	LexManos:
+		1.9.4 Update. Major things to note: Class renames:
+		https://gist.github.com/LexManos/44dd211f90f498ad4015279b103dff86 Tile
+		Entities are now packed in the ChunkData packet. Forge intends to work
+		around this to better support large moded worlds, but for the time being
+		modders should implement the new function carefully and only send what
+		data they need to! Minecraft's codebase now has annotations, these are
+		directly from Mojang and should be adheared to! Added support for
+		package-info.java's containing @Nullable information for all MC code
+		base.
+	LexManos: Update mappoings snapshot to 20160518
+	cpw: Fix schizophrenia in version numbers.
+	LexManos: Bump version information for 1.9.4.
+	LexManos: Update example mod for new mappings.
+	atomicblom: Add Unit Test to detect mismatches between EnumHelper and Enum ctor
+	cpw:
+		Tweak build file slightly - allow passing buildNumber using gradle
+		parameters (-PbuildNumber=...) and provide a "resetBuildNumber" function
+		to reset the buildNumber to zero in the ForgeVersion file. Means builds
+		can be reproducible in-IDE.
+	tterrag1098: Fix screenshot link paths on Windows (#2886)
+	LexManos:
+		Take capabilities into account when comparing ItemStack NBT's. Closes
+		#2726
+	LexManos:
+		Tipped arrows are now not affected by infinite enchantment but are still
+		effected by creative mode.
+	LexManos: Set max enchantment ID to Short.MAX_VALUE. Closes #2799
+	LexManos:
+		Fix Container.compouteStackSize not respecting stack version of
+		maxStackSize. Closes #2756
+	LexManos: Fire playerDestroyItem event's in some cases where we were not.
+	LexManos: Fix villagers having farmer skin on vanilla servers. Closes #2894
+	LexManos: Add alternative ItemAxe Constructor
+	LexManos: Fix paramters for addArmorMaterial, addOption and addGameType.
+	LexManos:
+		Make unit test for EnumHelper more robust and less spammy. Now detects
+		missing accessors as well.
+	the.f1repl4ce: Switch new constructor to use floats (#2904)
+	tterrag1098: Add hook for TE data sync on client (#2893)
+	cpw:
+		Strip Optional from the class signature as well, since that's loaded by
+		the TypeToken registry code and might cause a crash.
+	LexManos:
+		Fix installer downloading vanilla jar when not needed. And filter some
+		more known libraries.
+	LexManos:
+		Capture interfaces when scanning classes and preload implementations of
+		ICrashReportDetail.
+	LexManos: Set Enchantment table's harvest level. Closes #1349
+	LexManos:
+		More uniformly apply Configuration.caseSensitiveCustomCategories. Closes
+		#1353
+	LexManos:
+		Close player's inventory to prevent potential dupe issues on some modded
+		items. Closes #1431
+	LexManos:
+		Move getArmorModel hook up two lines so that the attributes and
+		animation information is set. Closes #1939
+	LexManos: Fire PopulateChunkEvent Pre and Post in ChunkProviderFlat. Closes #2050
+	LexManos: Fire LivingSpawnEvents for MobSpawners. Closes #2079
+	LexManos: Fix javadocs for BiomeColor events. Closes #2093
+	LexManos:
+		Fixed EntityRegistry.addSpawn adding duplicate spawn entries. Closes
+		#2112
+	LexManos:
+		Fix setTileEntity causing the world to remove the new and old tile
+		entities. Closes #2164
+	LexManos: Add ServerHangWatchdog to TerminalTransformer whitelist. Closes #2203
+	LexManos: Fixed NBTTagString.toString not properly escaping \'s. Closes #2393
+	LexManos:
+		Reinitalize statistics information on Mapping changes. Fixes mismatched
+		stats to item/block ids. And auto registers stats for modded items.
+		Closes #2454
+	LexManos:
+		Fix Thorns enchantment bypassing ISpecialArmor.damageArmor function.
+		Closes #2463
+	LexManos:
+		Fix tooltip for survival tab in the creative menu not drawing on any but
+		the first page. Closes #2908 and #2504
+	LexManos:
+		Make sure tool-classes for vanilla tools are initialized early. Closes
+		#2909 and #2525
+	LexManos:
+		Fixed FluidUtil.tryEmptyFluidContainerItem not checking if the tank can
+		accept fluids first. Closes #2527
+	LexManos:
+		Fixed potential issue with Chunk.getLightOpacity being called before the
+		chunk is added to the world map. Closes #2529
+	LexManos:
+		Fixed TileEntityBeacon not using position-aware getLightOpacity. Closes
+		#2530 and #2910
+	LexManos: Fixed village wells not having their biomes set. Closes #2499
+	LexManos:
+		Fixed issue with @ObjectHolder and the new registry system. Closes #2640
+		Only run static initalizers for classes we need to get the names from
+		values.
+	LexManos:
+		Fixed new ICrashReportDetail loader working with packaged mods by
+		delaying it until the ModContainer's construct event. Closes #2924
+	fry: Reordered transformations during LayerHeldItem rendering, fixes #2827.
+	fry:
+		Initial support for model visibility system. Implemented it for OBJ, B3D
+		and normal vanilla models; fixed NPE accessing parent state in B3DModel.
+		Fixes #2801.
+
+Build 1.9.4-12.17.0.1935-1.9.4:
+	fry: Initial support for model visibility system. Implemented it for OBJ, B3D and normal vanilla models; fixed NPE accessing parent state in B3DModel. Fixes #2801.
+
+Build 1.9-12.16.1.1934:
+	mezz:
+		Improve JavaDoc links, fix some broken JavaDocs (#2833)
+		
+		Improve JavaDoc links, fix broken JavaDocs
+
+Build 1.9.4-12.17.0.1933-1.9.4:
+	fry: Reordered transformations during LayerHeldItem rendering, fixes #2827.
+
+Build 1.9.4-12.17.0.1932-1.9.4:
+	LexManos: Fixed new ICrashReportDetail loader working with packaged mods by delaying it until the ModContainer's construct event. Closes #2924
+
+Build 1.9.4-12.17.0.1931-1.9.4:
+	LexManos: Fixed village wells not having their biomes set. Closes #2499
+	LexManos:
+		Fixed issue with @ObjectHolder and the new registry system. Closes #2640
+		Only run static initalizers for classes we need to get the names from values.
+
+Build 1.9.4-12.17.0.1930-1.9.4:
+	LexManos: Fix tooltip for survival tab in the creative menu not drawing on any but the first page. Closes #2908 and #2504
+	LexManos: Make sure tool-classes for vanilla tools are initialized early. Closes #2909 and #2525
+	LexManos: Fixed FluidUtil.tryEmptyFluidContainerItem not checking if the tank can accept fluids first. Closes #2527
+	LexManos: Fixed potential issue with Chunk.getLightOpacity being called before the chunk is added to the world map. Closes #2529
+	LexManos: Fixed TileEntityBeacon not using position-aware getLightOpacity. Closes #2530 and #2910
+
+Build 1.9.4-12.17.0.1929-1.9.4:
+	LexManos: Fix Thorns enchantment bypassing ISpecialArmor.damageArmor function. Closes #2463
+
+Build 1.9.4-12.17.0.1928-1.9.4:
+	LexManos: Fixed NBTTagString.toString not properly escaping \'s. Closes #2393
+	LexManos:
+		Reinitalize statistics information on Mapping changes.
+		Fixes mismatched stats to item/block ids. And auto registers stats for modded items.
+		Closes #2454
+
+Build 1.9.4-12.17.0.1927-1.9.4:
+	LexManos: Fire LivingSpawnEvents for MobSpawners. Closes #2079
+	LexManos: Fix javadocs for BiomeColor events. Closes #2093
+	LexManos: Fixed EntityRegistry.addSpawn adding duplicate spawn entries. Closes #2112
+	LexManos: Fix setTileEntity causing the world to remove the new and old tile entities. Closes #2164
+	LexManos: Add ServerHangWatchdog to TerminalTransformer whitelist. Closes #2203
+
+Build 1.9.4-12.17.0.1926-1.9.4:
+	LexManos: Set Enchantment table's harvest level. Closes #1349
+	LexManos: More uniformly apply Configuration.caseSensitiveCustomCategories. Closes #1353
+	LexManos: Close player's inventory to prevent potential dupe issues on some modded items. Closes #1431
+	LexManos: Move getArmorModel hook up two lines so that the attributes and animation information is set. Closes #1939
+	LexManos: Fire PopulateChunkEvent Pre and Post in ChunkProviderFlat. Closes #2050
+
+Build 1.9.4-12.17.0.1925-1.9.4:
+	LexManos: Fix installer downloading vanilla jar when not needed. And filter some more known libraries.
+	LexManos: Capture interfaces when scanning classes and preload implementations of ICrashReportDetail.
+
+Build 1.9.4-12.17.0.1924-1.9.4:
+	cpw: Strip Optional from the class signature as well, since that's loaded by the TypeToken registry code and might cause a crash.
+
+Build 1.9-12.16.1.1923:
+	shadowfacts: Pass the correct position into isSideSolid in BlockRailBase#canPlaceBlockAt (#2919)
+
+Build 1.9.4-12.17.0.1922-1.9.4:
+	tterrag1098: Add hook for TE data sync on client (#2893)
+
+Build 1.9.4-12.17.0.1921-1.9.4:
+	the.f1repl4ce: Switch new constructor to use floats (#2904)
+
+Build 1.9.4-12.17.0.1920-1.9.4:
+	atomicblom: Add Unit Test to detect mismatches between EnumHelper and Enum ctor
+	LexManos: Fix paramters for addArmorMaterial, addOption and addGameType.
+	LexManos: Make unit test for EnumHelper more robust and less spammy. Now detects missing accessors as well.
+
+Build 1.9.4-12.17.0.1918-1.9.4:
+	LexManos: Add alternative ItemAxe Constructor
+
+Build 1.9.4-12.17.0.1917-1.9.4:
+	LexManos: Fix villagers having farmer skin on vanilla servers. Closes #2894
+
+Build 1.9.4-12.17.0.1916-1.9.4:
+	LexManos: Fire playerDestroyItem event's in some cases where we were not.
+
+Build 1.9.4-12.17.0.1915-1.9.4:
+	LexManos: Fix Container.compouteStackSize not respecting stack version of maxStackSize. Closes #2756
+
+Build 1.9.4-12.17.0.1914-1.9.4:
+	LexManos: Set max enchantment ID to Short.MAX_VALUE. Closes #2799
+
+Build 1.9.4-12.17.0.1913-1.9.4:
+	LexManos: Tipped arrows are now not affected by infinite enchantment but are still effected by creative mode.
+
+Build 1.9.4-12.17.0.1912-1.9.4:
+	tterrag1098: Fix screenshot link paths on Windows (#2886)
+	LexManos: Take capabilities into account when comparing ItemStack NBT's. Closes #2726
+
+Build 1.9.4-12.17.0.1910-1.9.4:
+	cpw: Tweak build file slightly - allow passing buildNumber using gradle parameters (-PbuildNumber=...) and provide a "resetBuildNumber" function to reset the buildNumber to zero in the ForgeVersion file. Means builds can be reproducible in-IDE.
+
+Build 1.9.4-12.17.0.1909-1.9.4:
+	LexManos: Update example mod for new mappings.
+
+Build 1.9-12.16.1.1907:
+	bonii-xx:
+		Fix Bucket rendering and add sound (#2865)
+		
+		* Adjust generated quads from texture to take texture size into account #2858
+		
+		*  Fix universal bucket not passing through when rightclicking on a non-block
+		Add proper sound events when picking up modded fluids #2821
+		
+		* Have FluidUtil execute properly on both sides and sync as expected. Add default sounds to interacting with tanks
+		
+		* Save sound for filling/emptying in the fluid
+
+Build 1.9-12.16.1.1906:
+	LexManos: Lets just simply this. Fixes last commit.
+
+Build 1.9-12.16.1.1905:
+	LexManos: Add modder facing API for Villager Career level trades. Ref: #2854
+
+Build 1.9-12.16.1.1904:
+	cpw: Fix up release jsons to clean up extraneous netty references
+	fry: Extended Animation State Machine format to allow multiple transitions from one state.
+
+Build 1.8.9-11.15.1.1902-1.8.9:
+	cpw: Fix up release jsons to clean up extraneous netty references
+
+Build 1.9-12.16.1.1901:
+	cpw: Fix up release jsons to clean up extraneous netty references
+
+Build 1.9-12.16.1.1900:
+	LexManos: Make LootPool constructor public again. Closes #2847
+
+Build 1.9-12.16.1.1899:
+	LexManos: Fix type in LootEntry json name. And rename LootTable.finalize to freeze to avoid overriding Object function. Closes #2846 and #2847
+
+Build 1.9-12.16.1.1898:
+	fry: Fixed joint animation application correctly.
+
+Build 1.9-12.16.1.1897:
+	shadowfacts:
+		Add ScreenshotEvent (#2828)
+		
+		Add ScreenshotEvent
+
+Build 1.9-12.16.1.1896:
+	LexManos:
+		New LootTable interaction system and event.
+		Modders can now modify and reference internal elements of a loot table by name.
+		Editing can ONLY be done in the event and any external editing will cause a exception to be thrown.
+		See this gist for more information: https://gist.github.com/LexManos/77c983d67b9ad27010428478b66d50fd
+
+Build 1.9-12.16.1.1895:
+	fry: Fixed joint hierarchy not being used fully in the animation system.
+
+Build 1.9-12.16.1.1894:
+	LexManos: Fixed issue in ChunkIO that would potentially cause NPEs on chunks. Closes #2837
+
+Build 1.9-12.16.1.1893:
+	LexManos: Fixed map extension recipie.
+
+Build 1.9-12.16.1.1892:
+	mezz: Fix the rand given to PopulateChunkEvent (#2834)
+
+Build 1.9-12.16.1.1891:
+	LexManos: Fix areas where dimension types are used as dimension IDs.
+
+Build 1.9-12.16.1.1889:
+	LexManos: Add NPE protection to in-hand item rendering.
+
+Build 1.9-12.16.1.1888:
+	mattmess1221:
+		Fix url regex (#2815)
+		
+		Fixed url detection in chat messages. Stops false positives such as `um.....no`
+
+Build 1.9-12.16.1.1887:
+	LexManos: Slightly better practice because wait can be randomly interupted.
+	LexManos: Bump version for new RB.
+
+Build 1.9-12.16.0.1886:
+	cpw: Don't ignore rejects
+	cpw: Add in mcp named patches and use them. Initial 1.9 setup.
+	cpw: Add rejects with mcp names for application to main codebase. Let's roll?
+	cpw: First few patches applied
+	LexManos: net.minecraft.block.* patches
+	LexManos: util, tileentity, stats, realms. Potions got an overhaul and out registry will need to be adapted.
+	LexManos: Some import renames and compile error fixes, killed ~800.
+	fry: Updated various block model patches.
+	fry: A bunch of rendering rejects updated.
+	fry: RendererLivingEntity, RenderEntityItem, RenderItem, RenderManager, LayerArmorBase; Item.getModel + ISmartItemModel are now inside ItemOverrideList; fix class rename in TESR patch.
+	fry: EntityRenderer, most of RenderGlobal, minor fix to LayerBipedArmor.
+	fry: tabs -> spaces.
+	fry: FontRenderer
+	fry: Fixed most errors in the model stuff, except for ModelLoader and b3d and obj getQuads/handleBlockState methods.
+	LexManos: Some entity patches.
+	CovertJaguar: Fix broken patches for EntityMinecart
+	LexManos: Items done, <1000 errors whoot!
+	LexManos: Small renames before bed.
+	fry: GuiCreateWorld, GuiSlot, GuiUtilRenderComponents, GuiContainerCreative
+	fry: GuiOverlayDebug, ItemModelMesher, RenderManager, Stitcher fixed + minor fixes in forge gui classes.
+	fry: removed Item.getModel, functionality is now achieveable via ItemOverrides.
+	fry: Updated raw types in ExtendedBlockState, fixed some ATs, updated some things that needed updating in model classes.
+	fry: Chunk
+	cpw:
+		DedicatedServer
+		IntegratedServer
+	Adubbz:
+		Updated the biome dictionary
+		
+		Squashed commits:
+		
+		[4064de6] Updated the biome dictionary
+	LexManos: Enchantments, some world, Biomes, bucks, world/gen/features.
+	Adubbz: Updated BiomeManager to 1.9
+	LexManos: Delete reject files i missed
+	LexManos: More work on misc things.
+	LexManos: World Patches work.
+	fry: Fix various errors in text mods.
+	fry: Fixed B3D loader, fixed some obvious errors in ModelLoader.
+	cpw:
+		LanguageManager
+		NetHandlerPlayClient
+	fry: ModelBox, PositionTextureVertex, TexturedQuad. Does anyone really use those on the server?
+	cpw:
+		ServerPinger
+		PlayerList
+	cpw:
+		WorldServer: NOTE - ChestGenHooks has NOT been updated in accordance with plans for removing it
+		GuiStats
+		Fixup deletion of egg handling in entity registry?
+	fry: Removed generics from IModel subinterfaces, add ed ModelProcessingHelper instead.
+	fry: Model UV lock handling from the state to the model, fixed most compile errors in ModelLoader, disabled it (and ModelBakeEvent) until it's functional, fixed some errors in ForgeHooksClient.
+	fry: Made OBJModel.java compile.
+	LexManos: Fixed errrors in Fluids package. TODO: Make BlockLiquid implement IFluidBlock and REMOVE FluidContainerRegsitry. Everything *should* be able to use IFluidContainer directly.
+	LexManos: Fishing is now a loot table no more need for FishingHooks. {LootTables still need to be evaludated if they need extra hooks, but thats later} Goodbye 44 compile errors!
+	LexManos: Temporary hack to fix MCP mappings for param names we are using that is causing compile errors.
+	LexManos: NetworkDispatcher/FMLProxyPacket 41 more errors cleaned.
+	cpw: Some fixups for FML, and use the FML registry for potions
+	cpw: Some more FML related fixups
+	cpw: Fix up import in Potion
+	cpw: Some client handler cleanup
+	cpw: Remove two patches that aren't needed anymore
+	cpw: Command fixups
+	cpw: Few more compile fixups
+	LexManos: More patch work, client patches.
+	LexManos:
+		10 more rejects down.
+		98 errors 6 rejects left.
+	fry: World
+	fry: Most of ItemInWorldManager reject, various small error fixes.
+	cpw: Some more forge code fixes
+	cpw:
+		Another compilation fix
+		More patch tweaks for compilation errors. onItemUseTick takes an entity now, cos skellies use stuff too
+	cpw: More fixups, removing chestgenstuff aggressively. Use loot tables. Any missing ones WILL be added by Mojang.
+	cpw: Remove more chestgenhooks stuff. Clean up some more ATs
+	cpw: Potion cleanup. Moar fixes!
+	cpw: Finish world, chunkloading should work again?
+	cpw: Another AT, for the player
+	cpw: Fix up PlayerSP for the AT
+	LexManos: Interaction hooks need to be re-added but compiles {Doesn't run}
+	LexManos:
+		Added bypass functions to Defaulted registry, DO NOT USE THIS MODDERS FORGE INTERNAL ONLY.
+		And some other fixups for running.
+	LexManos: Bump version info. Rather important.
+	LexManos: Fixed position being shifted before being sent to shouldSideBeRendered.
+	fry: Fix perspective transformations for left-handed items, disable ModelAnimationDebug until model loading is fixed.
+	cpw: Fix race condition between server ticks and the netlogin code handshaking for FML
+	cpw: Move the patch into the fml override handler, for less patch
+	fry: Fix items rendering too low in first person.
+	fry: Fixed (hopefully) perspective transformations for custom models too.
+	cpw: Capture Biome Registry within FML
+	fry: Fixed emply hand not rendering in first person.
+	fry: Fixed incorrect rendering state caused by transparent rendering pass for entities.
+	fry: Fixed armor rendering
+	cpw: Switch to srg patches
+	fry: Updated to latest mappings. Exc is broken, some anonymous classes didn't map to srg names.
+	fry: Fixed some errors in forge.exc
+	fry: First version of updated of ModelLoader, mostly works.
+	fry: Big model loader refactoring: simplified a lot of things, broke some error reporting. Still generally works.
+	LexManos: Update patches for fixed inner class suffeling in srg files.
+	LexManos: We are based on 1.9 not 1.8.9 :D
+	LexManos: Delete mcp patches.
+	LexManos: PlayerManager updated.
+	LexManos: Fix digging blocks in survival.
+	LexManos: Fixed breaking of tall grass. It now uses fortune. Expanded grass seed hooks to allow Fortune. Potentially removing in future in favor of LootTables.
+	vazkii:
+		1.9: Fixed registering armor materials through EnumHelper exploding
+		
+		1.9 ArmorMaterial now requires a SoundEvent for the equip sound.
+	fry: Fixed model error reporting, fixed model errors in test mods that shouldn't happen, fixed custom texture loading, made more things private/final.
+	fry: Fixed incorrect rotations for items in the left hand. Closes #2548.
+	fry: Fixed incorrect culling of mod TESRs.
+	fry: Fixed EffectRenderer patch, closes #2547.
+	fry: Removed imports in patches.
+	fry: Fixed progress reporting for model loading.
+	fry: Javadocs, small cleanup.
+	LexManos: Remove our entity position fixer. Vanilla fixed the bug in 1.9.
+	LexManos: Fix vanilla bug where bows consumed tipped arrows in creative.
+	LexManos: Fixed onUseStop being called twice {Bows firing twice}
+	LexManos: Fixed Sand not falling.
+	LexManos: Fixed NPE when sneak using a item.
+	Adubbz: BlockColors and ItemColors no longer assume non-Vanilla id constancy. Added a getter for ItemColors.
+	fry: Fixed MultiLayerModel not getting correct submodels; Unified the gui lighting of normal and custom models - diffuse lighting is now done in the pipeline, no need for IColoredBakedQuad anymore.
+	fry: Fixed quads that don't need diffuse lighting getting it anyway.
+	LexManos: Fix AT lines.
+	fry: Fixed invalid index calculation in BakedQuadRetextured.
+	fry: Fixed Block.doesSideBlockRendering, closes #2564.
+	fry: Fixed outline shader rendering, closes #2560.
+	fry: Fixed sprite not being passed to the quad builder for custom models.
+	cordonfreeman: Fix for patch targetting the wrong field to change for failed pathfinding penalty
+	iTitus:
+		Fix the EntityPlayer patch
+		
+		In 1.8.9 the call goes to getDisplayNameString() so that any changes from the PlayerEvent.NameFormat event are being take into account.
+		In this patch the call goes to func_70005_c_() which is the getter for the GameProfile name.
+		I changed it back.
+		
+		Sorry if you do not want to accept it because it is a one-liner.
+	vincent.lee: Fix #2555
+	diesieben07: Fix broken patch in EntityPlayer.updateRidden
+	blay09:
+		Fix KeyInputEvent only being fired if Keyboard.getEventKeyState() is false.
+		
+		It used to be called for both key-up and key-down states prior to 1.9, so I assume Vanilla's changes to F3 behavior broke the patch.
+	matthewprenger: Pass exceptions thrown in mod event buses back to FML to handle apropriately
+	vincent.lee: Fix double dropping of items. Closes #2549
+	cpw: Ignore classes directory
+	cpw: Fix bucket test
+	diesieben07: Fix EntityList.func_188429_b not supporting mod-entities, fixes spawn eggs, fixes #2581
+	CovertJaguar: Fix #2601 Minecart infinite acceleration
+	gigaherz: Fix a condition that caused the enchantment table to roll invalid enchantments.
+	fry: Switched animation system to capabilities, added animated item example, fixed state passing in MultiModel.
+	fry: Separated model classes to client and common packages.
+	fry: instance -> INSTANCE
+	vincent.lee: Expose IItemHandler on vanilla entities
+	fry: Implemented slightly more generic version of UVLock, re-enabled it for json models. Closes #2607.
+	fry: Removed blockCenterToCorner from TRSRTransformation constructor. Closes #2461.
+	fry: Ignore blocks/items with null registry name during model loading. Fixes NPE during resource reloading in worlds with removed blocks/items.
+	fry: Made VertexBuffer.sortVertexData cleanup pointers after it's done. Closes #2528.
+	fry: Added default left hand transforms for forge transform strings. Closes #2615.
+	elpatricimo:
+		Allow players sized smaller than 1 block to walk into small spaces
+		
+		Same as #2605 but for 1.9 branch
+	LexManos: Rework DimensionManager for new DimensionType enum, replaces the old provider registry. Also fixed save folder issues with dimensions. Closes #2570
+	LexManos: Fix Chests not opening correctly with semi-solid blocks on top.
+	LexManos: Fixed Item.shouldCauseReequipAnimation hook.
+	LexManos: Add ShieldDecoration and Tipped arrows to recipe sorter. Closes #2613
+	LexManos: Exclude jna from termal tansformer.
+	vincent.lee: Update according to suggestions
+	LexManos: Fix pushing players inside blocks.
+	LexManos: Make RenderLivingBase.add/remvoeLayer, Closes #2573
+	LexManos: Added support for custom dyes with Banners. Closes #2596
+	LexManos: Allow finite fluids to be drained correctly
+	LexManos: Make OreDictionary.initVanillaEntries() private so that dumb modders will stop calling it.
+	vincent.lee: Actually fix dupe drop
+	LexManos: Fix swap animations for sure this time.
+	fry: Added Capability.cast, to allow avoiding unchecked casts in ICapabilityProvider.getCapability
+	LexManos: Update FML Entity Spawn packet for 1.9's location change. Closes #2567
+	LexManos: Fixed custom entities unique ids.
+	LexManos: Fix typo causing biomes to be generated in wrong chunks. Closes #2632
+	fry: Show meaningful error if ModelLoaderRegistry is used before the missing model is initialized.
+	fry: Register the animation Capability. No idea how it worked before at some point.
+	iTitus:
+		Add flashing update notification icon made by @gigaherz, closes #2582
+		
+		It is added to the "Mods" button in the main menu and to out-of-date mods in the mod list (there it replaces the "U").
+		Also fixes a little typo.
+	diesieben07: Fix BlockCrops.getDrops not respecting new age methods (for beetroots)
+	diesieben07: Fix PopulateChunkEvent.Post not firing
+	LexManos:
+		New Builder class in BlockStateContainer. Makes building containers with both listed and unlisted properties cleaner.
+		Make all methods of BiomeGenBase$BiomeProperties public so that modders can use that class outside subclasses.
+	fry: Cleanup: removed IEEP, removed redundant casts, fixed imports, fixed typos.
+	fry: Fixed isSideSolid causing infinite loops due to the call to getActualState.
+	fry: Removed LanguageRegistry and CollectionWrapperFactory.
+	fry: Removed RenderWorldEvent, encapsulated all public event fields.
+	fry: Made some more public fields either private or final.
+	fry: Disabled erroring block, fixed DynBucketTest.TestItem model.
+	mezz:
+		Make tooltips layout in the right direction, wrap if there is no room
+		
+		Same as #2649, but for Minecraft 1.9
+	fry: Fixed diffuse lighting not being applied if forge lighting pipeline is disabled, closes #2651
+	fry: Enabled diffuse lighting by default in UnpackedBakedQuad.Builder.
+	fry: Fixed crosshair always being white, closes #2653.
+	kashike:
+		Replace Forge's `BlockPos#getImmutable` method with the included `BlockPos#toImmutable` (func_185334_h), while keeping the override in PooledMutableBlockPos to prevent mutable leaks.
+		Also prevent a mutable blockpos leak in World#setTileEntity
+	gigaherz: Add wrapper methods for IStorage#readNBT/writeNBT.
+	mezz: Fix Block.getPickBlock returning an ItemStack with a null Item
+	fry: Prevent missing model from loading multiple times.
+	fry: Fixed StackOverflow caused by the previous commit, closes #2669.
+	LexManos: Fix EntityPlayer still running old armor logic. Closes #2670
+	LexManos: Fix shrubs not generating correctly. Closes #2663
+	LexManos: Fix bows not animating properly when picking up ammo while using. Closes #2672
+	LexManos: Make NoteBlockEvent raw constructor protected to allow subclasses. Closes #2153
+	LexManos: Fix landing particles not showing up. Cloes #2661
+	shadowfacts: Forward ItemBlock#addInformation to Block#addInformation
+	tterrag1098: Add state param to canRenderInLayer
+	hea3venmc: Fix remapped blocks being overriden with dummy air blocks. Closes #2491
+	cpw:
+		Squashed commit of the following:
+		
+		commit b3b290aec9d3010a134859da6001ea28a96c2fdc
+		Merge: c6ce6a0 d803f7d
+		Author: cpw <cpw@weeksfamily.ca>
+		Date:   Fri Mar 25 13:28:04 2016 -0400
+		
+		    Merge branch 'RegistryRework' of https://github.com/LexManos/MinecraftForge into LexManos-RegistryRework
+		
+		    Implement proper registry slaves. Should help with rollback related issues.
+		
+		    Missing patch
+		
+		commit d803f7db76f65db9d27302c9804a643bc853dc22
+		Author: LexManos <LexManos@gmail.com>
+		Date:   Tue Mar 22 03:36:14 2016 -0700
+		
+		    Update VillagerRegistry and use it. Should in theory make custom villagers work now. Using string version instead of int id for networking.
+		
+		commit eb5e5b4b42fdca26d2a104e4dc1e6a3ea3051a7b
+		Author: LexManos <LexManos@gmail.com>
+		Date:   Tue Mar 22 02:14:16 2016 -0700
+		
+		    More cleanup.
+		
+		commit edbc56b2ff314629d0e402709f3cf29fc79c4a3d
+		Author: LexManos <LexManos@gmail.com>
+		Date:   Tue Mar 22 02:05:23 2016 -0700
+		
+		    More cleanups, removed deprecated UniqueIdentifier {ResourceLocation now}
+		
+		commit e2df8d1be3c97601508f83dc97b0e8853fa1e271
+		Author: LexManos <LexManos@gmail.com>
+		Date:   Tue Mar 22 01:29:19 2016 -0700
+		
+		    Stupid generics....
+		
+		commit 46d57dc4677fa5ff3923e64eaccfb33d7e5aad8d
+		Author: LexManos <LexManos@gmail.com>
+		Date:   Tue Mar 22 01:00:25 2016 -0700
+		
+		    Some registry tweaking to provde a non-complicated API modders can use.
+	cpw: Reconcile Block.patch
+	cpw:
+		Add registries for soundevents, enchantments and potiontypes
+		MinecraftForge-2576 [1.9] SoundEvents (and Enchantments and PotionTypes) need a FML registry
+	cpw: MinecraftForge-2683 InvocationTargetException for Forge 1820 for 1.9
+	cpw: MinecraftForge-2684 [1.9] New Registry ignores keys
+	fry: Improved UV offset hackery - should fix most visible custom model seams.
+	cpw: Support ResLocations for IMC
+	cpw: Capture a vanilla freeze - will be used when FML connects to vanilla servers, soon
+	LexManos: Fixed compile error in registry code with Eclipse.
+	mezz:
+		Add key binding modifiers and contexts.
+		
+		Same as #2674, but for Minecraft 1.9
+	Adubbz: Fixed mismatch registry names and mod ids
+	LexManos: Properly deprecate and link the replacement methods in GameRegistry. Add helper method for registering a block with default ItemBlock because people keep complaining -.-
+	fry: Changed generic signature of GameRegistry.register methods to work around the type inference bug; updated all example mods to the new block/item registration method.
+	fry:
+		Revert "Add key binding modifiers and contexts.", until it's fixed.
+		
+		This reverts commit 34c3af7e853d578c8e17e1f0cdf886251fad74ae.
+	mezz: Re-Add key binding modifiers and contexts.
+	mezz: Fix inability to attack while holding modifier keys
+	mcjty1:
+		Added DimensionManager.createProviderFor() to WorldClient constructor similar to what is done
+		in WorldServer to make sure the correct provider is created client-side too.
+	AEnterprise: onBlockHarvested is no longer called twice
+	fry: Added the ability to change the printed model error count; Added printing of actual exceptions causing missing variants related to blockstate loading, closes #2689.
+	fry: Made both exceptions occuring during item model loading print in the log; closes #2696.
+	LexManos: Fix issue caused by setting spawnRadius to 0. Closes #2624
+	LexManos: Fixed EntityJoinWorldEvent not being fired for some entitites on Server Worlds. Closes #2685
+	LexManos: Fix improper logic in ItemHandlerHelper.giveItemToPlayer causing some items to not be added. Closes #2705
+	mezz:
+		Add modifier support to vanilla keybindings.
+		
+		Add Orange conflict color for modifier/key conflicts
+		(like Ctrl and Ctrl-Z conflicting)
+		Related to #2692
+	vincent.lee: Player Interact Event
+	Zaggy1024: Fixed using PlaySoundEvent to replace a sound with a PositionedSound causing an NPE due to the Sound field not being set by a call to ISound.createAccessor(SoundHandler).
+	fry: Fixed mod languages not being loaded on the server.
+	fry: Fixed some test mods not being marked as client-only.
+	iTitus: Fix dynbucket item transformation.
+	fry: Fixed zip being closed too early in the server language loading.
+	fry: Fixed forge fluid having a collision box.
+	kat.swales: Corrected CapabilityItemHandler.readNBT ignoring anything in slot 0 in 1.9
+	mezz: Fix #2717 Pick block hotkey not working in inventories
+	mezz: Fix some plain keybinds not working when a modifier is active
+	LexManos: Enhance some error logging related to OBJLoader issues, and RegistryEntries.
+	LexManos:
+		Cleanup OBJLoader parse function and fix issues related to JVM differences.
+		Also fix support for sopme of the spec that was partially respected.
+	LexManos: Fixed NPE in dedicated server languages. And fixed logger for main FML event bus.
+	fry: Made forge fluids use smooth lighting.
+	kashike:
+		Remove @SideOnly(Side.CLIENT) from BossInfo/BossInfoServer methods
+		
+		These methods can also be used by the server (see BossInfoServer, it sends packets to the client but the methods are @SideOnly(Side.CLIENT))
+	LexManos: Fix potential desync between Forge's Villager profession and vanilla's int based system.
+	LexManos: Fix being kicked from server when climbing ladders.
+	matti.j.ruohonen: Fix ForgeChunkManager world unloading check (#2736)
+	mezz:
+		Add cancelable event for Potions shifting the gui position (#2667)
+		
+		Add cancelable event for Potions shifting the gui position
+	matthewprenger: Don't use import static with net.minecraft classes. Using the latest MCP snapshots this causes an import conflict. (#2742)
+	CrafterKina: make WorldSavedData implement NBTSerializable (#2745)
+	mezz: Fix log spam from invalid key modifiers (#2746)
+	LexManos: Expose a central place to access all of Vanilla and Forge's registries using the new registry API.
+	iTitus:
+		Fix forge:default-block transformation. (#2760)
+		
+		The first-person left-hand rotation was a little bit of.
+	vincent.lee:
+		Boss bar render event (#2701)
+		
+		Allow control over increment height
+	LexManos: Fix NPE on shield break. Closes #2786
+	cpw: Add the new license text. Not yet applicable to forge.
+	cpw:
+		Update LICENSE-new.txt
+		
+		Clarification on infectivity
+	cpw:
+		Update LICENSE-new.txt
+		
+		Words
+	cpw:
+		Update LICENSE-new.txt
+		
+		Better words
+	mezz: Close #2780 add CMD localization for Mac key bindings (#2792)
+	bonii-xx:
+		Fix SidedInvWrapper accessing wrong slots for setStackInSlot. (#2797)
+		
+		Fix DoubleChestItemHandler not implementing IItemHandlerModifiable
+	LexManos: Fix sluggish scrolling on GuiScrollList's and fix small rendering issue with scroll bar on certian screen sizes.
+	bloodmc:
+		Only run block physics for TileEntities while capturing block placement. (#2803)
+		
+		Currently, all blocks placed by players that are not TE's run physics
+		twice. Blocks that contain a TileEntity are not affected due to a check in
+		'ForgeHooks.onPlaceItemIntoWorld'.
+		
+		In order to fix the problem, 'Chunk.setBlockState' will now verify if
+		blocks are being captured before running onBlockAdded and if so, only run
+		physics if the block has a tileentity. This check also prevents blocks such
+		as TNT's from running its physics (explosion) when event is cancelled.
+	williewillus: Add Potion.renderHUDEffect (#2798)
+	bloodmc:
+		Call markDirty when restoring blocks with TileEntities. (#2809)
+		
+		This change makes sure the updated tileentity is saved properly within the
+		chunk.
+	AlexIIL: Fix TextureMap failing when registering a sprite's resource location twice (#2785)
+	fry: Fixed custom fluid sufraces not rendering from the bottom. Closes #2800.
+	fry: Make ChunkRenderDispatcher.countRenderBuilders configurable. Closes #2775.
+	fry: Fixed cooldown overlay sometimes rendering opaque. Closes #2772.
+	fry: Fixed villager profession not being set correctly on the client, and fixed custom village texture rendering. Closes #2766.
+	LexManos: Fix withers breaking bedrock. Closes #2813
+	LexManos:
+		Add a java version detection and nag system for users on Java 7 or below.
+		Added detection of mods that rely on Java 8 and a graceful error screen.
+		The nag screen will be shown once a day. It can be disabled by editing the forge.cfg.
+		However it is HIGHLY recomended that user update to Java 8.
+	LexManos: Remove usage of AsynchronousExecutor library in favor or a simpler implementation.
+	cpw: Merge in a fix from 1.8.9 for rails
+
+Build 1.9-12.16.0.1885-1.9:
+	LexManos: Remove usage of AsynchronousExecutor library in favor or a simpler implementation.
+
+Build 1.9-12.16.0.1884-1.9:
+	LexManos:
+		Add a java version detection and nag system for users on Java 7 or below.
+		Added detection of mods that rely on Java 8 and a graceful error screen.
+		The nag screen will be shown once a day. It can be disabled by editing the forge.cfg.
+		However it is HIGHLY recomended that user update to Java 8.
+
+Build 1.9-12.16.0.1883-1.9:
+	LexManos: Fix withers breaking bedrock. Closes #2813
+
+Build 1.9-12.16.0.1882-1.9:
+	fry: Fixed villager profession not being set correctly on the client, and fixed custom village texture rendering. Closes #2766.
+
+Build 1.9-12.16.0.1881-1.9:
+	fry: Fixed cooldown overlay sometimes rendering opaque. Closes #2772.
+
+Build 1.9-12.16.0.1880-1.9:
+	fry: Make ChunkRenderDispatcher.countRenderBuilders configurable. Closes #2775.
+
+Build 1.9-12.16.0.1879-1.9:
+	fry: Fixed custom fluid sufraces not rendering from the bottom. Closes #2800.
+
+Build 1.9-12.16.0.1878-1.9:
+	AlexIIL: Fix TextureMap failing when registering a sprite's resource location twice (#2785)
+
+Build 1.9-12.16.0.1877-1.9:
+	bloodmc:
+		Call markDirty when restoring blocks with TileEntities. (#2809)
+		
+		This change makes sure the updated tileentity is saved properly within the
+		chunk.
+
+Build 1.8.9-11.15.1.1875:
+	bloodmc:
+		Call markDirty when restoring blocks with TileEntities. (#2807)
+		
+		This change makes sure the updated tileentity is saved properly within the
+		chunk.
+
+Build 1.9-12.16.0.1874-1.9:
+	williewillus: Add Potion.renderHUDEffect (#2798)
+
+Build 1.8.9-11.15.1.1873:
+	bloodmc: Fix wrong blockstate being passed to notifyNeighborsRespectDebug. (#2806)
+
+Build 1.8.9-11.15.1.1872:
+	bloodmc:
+		Only run block physics for TileEntities while capturing block placement. (#2805)
+		
+		Currently, all blocks placed by players that are not TE's run physics
+		twice. Blocks that contain a TileEntity are not affected due to a check in
+		'ForgeHooks.onPlaceItemIntoWorld'.
+		
+		In order to fix the problem, 'Chunk.setBlockState' will now verify if
+		blocks are being captured before running onBlockAdded and if so, only run
+		physics if the block has a tileentity. This check also prevents blocks
+		such as TNT's from running its physics (explosion) when placement event is
+		cancelled.
+
+Build 1.9-12.16.0.1871-1.9:
+	bloodmc:
+		Only run block physics for TileEntities while capturing block placement. (#2803)
+		
+		Currently, all blocks placed by players that are not TE's run physics
+		twice. Blocks that contain a TileEntity are not affected due to a check in
+		'ForgeHooks.onPlaceItemIntoWorld'.
+		
+		In order to fix the problem, 'Chunk.setBlockState' will now verify if
+		blocks are being captured before running onBlockAdded and if so, only run
+		physics if the block has a tileentity. This check also prevents blocks such
+		as TNT's from running its physics (explosion) when event is cancelled.
+
+Build 1.9-12.16.0.1870-1.9:
+	LexManos: Fix sluggish scrolling on GuiScrollList's and fix small rendering issue with scroll bar on certian screen sizes.
+
+Build 1.9-12.16.0.1869-1.9:
+	bonii-xx:
+		Fix SidedInvWrapper accessing wrong slots for setStackInSlot. (#2797)
+		
+		Fix DoubleChestItemHandler not implementing IItemHandlerModifiable
+
+Build 1.9-12.16.0.1868-1.9:
+	cpw:
+		Update LICENSE-new.txt
+		
+		Clarification on infectivity
+	cpw:
+		Update LICENSE-new.txt
+		
+		Words
+	cpw:
+		Update LICENSE-new.txt
+		
+		Better words
+	mezz: Close #2780 add CMD localization for Mac key bindings (#2792)
+
+Build 1.9-12.16.0.1867-1.9:
+	cpw: Add the new license text. Not yet applicable to forge.
+
+Build 1.9-12.16.0.1866-1.9:
+	LexManos: Fix NPE on shield break. Closes #2786
+
+Build 1.9-12.16.0.1865-1.9:
+	vincent.lee:
+		Boss bar render event (#2701)
+		
+		Allow control over increment height
+
+Build 1.9-12.16.0.1864-1.9:
+	izooDee5:
+		Fix forge:default-block transformation. (#2760)
+		
+		The first-person left-hand rotation was a little bit of.
+
+Build 1.9-12.16.0.1863-1.9:
+	LexManos: Expose a central place to access all of Vanilla and Forge's registries using the new registry API.
+
+Build 1.9-12.16.0.1862-1.9:
+	LexManos: Fix log spam from invalid key modifiers (#2746)
+
+Build 1.9-12.16.0.1861-1.9:
+	LexManos: make WorldSavedData implement NBTSerializable (#2745)
+
+Build 1.9-12.16.0.1860-1.9:
+	LexManos: Don't use import static with net.minecraft classes. Using the latest MCP snapshots this causes an import conflict. (#2742)
+
+Build 1.9-12.16.0.1859-1.9:
 	LexManos:
 		Add cancelable event for Potions shifting the gui position (#2667)
 		
@@ -237,7 +1374,7 @@ Build 1.9-12.16.0.1817-1.9:
 		Also prevent a mutable blockpos leak in World#setTileEntity
 	gigaherz: Add wrapper methods for IStorage#readNBT/writeNBT.
 	LexManos: Fix landing particles not showing up. Cloes #2661
-	me: Forward ItemBlock#addInformation to Block#addInformation
+	shadowfacts: Forward ItemBlock#addInformation to Block#addInformation
 	tterrag1098: Add state param to canRenderInLayer
 
 Build 1.9-12.16.0.1816-1.9:
@@ -1846,7 +2983,7 @@ Build 1.8-11.14.3.1461:
 	xxmicloxx: Bugfix for B3DLoader
 
 Build 1.8-11.14.3.1460:
-	dan:
+	Daniel:
 		Fix incorrect block position in BlockReed canPlaceBlockAt
 		
 		block.canSustainPlant is called on the wrong block position.  It should be called on the block below (the 'soil' block).
@@ -3616,7 +4753,7 @@ Build 1.7.10-10.13.0.1170:
 	LexManos: STENCIL buffer and DEPTH buffer, attempt a fix for GL errors.
 
 Build 1.7.10-10.13.0.1169:
-	Alexander Ibrahim: Added Javadoc comments for Forge Event documentation.
+	alexrusso225: Added Javadoc comments for Forge Event documentation.
 
 Build 1.7.10-10.13.0.1168:
 	LexManos: MinecraftForge/FML@ac994e178a3533aa3c2ad8359aef9e5852c27a72 Scala people test your shit.
@@ -4461,7 +5598,7 @@ Build 1.7.2-10.12.0.993:
 	LexManos: Fix DoublePlant placement, closes #921
 
 Build 1.7.2-10.12.0.991:
-	смирнов антон михайлович: Create ru_RU.lang
+	verybigbro: Create ru_RU.lang
 
 Build 1.7.2-10.12.0.990:
 	Christian:

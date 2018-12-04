@@ -8,7 +8,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumSkyBlock;
-import net.minecraft.world.World;
 
 public class CheckerboardCreator extends CreatorBlocks implements ICreatorBlock {
 	int i,j,k;
@@ -76,9 +75,9 @@ public class CheckerboardCreator extends CreatorBlocks implements ICreatorBlock 
 		for(int i = 0; i<checkerSize; i++){
 			for(int j = 0; j<checkerSize; j++){
 				for(int k = 0; k<2; k++){
-					Block blk= Blocks.wool;
+					Block blk= Blocks.WOOL;
 					if(color){
-						blk=Blocks.coal_block;
+						blk=Blocks.COAL_BLOCK;
 					}
 				createBlock(blk,i,j,k);
 				}

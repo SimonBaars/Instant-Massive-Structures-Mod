@@ -1,7 +1,6 @@
 package modid.imsm.core;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.World;
 
 public class StructureCreatorClient extends StructureCreator {
 

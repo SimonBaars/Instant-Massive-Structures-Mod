@@ -25,7 +25,7 @@ public class BlockBigWorld extends Block
 
   public BlockBigWorld(int i)
     {
-        super(Material.rock);
+        super(Material.ROCK);
         this.name="BlockBigWorld";
     }
   

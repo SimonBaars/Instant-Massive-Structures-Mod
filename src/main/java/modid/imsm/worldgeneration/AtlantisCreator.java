@@ -76,7 +76,7 @@ public class AtlantisCreator extends CreatorBlocks implements ICreatorBlock {
 					for(int k = 0; k<2; k++){
 						Block replace = worldIn[k].getBlockState(new BlockPos(x,l,z)).getBlock();
 						if(replace instanceof BlockStone || replace instanceof BlockDirt || replace instanceof BlockGrass){
-							createBlock(Blocks.water,x,z,k,l);
+							createBlock(Blocks.WATER,x,z,k,l);
 						}
 					}
 				}

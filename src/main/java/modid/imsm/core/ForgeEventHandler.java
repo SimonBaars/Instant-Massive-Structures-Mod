@@ -161,10 +161,10 @@ public class ForgeEventHandler {
 						IMSM.eventHandler.delayedPrints.add("Please enter a number between 1 and 4.");
 					} else {
 						switch(inputNumber){
-						case 1: getMazeGenerator().wallMaterial=Blocks.mossy_cobblestone; break;
-						case 2: getMazeGenerator().wallMaterial=Blocks.bedrock; break;
-						case 3: getMazeGenerator().wallMaterial=Blocks.obsidian; break;
-						case 4: getMazeGenerator().wallMaterial=Blocks.glass; break;
+						case 1: getMazeGenerator().wallMaterial=Blocks.MOSSY_COBBLESTONE; break;
+						case 2: getMazeGenerator().wallMaterial=Blocks.BEDROCK; break;
+						case 3: getMazeGenerator().wallMaterial=Blocks.OBSIDIAN; break;
+						case 4: getMazeGenerator().wallMaterial=Blocks.GLASS; break;
 						}
 						IMSM.eventHandler.delayedPrints.add("-- MAZE RUNNER - MANUAL SETUP STEP 6 OUT OF 6 --");
 						IMSM.eventHandler.delayedPrints.add("Do you want the middle of the maze to be populated with a house and farm (Default 1)");

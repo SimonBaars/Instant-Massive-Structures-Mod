@@ -33,7 +33,7 @@ public class MazeGenerator extends CreatorBlocks implements ICreatorBlock {
 	int size;
 	int phase;
 	boolean isDone=false;
-	public Block wallMaterial = Blocks.mossy_cobblestone;
+	public Block wallMaterial = Blocks.MOSSY_COBBLESTONE;
 	
 	Score displayProgress;
 	ScoreObjective scoreBoard;
@@ -60,11 +60,11 @@ public class MazeGenerator extends CreatorBlocks implements ICreatorBlock {
 		if(maze.nodeRegister[posX][posY]==0){
             BlockPlaceHandler.placeBlocks(wallMaterial, x+(posX*blockSize), y, z+(posY*blockSize), blockSize, blockHeight, blockSize);
         } else if(maze.nodeRegister[posX][posY]==1) {
-        	BlockPlaceHandler.placeBlocks(Blocks.air, x+(posX*blockSize), y, z+(posY*blockSize), blockSize, blockHeight, blockSize);
+        	BlockPlaceHandler.placeBlocks(Blocks.AIR, x+(posX*blockSize), y, z+(posY*blockSize), blockSize, blockHeight, blockSize);
       	  }else if(maze.nodeRegister[posX][posY]==3) {
       		  int xPos =  x+(posX*blockSize)+((int)(Math.random()*(blockSize-1)));
       		int zPos =  z+(posY*blockSize)+((int)(Math.random()*(blockSize-1)));
-      		BlockPlaceHandler.placeBlock(Blocks.chest, xPos, y, zPos);
+      		BlockPlaceHandler.placeBlock(Blocks.CHEST, xPos, y, zPos);
       		TileEntityChest chest = (TileEntityChest) Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getTileEntity(new BlockPos(xPos, y, zPos));
       		if(chest!=null){
       			generateChestContents(chest);
@@ -86,7 +86,7 @@ public class MazeGenerator extends CreatorBlocks implements ICreatorBlock {
       	  }else if(maze.nodeRegister[posX][posY]==21){
       		  
       	  } else {
-      		BlockPlaceHandler.placeBlocks(Blocks.air, x+(posX*blockSize), y, z+(posY*blockSize), blockSize, blockHeight, blockSize);
+      		BlockPlaceHandler.placeBlocks(Blocks.AIR, x+(posX*blockSize), y, z+(posY*blockSize), blockSize, blockHeight, blockSize);
       	  }
 		generated++;
 		maze.nodeRegister[posX][posY]=20;
@@ -116,87 +116,87 @@ public class MazeGenerator extends CreatorBlocks implements ICreatorBlock {
 	private Item getRandomItem() {
 		int randomItem = (int)(Math.random()*81);
 		switch(randomItem){
-		case 0: return Items.flint_and_steel;
-		case 1: return Items.arrow;
-		case 2: return Items.bow;
-		case 3: return Items.apple;
-		case 4: return Items.coal;
-		case 5: return Items.iron_sword;
-		case 6: return Items.wooden_sword;
-		case 7: return Items.stone_sword;
-		case 8: return Items.diamond_sword;
-		case 9: return Items.golden_sword;
-		case 10: return Items.mushroom_stew;
-		case 11: return Items.iron_hoe;
-		case 12: return Items.wheat;
-		case 13: return Items.bread;
-		case 14: return Items.leather_boots;
-		case 15: return Items.leather_chestplate;
-		case 16: return Items.leather_helmet;
-		case 17: return Items.leather_leggings;
-		case 18: return Items.chainmail_boots;
-		case 19: return Items.chainmail_chestplate;
-		case 20: return Items.chainmail_helmet;
-		case 21: return Items.chainmail_leggings;
-		case 22: return Items.iron_helmet;
-		case 23: return Items.iron_chestplate;
-		case 24: return Items.iron_leggings;
-		case 25: return Items.iron_boots;
-		case 26: return Items.diamond_helmet;
-		case 27: return Items.diamond_chestplate;
-		case 28: return Items.diamond_leggings;
-		case 29: return Items.diamond_boots;
-		case 30: return Items.golden_helmet;
-		case 31: return Items.golden_chestplate;
-		case 32: return Items.golden_leggings;
-		case 33: return Items.golden_boots;
-		case 34: return Items.porkchop;
-		case 35: return Items.cooked_porkchop;
-		case 36: return Items.golden_apple;
-		case 37: return Items.reeds;
-		case 38: return Items.saddle;
-		case 39: return Items.snowball;
-		case 40: return Items.paper;
-		case 41: return Items.compass;
-		case 42: return Items.fishing_rod;
-		case 43: return Items.clock;
-		case 44: return Items.fish;
-		case 45: return Items.cooked_fish;
-		case 46: return Items.cake;
-		case 47: return Items.bed;
-		case 48: return Items.cookie;
-		case 49: return Items.map;
-		case 50: return Items.beef;
-		case 51: return Items.cooked_beef;
-		case 52: return Items.chicken;
-		case 53: return Items.cooked_chicken;
-		case 54: return Items.rotten_flesh;
-		case 55: return Items.ender_pearl;
-		case 56: return Items.arrow;
-		case 57: return Items.carrot;
-		case 58: return Items.potato;
-		case 59: return Items.baked_potato;
-		case 60: return Items.poisonous_potato;
-		case 61: return Items.golden_carrot;
-		case 62: return Items.skull;
-		case 63: return Items.pumpkin_pie;
-		case 64: return Items.rabbit_stew;
-		case 65: return Items.rabbit;
-		case 66: return Items.lead;
-		case 67: return Items.mutton;
-		case 68: return Items.cooked_mutton;
-		case 69: return Items.arrow;
-		case 70: return Items.arrow;
-		case 71: return Items.arrow;
-		case 72: return Items.arrow;
-		case 73: return Items.arrow;
-		case 74: return Items.arrow;
-		case 75: return Items.map;
-		case 76: return Items.map;
-		case 77: return Items.map;
-		case 78: return Items.map;
-		case 79: return Items.map;
-		case 80: return Items.map;
+		case 0: return Items.FLINT_AND_STEEL;
+		case 1: return Items.ARROW;
+		case 2: return Items.BOW;
+		case 3: return Items.APPLE;
+		case 4: return Items.COAL;
+		case 5: return Items.IRON_SWORD;
+		case 6: return Items.WOODEN_SWORD;
+		case 7: return Items.STONE_SWORD;
+		case 8: return Items.DIAMOND_SWORD;
+		case 9: return Items.GOLDEN_SWORD;
+		case 10: return Items.MUSHROOM_STEW;
+		case 11: return Items.IRON_HOE;
+		case 12: return Items.WHEAT;
+		case 13: return Items.BREAD;
+		case 14: return Items.LEATHER_BOOTS;
+		case 15: return Items.LEATHER_CHESTPLATE;
+		case 16: return Items.LEATHER_HELMET;
+		case 17: return Items.LEATHER_LEGGINGS;
+		case 18: return Items.CHAINMAIL_BOOTS;
+		case 19: return Items.CHAINMAIL_CHESTPLATE;
+		case 20: return Items.CHAINMAIL_HELMET;
+		case 21: return Items.CHAINMAIL_LEGGINGS;
+		case 22: return Items.IRON_HELMET;
+		case 23: return Items.IRON_CHESTPLATE;
+		case 24: return Items.IRON_LEGGINGS;
+		case 25: return Items.IRON_BOOTS;
+		case 26: return Items.DIAMOND_HELMET;
+		case 27: return Items.DIAMOND_CHESTPLATE;
+		case 28: return Items.DIAMOND_LEGGINGS;
+		case 29: return Items.DIAMOND_BOOTS;
+		case 30: return Items.GOLDEN_HELMET;
+		case 31: return Items.GOLDEN_CHESTPLATE;
+		case 32: return Items.GOLDEN_LEGGINGS;
+		case 33: return Items.GOLDEN_BOOTS;
+		case 34: return Items.PORKCHOP;
+		case 35: return Items.COOKED_PORKCHOP;
+		case 36: return Items.GOLDEN_APPLE;
+		case 37: return Items.REEDS;
+		case 38: return Items.SADDLE;
+		case 39: return Items.SNOWBALL;
+		case 40: return Items.PAPER;
+		case 41: return Items.COMPASS;
+		case 42: return Items.FISHING_ROD;
+		case 43: return Items.CLOCK;
+		case 44: return Items.FISH;
+		case 45: return Items.COOKED_FISH;
+		case 46: return Items.CAKE;
+		case 47: return Items.BED;
+		case 48: return Items.COOKIE;
+		case 49: return Items.MAP;
+		case 50: return Items.BEEF;
+		case 51: return Items.COOKED_BEEF;
+		case 52: return Items.CHICKEN;
+		case 53: return Items.COOKED_CHICKEN;
+		case 54: return Items.ROTTEN_FLESH;
+		case 55: return Items.ENDER_PEARL;
+		case 56: return Items.ARROW;
+		case 57: return Items.CARROT;
+		case 58: return Items.POTATO;
+		case 59: return Items.BAKED_POTATO;
+		case 60: return Items.POISONOUS_POTATO;
+		case 61: return Items.GOLDEN_CARROT;
+		case 62: return Items.SKULL;
+		case 63: return Items.PUMPKIN_PIE;
+		case 64: return Items.RABBIT_STEW;
+		case 65: return Items.RABBIT;
+		case 66: return Items.LEAD;
+		case 67: return Items.MUTTON;
+		case 68: return Items.COOKED_MUTTON;
+		case 69: return Items.ARROW;
+		case 70: return Items.ARROW;
+		case 71: return Items.ARROW;
+		case 72: return Items.ARROW;
+		case 73: return Items.ARROW;
+		case 74: return Items.ARROW;
+		case 75: return Items.MAP;
+		case 76: return Items.MAP;
+		case 77: return Items.MAP;
+		case 78: return Items.MAP;
+		case 79: return Items.MAP;
+		case 80: return Items.MAP;
 		}
 		return null;
 	}
@@ -222,13 +222,13 @@ public class MazeGenerator extends CreatorBlocks implements ICreatorBlock {
 				for(int z =0; z<blockSize*maze.nodeRegister[1].length; z++){
 					pos= new BlockPos(this.x+i+x,this.y-1+y,this.z+j+z);
 					if(maze.isCloseTo(x/blockSize, maze.gladeSize-1, maze.numOfColumns/2) && maze.isCloseTo(z/blockSize, maze.gladeSize-1, maze.numOfColumns/2)){
-						block = Blocks.grass;
+						block = Blocks.GRASS;
 						/*if(Math.random()<0.05){
 							BlockPlaceHandler.setBlock(worldIn,new BlockPos(this.x+i+x,this.y+y,this.z+j+z), Blocks.tallgrass.getDefaultState());
 							BlockPlaceHandler.setBlock(serverWorld, new BlockPos(this.x+i+x,this.y+y,this.z+j+z), Blocks.tallgrass.getDefaultState());
 						}*/
 					} else {
-						block = Blocks.stonebrick;
+						block = Blocks.STONEBRICK;
 					}
 					
 					BlockPlaceHandler.setBlock(worldIn,pos, block.getDefaultState());

@@ -17,7 +17,7 @@ public class BlockRemover extends Block {
 	int removeZ;
 	
 	public BlockRemover(int removeX, int removeY, int removeZ){
-		super(Material.rock);
+		super(Material.ROCK);
 		this.removeX=removeX;
 		this.removeY=removeY;
 		this.removeZ=removeZ;
@@ -31,7 +31,7 @@ public class BlockRemover extends Block {
 				for(int x = 0; x<removeX; x++){
 					for(int y =0; y<removeY; y++){
 						for(int z =0; z<removeZ; z++){
-							Block blk = Blocks.air;
+							Block blk = Blocks.AIR;
 							   // Make a position.
 							   pos0 = new BlockPos(pos.getX()-x, pos.getY()+y , pos.getZ()-z);
 							   // Get the default state(basically metadata 0)
