@@ -1,0 +1,5 @@
+{
+    "variants": {
+        "normal": { "model": "imsm:TransportPublicConnectorHightram_TramHightram_EastTram_West" }
+    }
+}

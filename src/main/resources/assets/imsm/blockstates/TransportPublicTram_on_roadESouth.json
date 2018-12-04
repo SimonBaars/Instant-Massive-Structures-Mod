@@ -1,0 +1,5 @@
+{
+    "variants": {
+        "normal": { "model": "imsm:TransportPublicTram_on_roadESouth" }
+    }
+}

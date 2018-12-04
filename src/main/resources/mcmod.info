@@ -1,0 +1,16 @@
+[
+{
+  "modid": "imsm",
+  "name": "Instant Massive Structures Mod",
+  "description": "Create Massive structures in Minecraft. Instantly.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "www.planetminecraft.com/mod/11-instant-massive-structures-mod-v10/",
+  "updateUrl": "",
+  "authorList": ["SimJoo"],
+  "credits": "Completely made by SimJoo :D",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

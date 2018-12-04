@@ -1,0 +1,5 @@
+{
+    "variants": {
+        "normal": { "model": "imsm:TransportConnectorBridge_StreetBridge_EastStreet_West" }
+    }
+}

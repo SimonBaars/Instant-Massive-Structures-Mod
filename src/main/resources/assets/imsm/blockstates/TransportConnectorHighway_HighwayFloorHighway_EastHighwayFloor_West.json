@@ -1,0 +1,5 @@
+{
+    "variants": {
+        "normal": { "model": "imsm:TransportConnectorHighway_HighwayFloorHighway_EastHighwayFloor_West" }
+    }
+}
