@@ -39,6 +39,7 @@ import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -50,7 +51,7 @@ import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 
 public class IMSM {
 	
-	//public static CreativeTabs Structures = new Structures(CreativeTabs.getNextID(),"Structures");
+	//public static ItemGroup Structures = new Structures(ItemGroup.getNextID(),"Structures");
 	public static String modid = "imsm";
 	
 	//public static int lastBlockPlacedX = 1;
@@ -68,139 +69,139 @@ public class IMSM {
 	
 	public static modid.imsm.core.EventHandler eventHandler;
 	
-	public static CreativeTabs Structures = new CreativeTabs("Structures"){
+	public static ItemGroup Structures = new ItemGroup("Structures"){
 		public Item getTabIconItem() {
 			return Item.getItemFromBlock(IMSM.BlockMegaHouse);
 		}		
 	};
 	
-	public static CreativeTabs Decoration = new CreativeTabs("Decoration"){
+	public static ItemGroup Decoration = new ItemGroup("Decoration"){
 		public Item getTabIconItem() {
 			return Item.getItemFromBlock(IMSM.DecorationParkSouth);
 		}		
 	};
 	
-	public static CreativeTabs Food = new CreativeTabs("Food"){
+	public static ItemGroup Food = new ItemGroup("Food"){
 		public Item getTabIconItem() {
 			return Item.getItemFromBlock(IMSM.FoodFarmSouth);
 		}		
 	};
 	
-	public static CreativeTabs IndustryHigh_Density = new CreativeTabs("IndustryHigh_Density"){
+	public static ItemGroup IndustryHigh_Density = new ItemGroup("IndustryHigh_Density"){
 		public Item getTabIconItem() {
 			return Item.getItemFromBlock(IMSM.IndustryHigh_DensityBlueEast);
 		}		
 	};
 	
-	public static CreativeTabs IndustryMedium_Density = new CreativeTabs("IndustryMedium_Density"){
+	public static ItemGroup IndustryMedium_Density = new ItemGroup("IndustryMedium_Density"){
 		public Item getTabIconItem() {
 			return Item.getItemFromBlock(IMSM.IndustryMedium_DensityBrickWest);
 		}		
 	};
 	
-	public static CreativeTabs IndustryLow_Density = new CreativeTabs("IndustryLow_Density"){
+	public static ItemGroup IndustryLow_Density = new ItemGroup("IndustryLow_Density"){
 		public Item getTabIconItem() {
 			return Item.getItemFromBlock(IMSM.IndustryLow_DensityGreenNorth);
 		}		
 	};
 	
-	public static CreativeTabs Office = new CreativeTabs("Office"){
+	public static ItemGroup Office = new ItemGroup("Office"){
 		public Item getTabIconItem() {
 			return Item.getItemFromBlock(IMSM.OfficeHigh_DensityBrickEastWest);
 		}		
 	};
 	
-	public static CreativeTabs Public = new CreativeTabs("Public"){
+	public static ItemGroup Public = new ItemGroup("Public"){
 		public Item getTabIconItem() {
 			return Item.getItemFromBlock(IMSM.PublicFireServiceBigEast);
 		}		
 	};
 	
-	public static CreativeTabs ResidentalEnormous_Density = new CreativeTabs("ResidentalEnormous_Density"){
+	public static ItemGroup ResidentalEnormous_Density = new ItemGroup("ResidentalEnormous_Density"){
 		public Item getTabIconItem() {
 			return Item.getItemFromBlock(IMSM.ResidentalEnormous_DensityBlockNorthEastSouthWest);
 		}		
 	};
 	
-	public static CreativeTabs ResidentalHigh_Density = new CreativeTabs("ResidentalHigh_Density"){
+	public static ItemGroup ResidentalHigh_Density = new ItemGroup("ResidentalHigh_Density"){
 		public Item getTabIconItem() {
 			return Item.getItemFromBlock(IMSM.ResidentalHigh_DensityBrickEastWest);
 		}		
 	};
 	
-	public static CreativeTabs ResidentalMedium_Density = new CreativeTabs("ResidentalMedium_Density"){
+	public static ItemGroup ResidentalMedium_Density = new ItemGroup("ResidentalMedium_Density"){
 		public Item getTabIconItem() {
 			return Item.getItemFromBlock(IMSM.ResidentalMedium_DensityOrangeGreenEast);
 		}		
 	};
 	
-	public static CreativeTabs ResidentalLow_Density = new CreativeTabs("ResidentalLow_Density"){
+	public static ItemGroup ResidentalLow_Density = new ItemGroup("ResidentalLow_Density"){
 		public Item getTabIconItem() {
 			return Item.getItemFromBlock(IMSM.ResidentalLow_DensityGreenEast2);
 		}		
 	};
 	
-	public static CreativeTabs Shopping = new CreativeTabs("Shopping"){
+	public static ItemGroup Shopping = new ItemGroup("Shopping"){
 		public Item getTabIconItem() {
 			return Item.getItemFromBlock(IMSM.ShoppingMedium_DensityQuartzEast);
 		}		
 	};
 	
-	/*public static CreativeTabs TransportAirport = new CreativeTabs("TransportAirport"){
+	/*public static ItemGroup TransportAirport = new ItemGroup("TransportAirport"){
 		public Item getTabIconItem() {
 			return Item.getItemFromBlock(IMSM.TransportAirportRunway_EastWestBuilding_South);
 		}		
 	};*/
 	
-	public static CreativeTabs TransportHarbour = new CreativeTabs("TransportHarbour"){
+	public static ItemGroup TransportHarbour = new ItemGroup("TransportHarbour"){
 		public Item getTabIconItem() {
 			return Item.getItemFromBlock(IMSM.TransportHarbourSide2CornerWest);
 		}		
 	};
 	
-	public static CreativeTabs TransportPublic = new CreativeTabs("TransportPublic"){
+	public static ItemGroup TransportPublic = new ItemGroup("TransportPublic"){
 		public Item getTabIconItem() {
 			return Item.getItemFromBlock(IMSM.TransportPublicHightramLSouthWest);
 		}		
 	};
 	
-	public static CreativeTabs TransportRoads = new CreativeTabs("TransportRoads"){
+	public static ItemGroup TransportRoads = new ItemGroup("TransportRoads"){
 		public Item getTabIconItem() {
 			return Item.getItemFromBlock(IMSM.TransportRoadTNorthSouthWest);
 		}		
 	};
 	
-	public static CreativeTabs TransportWater = new CreativeTabs("TransportWater"){
+	public static ItemGroup TransportWater = new ItemGroup("TransportWater"){
 		public Item getTabIconItem() {
 			return Item.getItemFromBlock(IMSM.TransportWater2CornerWest);
 		}		
 	};
 	
-	public static CreativeTabs Utility = new CreativeTabs("Utility"){
+	public static ItemGroup Utility = new ItemGroup("Utility"){
 		public Item getTabIconItem() {
 			return Item.getItemFromBlock(IMSM.UtilityPower_NuclearEast);
 		}		
 	};
 	
-	public static CreativeTabs Remover = new CreativeTabs("Remover"){
+	public static ItemGroup Remover = new ItemGroup("Remover"){
 		public Item getTabIconItem() {
 			return Item.getItemFromBlock(IMSM.RemoverLast);
 		}		
 	};
 	
-	public static CreativeTabs Other = new CreativeTabs("Other"){
+	public static ItemGroup Other = new ItemGroup("Other"){
 		public Item getTabIconItem() {
 			return Item.getItemFromBlock(IMSM.BlockStadium);
 		}		
 	};
 	
-	public static CreativeTabs LiveStructures = new CreativeTabs("LiveStructures"){
+	public static ItemGroup LiveStructures = new ItemGroup("LiveStructures"){
 		public Item getTabIconItem() {
 			return Item.getItemFromBlock(IMSM.Live_Power_Windmill_East);
 		}		
 	};
 	
-	public static CreativeTabs User = new CreativeTabs("User"){
+	public static ItemGroup User = new ItemGroup("User"){
 		public Item getTabIconItem() {
 			return Item.getItemFromBlock(IMSM.BlockUnlimited);
 		}		

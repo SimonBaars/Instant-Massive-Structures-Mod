@@ -239,7 +239,7 @@ public class LiveStructure {
 					ride.progress++;
 					IMSM.eventHandler.ySync=new YSync(Minecraft.getInstance().player.posY);
 				} else if ((ride.progress>=0 && ride.progress<ride.animation[0].length && distanceToPlayer(x-4-0.5,y+1+ride.animation[0][ride.progress],z-36-ride.animation[1][ride.progress]+0.5)>1)){ //The ride is over bro
-					Minecraft.getInstance().player.sendChatMessage("Thanks for your visit. We hope to see you again soon!"));
+					Minecraft.getInstance().player.sendChatMessage("Thanks for your visit. We hope to see you again soon!");
 					ride=null;
 					IMSM.eventHandler.isRiding=null;
 					IMSM.eventHandler.ySync=null;
@@ -274,7 +274,7 @@ public class LiveStructure {
 							(closeTo(x-3.0, Minecraft.getInstance().player.posX, 2.9) /*&& closeTo(y+2.75+ride.animation[0][ride.progress-1], Minecraft.getInstance().player.posY, 1.0)*/ && closeTo(z-6.5, Minecraft.getInstance().player.posZ, 0.9)) || 
 							(closeTo(x-6.5, Minecraft.getInstance().player.posX, 0.9) /*&& closeTo(y+2.75+ride.animation[0][ride.progress-1], Minecraft.getInstance().player.posY, 1.0)*/ && closeTo(z-3.0, Minecraft.getInstance().player.posZ, 2.9)) || 
 							(closeTo(x-3.0, Minecraft.getInstance().player.posX, 2.9) /*&& closeTo(y+2.75+ride.animation[0][ride.progress-1], Minecraft.getInstance().player.posY, 1.0)*/ && closeTo(z-0.5, Minecraft.getInstance().player.posZ, 0.9)))){ //The ride is over bro
-						Minecraft.getInstance().player.sendChatMessage("Thanks for your visit. We hope to see you again soon!"));
+						Minecraft.getInstance().player.sendChatMessage("Thanks for your visit. We hope to see you again soon!");
 						ride=null;
 						IMSM.eventHandler.isRiding=null;
 						IMSM.eventHandler.ySync=null;
@@ -303,7 +303,7 @@ public class LiveStructure {
 			setPlayerToPosition(player,x,y,z);
 		}
 		} else {
-			EntityPlayerMP player = (EntityPlayerMP)Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getPlayerEntityByName(Minecraft.getInstance().player.getName());
+			EntityPlayerMP player = (EntityPlayerMP)Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getPlayerEntityByName(Minecraft.getInstance().player.getName().getUnformattedComponentText());
 			setPlayerToPosition(player,x,y,z);
 		}
 	}
@@ -462,7 +462,7 @@ public class LiveStructure {
 
 	public void setBlock(World world, BlockPos pos, IBlockState state){
 		try{
-			Chunk chunk = world.getChunkFromBlockCoords(pos);
+			Chunk chunk = world.getChunk(pos);
 			ExtendedBlockStorage storageArray = chunk.getBlockStorageArray()[pos.getY() >> 4];
 			if (storageArray == null) storageArray = chunk.getBlockStorageArray()[pos.getY() >> 4] = new ExtendedBlockStorage(pos.getY() >> 4 << 4, !world.provider.getHasNoSky());
 
