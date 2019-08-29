@@ -8,6 +8,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Properties;
 
 import modid.imsm.livestructures.YSync;
 import modid.imsm.structureloader.LightUpdateCheck;
@@ -17,9 +19,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.translation.LanguageMap;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class EventHandler {
@@ -71,18 +72,22 @@ public class EventHandler {
 			isLoaded=true;
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void loadLanguageFile() {
 		try {
 			File file = new File("structures/en_US.lang");
 			if(file.exists()){
-			InputStream languageFile = new FileInputStream(file);
-			LanguageMap.inject(languageFile);
-			languageFile.close();
+				 Properties prop = new Properties();
+		           try(InputStream inStream = new FileInputStream(file)){
+					prop.load(inStream);
+		            LanguageMap.replaceWith((Map)prop);
+		           }
 			}
 		} catch (Exception e2) {
 			e2.printStackTrace();
 		}
 	}
+	
 	@SubscribeEvent
 	public void update(TickEvent.ClientTickEvent event){
 		
@@ -115,7 +120,7 @@ public class EventHandler {
 				}
 			}
 			} else {
-				EntityPlayerMP player = (EntityPlayerMP) Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getPlayerEntityByName(Minecraft.getInstance().player.getName());
+				EntityPlayerMP player = (EntityPlayerMP) Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getPlayerEntityByName(Minecraft.getInstance().player.getName().getUnformattedComponentText());
 				if(ySync.isVehicle==null || (/*Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getBlockState(new BlockPos(player.posX,player.posY-1,player.posZ)).getBlock()!=Blocks.air ||*/ Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getBlockState(new BlockPos(player.posX,player.posY,player.posZ)).getBlock()!=Blocks.AIR)){
 				player.posY=/*isRiding.y+isRiding.ride.getHeight()+isRiding.ride.animation[0][isRiding.ride.progress]*/ySync.getY();
 				//if(player.getName().equals(Minecraft.getInstance().player.getName())){
@@ -193,7 +198,7 @@ public class EventHandler {
 			
 			
 			while(delayedPrints.size()>0 && Minecraft.getInstance().getIntegratedServer().isCallingFromMinecraftThread()){
-					Minecraft.getInstance().player.sendChatMessage(delayedPrints.get(0)));
+					Minecraft.getInstance().player.sendChatMessage(delayedPrints.get(0));
 					
 				delayedPrints.remove(0);
 			}

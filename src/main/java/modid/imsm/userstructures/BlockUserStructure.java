@@ -106,7 +106,7 @@ public class BlockUserStructure extends Block {
   }
 	
 	@Override
-    public void onBlockDestroyedByPlayer(World worldIn, BlockPos pos, IBlockState state) {
+    public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player)   {
     	if(hasOutline && !worldIn.isRemote){
     		if(Minecraft.getInstance().world!=null){
     	SchematicStructure struct = new SchematicStructure(name+".structure");

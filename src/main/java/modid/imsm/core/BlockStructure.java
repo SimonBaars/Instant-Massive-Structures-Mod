@@ -104,10 +104,10 @@ IMSM.eventHandler.serverCreators.add(new OutlineCreator(name, pos ,modifierx, mo
 				}
 			}
 		}
-		Minecraft.getInstance().player.sendChatMessage("The last placed structure has been removed."));
+		Minecraft.getInstance().player.sendChatMessage("The last placed structure has been removed.");
 		//IMSM.lastPlaced=null;
 	}else {
-		Minecraft.getInstance().player.sendChatMessage("You didn't place a structure to undo."));
+		Minecraft.getInstance().player.sendChatMessage("You didn't place a structure to undo.");
 	}
 	}
 
@@ -118,7 +118,7 @@ IMSM.eventHandler.serverCreators.add(new OutlineCreator(name, pos ,modifierx, mo
   }
 	
 	@Override
-    public void onBlockDestroyedByPlayer(World worldIn, BlockPos pos, IBlockState state) {
+    public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player)   {
     	if(hasOutline && !worldIn.isRemote){
     		if(Minecraft.getInstance().world!=null){
     	SchematicStructure struct = new SchematicStructure(name+".structure", false);
@@ -132,7 +132,7 @@ IMSM.eventHandler.serverCreators.add(new OutlineCreator(name, pos ,modifierx, mo
     	}
     }
     
-    @Override
+    /*@Override
     public void onBlockDestroyedByExplosion(World worldIn, BlockPos pos, Explosion explosionIn) {
     	if(hasOutline && !worldIn.isRemote){
     	SchematicStructure struct = new SchematicStructure(name+".structure", false);
@@ -140,7 +140,7 @@ IMSM.eventHandler.serverCreators.add(new OutlineCreator(name, pos ,modifierx, mo
     	struct.removeOutline(pos.getX(),modifierx, pos.getY(),modifiery, pos.getZ(),modifierz);
     	hasOutline=false;
     	}
-    }
+    }*/
     
     private int getSize(int size) {
   	  int totalsize=0;
