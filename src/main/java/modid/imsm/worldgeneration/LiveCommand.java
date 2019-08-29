@@ -54,7 +54,7 @@ public class LiveCommand implements ICommand
 		  i--;
 		  j++;
 	  }
-	  Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("Removed "+j+" Live Structures."));
+	  Minecraft.getInstance().player.sendChatMessage("Removed "+j+" Live Structures."));
   }
 @Override
   public List getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)

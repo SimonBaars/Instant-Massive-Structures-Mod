@@ -49,7 +49,7 @@ public class MazeGenerator extends CreatorBlocks implements ICreatorBlock {
 	
 	public void startGeneration(){
 		//System.out.println("Running Start Generation");
-		//Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("A huge random maze will now be generated at your location!"));
+		//Minecraft.getInstance().player.sendChatMessage("A huge random maze will now be generated at your location!"));
 		IMSM.eventHandler.delayedPrints.add("A huge random maze will now be generated at your location!");
 		maze.initCollisions(true);
 		init();
@@ -303,7 +303,7 @@ public boolean run() {
 				i=0;
 				if(j>=maze.nodeRegister[0].length){
 					scoreBoard.getScoreboard().removeObjective(scoreBoard);
-					Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("A random maze has been generated!"));
+					Minecraft.getInstance().player.sendChatMessage("A random maze has been generated!"));
 					return true;
 				}
 			}
@@ -312,7 +312,7 @@ public boolean run() {
 	displayProgress.setScorePoints((int)(generated/(float)(maze.nodeRegister.length*maze.nodeRegister[0].length)*100.00));
 				if(generated>maze.nodeRegister.length*maze.nodeRegister[0].length){
 					scoreBoard.getScoreboard().removeObjective(scoreBoard);
-					Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("A random maze has been generated!"));
+					Minecraft.getInstance().player.sendChatMessage("A random maze has been generated!"));
 					return true;
 				}
 				

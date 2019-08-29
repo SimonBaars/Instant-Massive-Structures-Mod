@@ -65,7 +65,7 @@ public class SchematicStructure extends Structure
 	public void process(World world, int posX, int posY, int posZ)
 	{
 		this.world=world;this.posX=posX;this.posY=posY;this.posZ=posZ;
-		//Minecraft.getInstance().thePlayer.sendChatMessage("Please be patient, I'm just creating "+(height*width*length)+" blocks for the structure...");
+		//Minecraft.getInstance().player.sendChatMessage("Please be patient, I'm just creating "+(height*width*length)+" blocks for the structure...");
 		Block blk = Blocks.AIR;
 		   // Make a position.
 		   BlockPos pos0 = new BlockPos(posX,posY,posZ);
@@ -102,7 +102,7 @@ public class SchematicStructure extends Structure
 	
 	public void initSingleBlockPlacer(World world, int posX, int posY, int posZ){
 		this.world=world;this.posX=posX;this.posY=posY;this.posZ=posZ;
-		//Minecraft.getInstance().thePlayer.sendChatMessage("Please be patient, I'm just creating "+(height*width*length)+" blocks for the structure...");
+		//Minecraft.getInstance().player.sendChatMessage("Please be patient, I'm just creating "+(height*width*length)+" blocks for the structure...");
 		Block blk = Blocks.AIR;
 		
 		   // Make a position.
@@ -248,7 +248,7 @@ public class SchematicStructure extends Structure
 			e.printStackTrace();
 		}
 		
-		//Minecraft.getInstance().thePlayer.sendChatMessage("I just created "+blocksAdded+" out of "+(height*width*length)+" blocks in this structure!");
+		//Minecraft.getInstance().player.sendChatMessage("I just created "+blocksAdded+" out of "+(height*width*length)+" blocks in this structure!");
 	}
 	
 	public void showOutline(int x, int modifierx, int y,int modifiery, int z, int modifierz, OutlineCreator creator){

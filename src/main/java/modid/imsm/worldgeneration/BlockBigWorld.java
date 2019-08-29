@@ -30,7 +30,7 @@ public class BlockBigWorld extends Block
     }
   
   @Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(IBlockState state, World worldIn, BlockPos pos, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
   {
 		if(playerIn.getHeldItemMainhand()!=null && playerIn.getHeldItemMainhand().getItem() instanceof ItemRedstone){
 			if(worldIn.isRemote){
@@ -38,7 +38,7 @@ public class BlockBigWorld extends Block
 			if(nCheckers>20000){
 				nCheckers=1;
 			}
-			Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("This block will now edit "+nCheckers+" rows of landscape"));
+			Minecraft.getInstance().player.sendChatMessage("This block will now edit "+nCheckers+" rows of landscape"));
 			
 			}
   	} else if(playerIn.getActiveItemStack()!=null && playerIn.getActiveItemStack().getItem() instanceof ItemDye){
@@ -47,7 +47,7 @@ public class BlockBigWorld extends Block
 		if(checkerSize>64){
 			checkerSize=2;
 		}
-		Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("This block will now increase the blocksize by "+checkerSize+""));
+		Minecraft.getInstance().player.sendChatMessage("This block will now increase the blocksize by "+checkerSize+""));
 		
 		}
 	} else {

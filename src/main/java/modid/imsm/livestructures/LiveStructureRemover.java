@@ -28,7 +28,7 @@ public class LiveStructureRemover extends Block {
 					IMSM.eventHandler.liveCreators.get(i).removeThisLiveStructure(false);
 					Minecraft.getInstance().getIntegratedServer().getEntityWorld().setBlockToAir(pos);
 					Minecraft.getInstance().theWorld.setBlockToAir(pos);
-					Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("You succesfully removed a structure's movements"));
+					Minecraft.getInstance().player.sendChatMessage("You succesfully removed a structure's movements"));
 					break;
 				}
 			}

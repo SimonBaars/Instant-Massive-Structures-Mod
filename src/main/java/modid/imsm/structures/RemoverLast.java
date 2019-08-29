@@ -49,10 +49,10 @@ public class RemoverLast extends Block
 				}
 			}
 		}
-		Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("The last placed structure has been removed."));
+		Minecraft.getInstance().player.sendChatMessage("The last placed structure has been removed."));
 		IMSM.lastPlaced=null;
 	}else {
-		Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("You didn't place a structure to undo."));
+		Minecraft.getInstance().player.sendChatMessage("You didn't place a structure to undo."));
 	}
 	}*/
 

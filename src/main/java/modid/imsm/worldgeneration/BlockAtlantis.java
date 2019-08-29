@@ -32,7 +32,7 @@ public class BlockAtlantis extends Block
 			if(nCheckers>20000){
 				nCheckers=1;
 			}
-			Minecraft.getInstance().thePlayer.sendChatMessage("This block will now edit "+nCheckers+" rows of landscape");
+			Minecraft.getInstance().player.sendChatMessage("This block will now edit "+nCheckers+" rows of landscape");
 			
 			}
   	} else {
