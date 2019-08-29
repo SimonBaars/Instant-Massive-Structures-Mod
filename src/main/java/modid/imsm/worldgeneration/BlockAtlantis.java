@@ -20,7 +20,7 @@ public class BlockAtlantis extends Block
 
   public BlockAtlantis(int i)
     {
-        super(Material.ROCK);
+	  super(Block.Properties.create(Material.ROCK));
         this.name="BlockAtlantis";
     }
   
@@ -32,7 +32,7 @@ public class BlockAtlantis extends Block
 			if(nCheckers>20000){
 				nCheckers=1;
 			}
-			Minecraft.getMinecraft().thePlayer.sendChatMessage("This block will now edit "+nCheckers+" rows of landscape");
+			Minecraft.getInstance().thePlayer.sendChatMessage("This block will now edit "+nCheckers+" rows of landscape");
 			
 			}
   	} else {

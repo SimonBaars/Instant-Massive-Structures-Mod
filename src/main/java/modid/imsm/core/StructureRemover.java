@@ -11,7 +11,7 @@ public class StructureRemover implements ICreatorBlock{
 	public boolean run() {
 		if(UndoCommand.removedPositions.size()>0 && UndoCommand.removedStates.size()>0){
 		for(int i = 0; i<100; i++){
-		Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().setBlockState(UndoCommand.removedPositions.get(UndoCommand.removedPositions.size()-1), UndoCommand.removedStates.get(UndoCommand.removedStates.size()-1));
+		Minecraft.getInstance().getIntegratedServer().getEntityWorld().setBlockState(UndoCommand.removedPositions.get(UndoCommand.removedPositions.size()-1), UndoCommand.removedStates.get(UndoCommand.removedStates.size()-1));
 		UndoCommand.removedPositions.remove(UndoCommand.removedPositions.size()-1);
 		UndoCommand.removedStates.remove(UndoCommand.removedStates.size()-1);
 		if(UndoCommand.removedPositions.size()==0 || UndoCommand.removedStates.size()==0){
@@ -32,8 +32,8 @@ public class StructureRemover implements ICreatorBlock{
 					   // Get the default state(basically metadata 0)
 					   IBlockState state0=blk.getDefaultState();
 					   // set the block
-					   //Minecraft.getMinecraft().theWorld.setBlockState(pos0, state0);
-					   Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().setBlockState(pos0, state0);
+					   //Minecraft.getInstance().theWorld.setBlockState(pos0, state0);
+					   Minecraft.getInstance().getIntegratedServer().getEntityWorld().setBlockState(pos0, state0);
 		z++;
 		if(z>struct.width){
 			z=0;
@@ -43,7 +43,7 @@ public class StructureRemover implements ICreatorBlock{
 				y=0;
 				x++;
 				if(x>struct.length){
-		Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("The last placed structure has been removed."));
+		Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("The last placed structure has been removed."));
 		return true;
 				}
 			}

@@ -65,7 +65,7 @@ public class SchematicStructure extends Structure
 	public void process(World world, int posX, int posY, int posZ)
 	{
 		this.world=world;this.posX=posX;this.posY=posY;this.posZ=posZ;
-		//Minecraft.getMinecraft().thePlayer.sendChatMessage("Please be patient, I'm just creating "+(height*width*length)+" blocks for the structure...");
+		//Minecraft.getInstance().thePlayer.sendChatMessage("Please be patient, I'm just creating "+(height*width*length)+" blocks for the structure...");
 		Block blk = Blocks.AIR;
 		   // Make a position.
 		   BlockPos pos0 = new BlockPos(posX,posY,posZ);
@@ -102,7 +102,7 @@ public class SchematicStructure extends Structure
 	
 	public void initSingleBlockPlacer(World world, int posX, int posY, int posZ){
 		this.world=world;this.posX=posX;this.posY=posY;this.posZ=posZ;
-		//Minecraft.getMinecraft().thePlayer.sendChatMessage("Please be patient, I'm just creating "+(height*width*length)+" blocks for the structure...");
+		//Minecraft.getInstance().thePlayer.sendChatMessage("Please be patient, I'm just creating "+(height*width*length)+" blocks for the structure...");
 		Block blk = Blocks.AIR;
 		
 		   // Make a position.
@@ -138,7 +138,7 @@ public class SchematicStructure extends Structure
 						BlockPos position = new BlockPos(daddy.k, daddy.i,daddy.j);
 						if(IMSM.eventHandler.serverCreators.get(IMSM.eventHandler.serverCreators.size()-1) == daddy){
 							BlockPos translatedPosition = StructureUtils.getWorldPos(position, this.getCenterPos(), harvestPos);
-							UndoCommand.removedStates.add(Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(translatedPosition));
+							UndoCommand.removedStates.add(Minecraft.getInstance().getIntegratedServer().getEntityWorld().getBlockState(translatedPosition));
 						UndoCommand.removedPositions.add(translatedPosition);
 						}
 						//System.out.prinln(daddy.i+", "+daddy.j+", "+daddy.k+", "+height+", "+width+", "+length);
@@ -179,7 +179,7 @@ public class SchematicStructure extends Structure
 			 signEntity.setPos(new BlockPos(tileEntity.getInteger("x"), tileEntity.getInteger("y"), tileEntity.getInteger("z")));
 			 tE = signEntity;
 			} else if(tileEntity.getString("id").equals("Chest")){
-				TileEntityChest chestEntity = /*(TileEntityChest)TileEntity.createTileEntity(Minecraft.getMinecraft().getIntegratedServer(), tileEntity)*/new TileEntityChest();
+				TileEntityChest chestEntity = /*(TileEntityChest)TileEntity.createTileEntity(Minecraft.getInstance().getIntegratedServer(), tileEntity)*/new TileEntityChest();
 				//System.out.println(tileEntity.getTagList("Items", tileEntity.getId()).toString());
 				//System.out.println(tileEntity.toString());
 				NBTTagList chestItemList = tileEntity.getTagList("Items", tileEntity.getId());
@@ -191,16 +191,16 @@ public class SchematicStructure extends Structure
 					//System.out.println(new ItemStack(item,chestItemList.getCompoundTagAt(i).getByte("Count")).toString()+" at "+chestItemList.getCompoundTagAt(i).getByte("Slot"));
 				}
 				chestEntity.setPos(new BlockPos(tileEntity.getInteger("x"), tileEntity.getInteger("y"), tileEntity.getInteger("z")));
-				//System.out.println("Tile entity at "+Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(StructureUtils.getWorldPos(new BlockPos(tileEntity.getInteger("x"), tileEntity.getInteger("y"), tileEntity.getInteger("z")), this.getCenterPos(), this.harvestPos)).getBlock().tile);
+				//System.out.println("Tile entity at "+Minecraft.getInstance().getIntegratedServer().getEntityWorld().getBlockState(StructureUtils.getWorldPos(new BlockPos(tileEntity.getInteger("x"), tileEntity.getInteger("y"), tileEntity.getInteger("z")), this.getCenterPos(), this.harvestPos)).getBlock().tile);
 				tE=chestEntity;
 			}else {
-			tE=TileEntity.func_190200_a(Minecraft.getMinecraft().getIntegratedServer().getEntityWorld(), tileEntity);
+			tE=TileEntity.func_190200_a(Minecraft.getInstance().getIntegratedServer().getEntityWorld(), tileEntity);
 			}
 			
-			StructureUtils.setTileEntity(Minecraft.getMinecraft().theWorld, tE, this.getCenterPos(), harvestPos);
+			StructureUtils.setTileEntity(Minecraft.getInstance().theWorld, tE, this.getCenterPos(), harvestPos);
 			}
 		for (NBTTagCompound entity : this.entities)
-			StructureUtils.setEntity(Minecraft.getMinecraft().theWorld, EntityList.createEntityFromNBT(entity, world), this.getCenterPos(), harvestPos);
+			StructureUtils.setEntity(Minecraft.getInstance().theWorld, EntityList.createEntityFromNBT(entity, world), this.getCenterPos(), harvestPos);
 		
 		for (NBTTagCompound tileEntity : this.tileEntities){
 			TileEntity tE;
@@ -212,7 +212,7 @@ public class SchematicStructure extends Structure
 		 signEntity.setPos(new BlockPos(tileEntity.getInteger("x"), tileEntity.getInteger("y"), tileEntity.getInteger("z")));
 		 tE = signEntity;
 		}else if(tileEntity.getString("id").equals("Chest")){
-				TileEntityChest chestEntity = /*(TileEntityChest)TileEntity.createTileEntity(Minecraft.getMinecraft().getIntegratedServer(), tileEntity)*/new TileEntityChest();
+				TileEntityChest chestEntity = /*(TileEntityChest)TileEntity.createTileEntity(Minecraft.getInstance().getIntegratedServer(), tileEntity)*/new TileEntityChest();
 				//System.out.println(tileEntity.getTagList("Items", tileEntity.getId()).toString());
 				//System.out.println(tileEntity.toString());
 				NBTTagList chestItemList = tileEntity.getTagList("Items", tileEntity.getId());
@@ -224,16 +224,16 @@ public class SchematicStructure extends Structure
 					//System.out.println(new ItemStack(item,chestItemList.getCompoundTagAt(i).getByte("Count")).toString()+" at "+chestItemList.getCompoundTagAt(i).getByte("Slot"));
 				}
 				chestEntity.setPos(new BlockPos(tileEntity.getInteger("x"), tileEntity.getInteger("y"), tileEntity.getInteger("z")));
-				//System.out.println("Tile entity at "+Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(StructureUtils.getWorldPos(new BlockPos(tileEntity.getInteger("x"), tileEntity.getInteger("y"), tileEntity.getInteger("z")), this.getCenterPos(), this.harvestPos)).getBlock().tile);
+				//System.out.println("Tile entity at "+Minecraft.getInstance().getIntegratedServer().getEntityWorld().getBlockState(StructureUtils.getWorldPos(new BlockPos(tileEntity.getInteger("x"), tileEntity.getInteger("y"), tileEntity.getInteger("z")), this.getCenterPos(), this.harvestPos)).getBlock().tile);
 				tE=chestEntity;
 			}else {
-		tE=TileEntity.func_190200_a(Minecraft.getMinecraft().getIntegratedServer().getEntityWorld(), tileEntity);
+		tE=TileEntity.func_190200_a(Minecraft.getInstance().getIntegratedServer().getEntityWorld(), tileEntity);
 		}
-			StructureUtils.setTileEntity(Minecraft.getMinecraft().getIntegratedServer().getEntityWorld(), tE, this.getCenterPos(), harvestPos);
+			StructureUtils.setTileEntity(Minecraft.getInstance().getIntegratedServer().getEntityWorld(), tE, this.getCenterPos(), harvestPos);
 			//TODO: THE ABOVE LINE SHOULD NOT BE COMMENTED!!
 		}
 		for (NBTTagCompound entity : this.entities)
-			StructureUtils.setEntity(Minecraft.getMinecraft().getIntegratedServer().getEntityWorld(), EntityList.createEntityFromNBT(entity, world), this.getCenterPos(), harvestPos);
+			StructureUtils.setEntity(Minecraft.getInstance().getIntegratedServer().getEntityWorld(), EntityList.createEntityFromNBT(entity, world), this.getCenterPos(), harvestPos);
 		
 		blockPlacer.processSpecialBlocks();
 		
@@ -248,7 +248,7 @@ public class SchematicStructure extends Structure
 			e.printStackTrace();
 		}
 		
-		//Minecraft.getMinecraft().thePlayer.sendChatMessage("I just created "+blocksAdded+" out of "+(height*width*length)+" blocks in this structure!");
+		//Minecraft.getInstance().thePlayer.sendChatMessage("I just created "+blocksAdded+" out of "+(height*width*length)+" blocks in this structure!");
 	}
 	
 	public void showOutline(int x, int modifierx, int y,int modifiery, int z, int modifierz, OutlineCreator creator){
@@ -262,7 +262,7 @@ public class SchematicStructure extends Structure
 				
 				
 				if(IMSM.eventHandler.serverCreators.get(IMSM.eventHandler.serverCreators.size()-1) == creator){
-					UndoCommand.removedStates.add(Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(pos0));
+					UndoCommand.removedStates.add(Minecraft.getInstance().getIntegratedServer().getEntityWorld().getBlockState(pos0));
 					UndoCommand.removedPositions.add(pos0);
 				}
 				
@@ -270,13 +270,13 @@ public class SchematicStructure extends Structure
 			   // Make a position.
 			   
 			   
-			   DropFuncBlock.setBlock(Minecraft.getMinecraft().getIntegratedServer().getEntityWorld(), blk.getDefaultState(), pos0, true, true);
+			   DropFuncBlock.setBlock(Minecraft.getInstance().getIntegratedServer().getEntityWorld(), blk.getDefaultState(), pos0, true, true);
 			   
 			   // Get the default state(basically metadata 0)
 			   //IBlockState state0=blk.getDefaultState();
 			   // set the block
-			   //Minecraft.getMinecraft().theWorld.setBlockState(pos0, state0);
-			   //Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().setBlockState(pos0, state0);
+			   //Minecraft.getInstance().theWorld.setBlockState(pos0, state0);
+			   //Minecraft.getInstance().getIntegratedServer().getEntityWorld().setBlockState(pos0, state0);
 
 			//worldIn.spawnEntityInWorld(new EntitySnowball(worldIn, x+i,y+j,z+k)); 
 			}}} }
@@ -292,7 +292,7 @@ public class SchematicStructure extends Structure
 		for(int i=0; i<width; i++){ for(int j = 0; j<height; j++){ for(int k = 0; k<length; k++){ 
 			if(i==0||j==0||k==0){
 			if(i==modifierx&&j==modifiery&&k==modifierz) continue;
-			//if(Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(pos))
+			//if(Minecraft.getInstance().getIntegratedServer().getEntityWorld().getBlockState(pos))
 			Block blk = Blocks.AIR;
 			   // Make a position.
 			   BlockPos pos0 = new BlockPos(x-i+modifierx,y+j+modifiery,z-k+modifierz);
@@ -301,7 +301,7 @@ public class SchematicStructure extends Structure
 			   // set the block
 			   //worldIn.setBlockState(pos0, state0);
 			   
-			   DropFuncBlock.setBlock(Minecraft.getMinecraft().getIntegratedServer().getEntityWorld(), blk.getDefaultState(), pos0, true, true);
+			   DropFuncBlock.setBlock(Minecraft.getInstance().getIntegratedServer().getEntityWorld(), blk.getDefaultState(), pos0, true, true);
 
 			//worldIn.spawnEntityInWorld(new EntitySnowball(worldIn, x+i,y+j,z+k)); 
 			}}} }

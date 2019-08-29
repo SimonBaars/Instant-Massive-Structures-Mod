@@ -17,7 +17,7 @@ public class BlockRemover extends Block {
 	int removeZ;
 	
 	public BlockRemover(int removeX, int removeY, int removeZ){
-		super(Material.ROCK);
+		super(Block.Properties.create(Material.ROCK));
 		this.removeX=removeX;
 		this.removeY=removeY;
 		this.removeZ=removeZ;

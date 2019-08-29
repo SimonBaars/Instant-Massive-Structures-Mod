@@ -49,24 +49,24 @@ public class RideCommand implements ICommand
   @Override
   public void execute(MinecraftServer server, ICommandSender sender, String[] args) 
   {  
-	 // Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("Structure riding went broken in the 1.9 upgrade... Will fix asap!"));
+	 // Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("Structure riding went broken in the 1.9 upgrade... Will fix asap!"));
 	  if(IMSM.eventHandler.isRiding==null){
 	  for(int i = 0; i<IMSM.eventHandler.liveCreators.size(); i++){
 			SchematicStructure struct = new SchematicStructure(IMSM.eventHandler.liveCreators.get(i).structureName+".structure", true);
 			struct.readFromFile();
-			if(IMSM.eventHandler.liveCreators.get(i).structureName.equals("Live_FerrisWheel") && IMSM.eventHandler.liveCreators.get(i).closeTo(5, Minecraft.getMinecraft().thePlayer.posX, Minecraft.getMinecraft().thePlayer.posY, Minecraft.getMinecraft().thePlayer.posZ, struct.width, struct.height, struct.length) && IMSM.eventHandler.liveCreators.get(i).ride==null){
+			if(IMSM.eventHandler.liveCreators.get(i).structureName.equals("Live_FerrisWheel") && IMSM.eventHandler.liveCreators.get(i).closeTo(5, Minecraft.getInstance().thePlayer.posX, Minecraft.getInstance().thePlayer.posY, Minecraft.getInstance().thePlayer.posZ, struct.width, struct.height, struct.length) && IMSM.eventHandler.liveCreators.get(i).ride==null){
 				IMSM.eventHandler.liveCreators.get(i).ride=new RideStructure(0);
 				IMSM.eventHandler.isRiding=IMSM.eventHandler.liveCreators.get(i);
-				Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("Please hop aboard in the bottommost cart."));
+				Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("Please hop aboard in the bottommost cart."));
 				return;
-			} else if(IMSM.eventHandler.liveCreators.get(i).structureName.equals("Live_Fair_FreeFall") && IMSM.eventHandler.liveCreators.get(i).closeTo(5, Minecraft.getMinecraft().thePlayer.posX, Minecraft.getMinecraft().thePlayer.posY, Minecraft.getMinecraft().thePlayer.posZ, struct.width, struct.height, struct.length) && IMSM.eventHandler.liveCreators.get(i).ride==null){
+			} else if(IMSM.eventHandler.liveCreators.get(i).structureName.equals("Live_Fair_FreeFall") && IMSM.eventHandler.liveCreators.get(i).closeTo(5, Minecraft.getInstance().thePlayer.posX, Minecraft.getInstance().thePlayer.posY, Minecraft.getInstance().thePlayer.posZ, struct.width, struct.height, struct.length) && IMSM.eventHandler.liveCreators.get(i).ride==null){
 				IMSM.eventHandler.liveCreators.get(i).ride=new RideStructure(1);
 				IMSM.eventHandler.isRiding=IMSM.eventHandler.liveCreators.get(i);
-				Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("We'll pick you up on our next ride! Please hop aboard then."));
+				Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("We'll pick you up on our next ride! Please hop aboard then."));
 				return;
 			}
 		}
-	  Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("There is no freefall or ferris wheel is sight. Please step closer."));
+	  Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("There is no freefall or ferris wheel is sight. Please step closer."));
 	  } else {
 		  for(int i = 0; i<IMSM.eventHandler.liveCreators.size(); i++){
 			  IMSM.eventHandler.liveCreators.get(i).ride=null;

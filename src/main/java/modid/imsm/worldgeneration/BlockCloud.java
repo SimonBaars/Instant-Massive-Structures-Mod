@@ -23,7 +23,7 @@ public class BlockCloud extends Block
 
   public BlockCloud(int i)
     {
-        super(Material.ROCK);
+	  super(Block.Properties.create(Material.ROCK));
         this.name="BlockCloud";
     }
   
@@ -36,7 +36,7 @@ public class BlockCloud extends Block
 			if(nCheckers>2000){
 				nCheckers=1;
 			}
-			Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("This block will now create "+nCheckers+" rows of checkers"));
+			Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("This block will now create "+nCheckers+" rows of checkers"));
 			
 			}
   	} else {

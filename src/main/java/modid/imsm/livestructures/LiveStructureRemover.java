@@ -14,7 +14,7 @@ import net.minecraft.world.World;
 
 public class LiveStructureRemover extends Block {
 	public LiveStructureRemover(){
-		super(Material.ROCK);
+		super(Block.Properties.create(Material.ROCK));
 	}
 	
 	@Override
@@ -26,9 +26,9 @@ public class LiveStructureRemover extends Block {
 				struct.readFromFile();
 				if(IMSM.eventHandler.liveCreators.get(i).closeTo(2, pos.getX(), pos.getY(), pos.getZ(), struct.width, struct.height, struct.length)){
 					IMSM.eventHandler.liveCreators.get(i).removeThisLiveStructure(false);
-					Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().setBlockToAir(pos);
-					Minecraft.getMinecraft().theWorld.setBlockToAir(pos);
-					Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("You succesfully removed a structure's movements"));
+					Minecraft.getInstance().getIntegratedServer().getEntityWorld().setBlockToAir(pos);
+					Minecraft.getInstance().theWorld.setBlockToAir(pos);
+					Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("You succesfully removed a structure's movements"));
 					break;
 				}
 			}

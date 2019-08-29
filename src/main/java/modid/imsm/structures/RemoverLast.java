@@ -18,7 +18,7 @@ public class RemoverLast extends Block
 {
 	public RemoverLast(int i)
     {
-		super(Material.ROCK);
+		super(Block.Properties.create(Material.ROCK));
 		//remove(IMSM.lastPlaced);
     }
 	
@@ -44,15 +44,15 @@ public class RemoverLast extends Block
 					   // Get the default state(basically metadata 0)
 					   IBlockState state0=blk.getDefaultState();
 					   // set the block
-					   Minecraft.getMinecraft().theWorld.setBlockState(pos0, state0);
-					   Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().setBlockState(pos0, state0);
+					   Minecraft.getInstance().theWorld.setBlockState(pos0, state0);
+					   Minecraft.getInstance().getIntegratedServer().getEntityWorld().setBlockState(pos0, state0);
 				}
 			}
 		}
-		Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("The last placed structure has been removed."));
+		Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("The last placed structure has been removed."));
 		IMSM.lastPlaced=null;
 	}else {
-		Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("You didn't place a structure to undo."));
+		Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("You didn't place a structure to undo."));
 	}
 	}*/
 

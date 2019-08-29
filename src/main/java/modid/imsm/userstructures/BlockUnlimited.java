@@ -17,7 +17,7 @@ public class BlockUnlimited extends Block
 {
   public BlockUnlimited(int i)
     {
-        super(Material.ROCK);
+	  super(Block.Properties.create(Material.ROCK));
     }
   
   @Override

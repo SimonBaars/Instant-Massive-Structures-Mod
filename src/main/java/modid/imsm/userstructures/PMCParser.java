@@ -483,8 +483,8 @@ while ((bytesRead = inputStream.read(buffer)) != -1) {
 		  IMSM.userBlocks.add(block);
 		  GameRegistry.registerBlock(block, realFileName);
 		 // GameRegistry.registerWithItem(block);
-		  Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(block), 0, new ModelResourceLocation(IMSM.modid + ":" + realFileName, "inventory"));
-		  /*Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(block),  new ItemMeshDefinition() {
+		  Minecraft.getInstance().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(block), 0, new ModelResourceLocation(IMSM.modid + ":" + realFileName, "inventory"));
+		  /*Minecraft.getInstance().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(block),  new ItemMeshDefinition() {
 			  
 			    @Override
 			    public ModelResourceLocation getModelLocation(ItemStack stack) {

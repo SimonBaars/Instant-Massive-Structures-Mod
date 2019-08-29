@@ -11,8 +11,8 @@ import net.minecraft.util.text.TextComponentString;
 public class UpdateThread extends Thread {
 public void run(){
 	if(readFile("http://minecraftcreations.com/updates/update05062016.txt").equals("1")){
-		if(Minecraft.getMinecraft().thePlayer!=null){
-		Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("There's a new update of Instant Massive Structures Mod available!! Download it now!!"));
+		if(Minecraft.getInstance().thePlayer!=null){
+		Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("There's a new update of Instant Massive Structures Mod available!! Download it now!!"));
 		} else {
 			IMSM.updateChecked=false;
 			System.out.println("Could not check for a Instant Massive Structures Mod update. It's SimJoo's fault, not yours");

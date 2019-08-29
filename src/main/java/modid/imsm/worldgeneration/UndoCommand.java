@@ -86,7 +86,7 @@ public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
 	IMSM.eventHandler.serverCreators.add(new StructureRemover(structure));
 	IMSM.lastPlaced=null;
 }else {
-	Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("You didn't place a structure to undo."));
+	Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("You didn't place a structure to undo."));
 }
 }*/
 

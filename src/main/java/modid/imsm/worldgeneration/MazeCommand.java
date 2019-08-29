@@ -47,9 +47,9 @@ public class MazeCommand implements ICommand
   @Override
   public void execute(MinecraftServer server, ICommandSender sender, String[] args) 
   {
-	  Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("-- MAZE RUNNER - MAZE GENERATOR --"));
-	  Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("Do you want the default settings {1} or want to setup the maze yourself {2}?"));
-	  Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("Please type the number of your choice in the chat"));
+	  Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("-- MAZE RUNNER - MAZE GENERATOR --"));
+	  Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("Do you want the default settings {1} or want to setup the maze yourself {2}?"));
+	  Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("Please type the number of your choice in the chat"));
 	  IMSM.dialoge=4;
     
   }

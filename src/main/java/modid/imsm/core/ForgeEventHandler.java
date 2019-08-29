@@ -74,7 +74,7 @@ public class ForgeEventHandler {
 					if(inputNumber<1 || inputNumber >2){
 						IMSM.eventHandler.delayedPrints.add("Please enter 1 or 2.");
 					} else {
-						IMSM.eventHandler.serverCreators.add(new MazeGenerator((int)Minecraft.getMinecraft().thePlayer.posX,(int) Minecraft.getMinecraft().thePlayer.posY,(int) Minecraft.getMinecraft().thePlayer.posZ));
+						IMSM.eventHandler.serverCreators.add(new MazeGenerator((int)Minecraft.getInstance().thePlayer.posX,(int) Minecraft.getInstance().thePlayer.posY,(int) Minecraft.getInstance().thePlayer.posZ));
 						if(inputNumber==1){
 							getMazeGenerator().startGeneration();
 							IMSM.dialoge=0;

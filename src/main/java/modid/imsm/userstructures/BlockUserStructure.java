@@ -30,7 +30,7 @@ public class BlockUserStructure extends Block {
 	private int modifierz=0;
 
 	public BlockUserStructure(String name){
-		super(Material.ROCK);
+		super(Block.Properties.create(Material.ROCK));
 		this.name=name;
 	}
 	
@@ -47,15 +47,15 @@ public class BlockUserStructure extends Block {
     	} else if(playerIn.getHeldItemMainhand()!=null && playerIn.getHeldItemMainhand().getItem() instanceof ItemBook) {
     			doReplaceAir=!doReplaceAir;
     			if(doReplaceAir){
-    				Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("I will replace all existing blocks in the part I'm gonna spawn in with air now"));
+    				Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("I will replace all existing blocks in the part I'm gonna spawn in with air now"));
     			} else {
-    				Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("I won't replace any existing blocks with air"));
+    				Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("I won't replace any existing blocks with air"));
     			}
     	} /*else if(playerIn.getCurrentEquippedItem()!=null && playerIn.getCurrentEquippedItem().getItem() instanceof ItemAppleGold) {
     		if(worldIn.isRemote){
     			if(IMSM.spawnSpeed<10){
     			IMSM.spawnSpeed++;
-    				Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("The speed in which structures will be created has been increased to "+IMSM.spawnSpeed+" (default is 4).");
+    				Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("The speed in which structures will be created has been increased to "+IMSM.spawnSpeed+" (default is 4).");
     			}}
     	}*/ else if(playerIn.getHeldItemMainhand()!=null && playerIn.getHeldItemMainhand().getItem() instanceof ItemFireball) {
     			remove(new StructureCreatorServer(name, pos.getX()+modifierx, pos.getY()+modifiery, pos.getZ()+modifierz, doReplaceAir,getSize(IMSM.eventHandler.creators.size())));
@@ -87,15 +87,15 @@ public class BlockUserStructure extends Block {
 					   // Get the default state(basically metadata 0)
 					   IBlockState state0=blk.getDefaultState();
 					   // set the block
-					   Minecraft.getMinecraft().theWorld.setBlockState(pos0, state0);
-					   Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().setBlockState(pos0, state0);
+					   Minecraft.getInstance().theWorld.setBlockState(pos0, state0);
+					   Minecraft.getInstance().getIntegratedServer().getEntityWorld().setBlockState(pos0, state0);
 				}
 			}
 		}
-		Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("The last placed structure has been removed."));
+		Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("The last placed structure has been removed."));
 		//IMSM.lastPlaced=null;
 	}else {
-		Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("You didn't place a structure to undo."));
+		Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("You didn't place a structure to undo."));
 	}
 	}
 
@@ -108,7 +108,7 @@ public class BlockUserStructure extends Block {
 	@Override
     public void onBlockDestroyedByPlayer(World worldIn, BlockPos pos, IBlockState state) {
     	if(hasOutline && !worldIn.isRemote){
-    		if(Minecraft.getMinecraft().theWorld!=null){
+    		if(Minecraft.getInstance().theWorld!=null){
     	SchematicStructure struct = new SchematicStructure(name+".structure");
     	struct.readFromFile();
     	//for(int i = 0; i<IMSM.worlds.length; i++){

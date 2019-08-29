@@ -1117,7 +1117,7 @@ public class IMSM {
 
 
 	public void reg(Block block) {
-	    Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(block), 0, new ModelResourceLocation(modid + ":" + block.getUnlocalizedName().substring(5), "inventory"));
+	    Minecraft.getInstance().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(block), 0, new ModelResourceLocation(modid + ":" + block.getUnlocalizedName().substring(5), "inventory"));
 	}
 	
 	private static ArrayList<Block> registerUserBlocks() {

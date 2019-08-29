@@ -67,7 +67,7 @@ public class EventHandler {
 		
 			loadLiveCreators();
 			loadStructures();
-			lightUpdate= new LightUpdateCheck(Minecraft.getMinecraft().theWorld, Minecraft.getMinecraft().getIntegratedServer().getEntityWorld());
+			lightUpdate= new LightUpdateCheck(Minecraft.getInstance().theWorld, Minecraft.getInstance().getIntegratedServer().getEntityWorld());
 			isLoaded=true;
 	}
 	
@@ -101,13 +101,13 @@ public class EventHandler {
 		//if(isRiding!=null){
 			if(ySync!=null){
 			//if(isRiding.ride.progress>=0 && isRiding.ride.progress<isRiding.ride.animation[0].length){
-				if(Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().playerEntities==null){
-			for(Object playerObject : Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().playerEntities){
+				if(Minecraft.getInstance().getIntegratedServer().getEntityWorld().playerEntities==null){
+			for(Object playerObject : Minecraft.getInstance().getIntegratedServer().getEntityWorld().playerEntities){
 				EntityPlayerMP player = (EntityPlayerMP)playerObject;
-				if(ySync.isVehicle==null || (/*Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY-1,player.posZ)).getBlock()!=Blocks.air ||*/ Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY,player.posZ)).getBlock()!=Blocks.AIR)){
+				if(ySync.isVehicle==null || (/*Minecraft.getInstance().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY-1,player.posZ)).getBlock()!=Blocks.air ||*/ Minecraft.getInstance().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY,player.posZ)).getBlock()!=Blocks.AIR)){
 				player.posY=/*isRiding.y+isRiding.ride.getHeight()+isRiding.ride.animation[0][isRiding.ride.progress]*/ySync.getY();
-				if(player.getName().equals(Minecraft.getMinecraft().thePlayer.getName())){
-					Minecraft.getMinecraft().thePlayer.posY=/*isRiding.y+isRiding.ride.getHeight()+isRiding.ride.animation[0][isRiding.ride.progress]*/ySync.getY();
+				if(player.getName().equals(Minecraft.getInstance().thePlayer.getName())){
+					Minecraft.getInstance().thePlayer.posY=/*isRiding.y+isRiding.ride.getHeight()+isRiding.ride.animation[0][isRiding.ride.progress]*/ySync.getY();
 				}
 				} else {
 					//System.out.println(MathHelper.floor_double(player.posY));
@@ -115,11 +115,11 @@ public class EventHandler {
 				}
 			}
 			} else {
-				EntityPlayerMP player = (EntityPlayerMP) Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getPlayerEntityByName(Minecraft.getMinecraft().thePlayer.getName());
-				if(ySync.isVehicle==null || (/*Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY-1,player.posZ)).getBlock()!=Blocks.air ||*/ Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY,player.posZ)).getBlock()!=Blocks.AIR)){
+				EntityPlayerMP player = (EntityPlayerMP) Minecraft.getInstance().getIntegratedServer().getEntityWorld().getPlayerEntityByName(Minecraft.getInstance().thePlayer.getName());
+				if(ySync.isVehicle==null || (/*Minecraft.getInstance().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY-1,player.posZ)).getBlock()!=Blocks.air ||*/ Minecraft.getInstance().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY,player.posZ)).getBlock()!=Blocks.AIR)){
 				player.posY=/*isRiding.y+isRiding.ride.getHeight()+isRiding.ride.animation[0][isRiding.ride.progress]*/ySync.getY();
-				//if(player.getName().equals(Minecraft.getMinecraft().thePlayer.getName())){
-					Minecraft.getMinecraft().thePlayer.posY=/*isRiding.y+isRiding.ride.getHeight()+isRiding.ride.animation[0][isRiding.ride.progress]*/ySync.getY();
+				//if(player.getName().equals(Minecraft.getInstance().thePlayer.getName())){
+					Minecraft.getInstance().thePlayer.posY=/*isRiding.y+isRiding.ride.getHeight()+isRiding.ride.animation[0][isRiding.ride.progress]*/ySync.getY();
 				//}
 				} else {
 					//System.out.println(MathHelper.floor_double(player.posY));
@@ -154,7 +154,7 @@ public class EventHandler {
 	
 	@SubscribeEvent
 	public void update(TickEvent.ServerTickEvent event){
-		if(!IMSM.updateChecked && Minecraft.getMinecraft().theWorld!=null){
+		if(!IMSM.updateChecked && Minecraft.getInstance().theWorld!=null){
 			load();
 			IMSM.updateChecked=true;
 		}
@@ -181,7 +181,7 @@ public class EventHandler {
 		//System.out.println("render"+System.currentTimeMillis());
 	//long tickTime = System.currentTimeMillis();
 		for(int i = 0; i<scheduledExplosions.size(); i+=3){
-			Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().newExplosion((Entity)null, scheduledExplosions.get(0), scheduledExplosions.get(1), scheduledExplosions.get(2), 25.0F, true, true);
+			Minecraft.getInstance().getIntegratedServer().getEntityWorld().newExplosion((Entity)null, scheduledExplosions.get(0), scheduledExplosions.get(1), scheduledExplosions.get(2), 25.0F, true, true);
 		}
 		scheduledExplosions.clear();
 		if(postProcessors.size()>0){
@@ -192,8 +192,8 @@ public class EventHandler {
 			
 			
 			
-			while(delayedPrints.size()>0 && Minecraft.getMinecraft().getIntegratedServer().isCallingFromMinecraftThread()){
-					Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString(delayedPrints.get(0)));
+			while(delayedPrints.size()>0 && Minecraft.getInstance().getIntegratedServer().isCallingFromMinecraftThread()){
+					Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString(delayedPrints.get(0)));
 					
 				delayedPrints.remove(0);
 			}
@@ -213,7 +213,7 @@ public class EventHandler {
 			String[] array = new String[10];
 			BufferedReader in;
 			try {
-				in = new BufferedReader(new FileReader("saves/"+Minecraft.getMinecraft().getIntegratedServer().getFolderName()+"/LiveStructures/"+i+".txt"));
+				in = new BufferedReader(new FileReader("saves/"+Minecraft.getInstance().getIntegratedServer().getFolderName()+"/LiveStructures/"+i+".txt"));
 			
 
 			for(int j = 0; j<array.length; j++){
@@ -401,7 +401,7 @@ public class EventHandler {
 			String[] array = new String[9];
 			BufferedReader in;
 			try {
-				in = new BufferedReader(new FileReader("saves/"+Minecraft.getMinecraft().getIntegratedServer().getFolderName()+"/Structures/"+i+".txt"));
+				in = new BufferedReader(new FileReader("saves/"+Minecraft.getInstance().getIntegratedServer().getFolderName()+"/Structures/"+i+".txt"));
 			
 
 			for(int j = 0; j<array.length; j++){
@@ -433,7 +433,7 @@ public class EventHandler {
 		
 	}
 	boolean fileExists(String path){
-		File f = new File("saves/"+Minecraft.getMinecraft().getIntegratedServer().getFolderName()+"/LiveStructures/"+path);
+		File f = new File("saves/"+Minecraft.getInstance().getIntegratedServer().getFolderName()+"/LiveStructures/"+path);
 		if(f.exists() && !f.isDirectory()) { 
 		    return true;
 		}
@@ -441,7 +441,7 @@ public class EventHandler {
 	}
 	
 	boolean fileExists2(String path){
-		File f = new File("saves/"+Minecraft.getMinecraft().getIntegratedServer().getFolderName()+"/Structures/"+path);
+		File f = new File("saves/"+Minecraft.getInstance().getIntegratedServer().getFolderName()+"/Structures/"+path);
 		if(f.exists() && !f.isDirectory()) { 
 		    return true;
 		}

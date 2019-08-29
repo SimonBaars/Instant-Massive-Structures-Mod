@@ -68,7 +68,7 @@ public class LiveStructure {
     }
     
 	public boolean run() {
-		if(Minecraft.getMinecraft().thePlayer==null || distanceToPlayer(x,y,z)>100){
+		if(Minecraft.getInstance().thePlayer==null || distanceToPlayer(x,y,z)>100){
 			return false;
 		}
 		if(animation!=null){
@@ -118,21 +118,21 @@ public class LiveStructure {
 				}  
 			}
 			if(animation!=null){
-				for(Object playerObject : Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().playerEntities){
+				for(Object playerObject : Minecraft.getInstance().getIntegratedServer().getEntityWorld().playerEntities){
 					EntityPlayerMP player = (EntityPlayerMP)playerObject;
 				if(checkWithinBounds(player,struct.width, struct.height+5, struct.length)){
-					//Minecraft.getMinecraft().thePlayer.motionX+=relativeSpawnPointX/2.25;
+					//Minecraft.getInstance().thePlayer.motionX+=relativeSpawnPointX/2.25;
 					
 					
 						double thisY = player.posY;
 					if(relativeSpawnPointY>0){
 						if(IMSM.eventHandler.ySync!=null){
-							if(Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY-1,player.posZ)).getBlock()!=Blocks.AIR || Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY,player.posZ)).getBlock()!=Blocks.AIR){
+							if(Minecraft.getInstance().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY-1,player.posZ)).getBlock()!=Blocks.AIR || Minecraft.getInstance().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY,player.posZ)).getBlock()!=Blocks.AIR){
 						thisY=IMSM.eventHandler.ySync.getY()+1;
 							} 
 							IMSM.eventHandler.ySync.setY(thisY);	
 						} else {
-							IMSM.eventHandler.ySync=new YSync(Minecraft.getMinecraft().thePlayer.posY);
+							IMSM.eventHandler.ySync=new YSync(Minecraft.getInstance().thePlayer.posY);
 							//setYSync=true;
 							IMSM.eventHandler.ySync.isVehicle=this;
 						}
@@ -148,13 +148,13 @@ public class LiveStructure {
 					
 					setPlayerToPosition(player,player.posX+relativeSpawnPointX,thisY,player.posZ+relativeSpawnPointZ);
 					//System.out.println("Moved "+player.getName()+" to "+player.posX+relativeSpawnPointX+", "+thisY+", "+player.posZ+relativeSpawnPointZ);
-					//setPlayerToPosition(Minecraft.getMinecraft().thePlayer.posX+relativeSpawnPointX,thisY,Minecraft.getMinecraft().thePlayer.posZ+relativeSpawnPointZ);
+					//setPlayerToPosition(Minecraft.getInstance().thePlayer.posX+relativeSpawnPointX,thisY,Minecraft.getInstance().thePlayer.posZ+relativeSpawnPointZ);
 					} else if(IMSM.eventHandler.ySync!=null && IMSM.eventHandler.ySync.isVehicle==this){
 						IMSM.eventHandler.ySync=null;
 						//setYSync=false;
 					}
 					}
-				//flightAtY=Minecraft.getMinecraft().thePlayer.posY;	
+				//flightAtY=Minecraft.getInstance().thePlayer.posY;	
 					//worldIn.setBlockState(new BlockPos(x-struct.width-1, y+(struct.height/2), z-(struct.length/2)), Blocks.diamond_block.getDefaultState());
 					//System.out.println(worldIn.getBlockState(new BlockPos(x+struct.width, y+(struct.height/2), z+(struct.length/2))).getBlock());
 				if(relativeSpawnPointX!=0 || relativeSpawnPointZ!=0)	{
@@ -237,18 +237,18 @@ public class LiveStructure {
 					//setAllPlayersToPosition(x-4,y+1,z-36);
 				} else if (ride.progress==-1 && distanceToPlayer(x-4,y+1,z-36)==0){ //The ride is over bro
 					ride.progress++;
-					IMSM.eventHandler.ySync=new YSync(Minecraft.getMinecraft().thePlayer.posY);
+					IMSM.eventHandler.ySync=new YSync(Minecraft.getInstance().thePlayer.posY);
 				} else if ((ride.progress>=0 && ride.progress<ride.animation[0].length && distanceToPlayer(x-4-0.5,y+1+ride.animation[0][ride.progress],z-36-ride.animation[1][ride.progress]+0.5)>1)){ //The ride is over bro
-					Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("Thanks for your visit. We hope to see you again soon!"));
+					Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("Thanks for your visit. We hope to see you again soon!"));
 					ride=null;
 					IMSM.eventHandler.isRiding=null;
 					IMSM.eventHandler.ySync=null;
-					//System.out.println("BUT HAS POS "+Minecraft.getMinecraft().thePlayer.getPosition().getX()+", "+Minecraft.getMinecraft().thePlayer.getPosition().getY()+", "+Minecraft.getMinecraft().thePlayer.getPosition().getZ());
+					//System.out.println("BUT HAS POS "+Minecraft.getInstance().thePlayer.getPosition().getX()+", "+Minecraft.getInstance().thePlayer.getPosition().getY()+", "+Minecraft.getInstance().thePlayer.getPosition().getZ());
 				}else if(ride.progress>=0 && ride.progress<ride.animation[0].length-1){ // The ride itself
 					ride.progress++;
-					//System.out.println(Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(Minecraft.getMinecraft().thePlayer.posX,y+1+ride.animation[0][ride.progress],Minecraft.getMinecraft().thePlayer.posZ-(ride.animation[1][ride.progress]-ride.animation[1][ride.progress-1]))).getBlock());
-					//if(Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(Minecraft.getMinecraft().thePlayer.posX,y+1+ride.animation[0][ride.progress],Minecraft.getMinecraft().thePlayer.posZ-(ride.animation[1][ride.progress]-ride.animation[1][ride.progress-1]))).getBlock() instanceof BlockAir){
-					//	setAllPlayersToPosition(Minecraft.getMinecraft().thePlayer.posX,y+1+ride.animation[0][ride.progress],Minecraft.getMinecraft().thePlayer.posZ-(ride.animation[1][ride.progress]-ride.animation[1][ride.progress-1]));
+					//System.out.println(Minecraft.getInstance().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(Minecraft.getInstance().thePlayer.posX,y+1+ride.animation[0][ride.progress],Minecraft.getInstance().thePlayer.posZ-(ride.animation[1][ride.progress]-ride.animation[1][ride.progress-1]))).getBlock());
+					//if(Minecraft.getInstance().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(Minecraft.getInstance().thePlayer.posX,y+1+ride.animation[0][ride.progress],Minecraft.getInstance().thePlayer.posZ-(ride.animation[1][ride.progress]-ride.animation[1][ride.progress-1]))).getBlock() instanceof BlockAir){
+					//	setAllPlayersToPosition(Minecraft.getInstance().thePlayer.posX,y+1+ride.animation[0][ride.progress],Minecraft.getInstance().thePlayer.posZ-(ride.animation[1][ride.progress]-ride.animation[1][ride.progress-1]));
 					//} else {
 						setAllPlayersToPosition(x-4-0.5,y+1+ride.animation[0][ride.progress],z-36-ride.animation[1][ride.progress]+0.5);
 						
@@ -263,24 +263,24 @@ public class LiveStructure {
 						waitTime=500;
 						//setAllPlayersToPosition(x-4,y+1,z-36);
 					} else if (ride.progress==-1 && 
-							((closeTo(x+0.5, Minecraft.getMinecraft().thePlayer.posX, 0.9) && closeTo(y+2.75, Minecraft.getMinecraft().thePlayer.posY, 1.0) && closeTo(z-3.0, Minecraft.getMinecraft().thePlayer.posZ, 2.9)) || 
-							(closeTo(x-3.0, Minecraft.getMinecraft().thePlayer.posX, 2.9) && closeTo(y+2.75, Minecraft.getMinecraft().thePlayer.posY, 1.0) && closeTo(z-6.5, Minecraft.getMinecraft().thePlayer.posZ, 0.9)) || 
-							(closeTo(x-6.5, Minecraft.getMinecraft().thePlayer.posX, 0.9) && closeTo(y+2.75, Minecraft.getMinecraft().thePlayer.posY, 1.0) && closeTo(z-3.0, Minecraft.getMinecraft().thePlayer.posZ, 2.9)) || 
-							(closeTo(x-3.0, Minecraft.getMinecraft().thePlayer.posX, 2.9) && closeTo(y+2.75, Minecraft.getMinecraft().thePlayer.posY, 1.0) && closeTo(z-0.5, Minecraft.getMinecraft().thePlayer.posZ, 0.9)))){ //The ride is over bro
+							((closeTo(x+0.5, Minecraft.getInstance().thePlayer.posX, 0.9) && closeTo(y+2.75, Minecraft.getInstance().thePlayer.posY, 1.0) && closeTo(z-3.0, Minecraft.getInstance().thePlayer.posZ, 2.9)) || 
+							(closeTo(x-3.0, Minecraft.getInstance().thePlayer.posX, 2.9) && closeTo(y+2.75, Minecraft.getInstance().thePlayer.posY, 1.0) && closeTo(z-6.5, Minecraft.getInstance().thePlayer.posZ, 0.9)) || 
+							(closeTo(x-6.5, Minecraft.getInstance().thePlayer.posX, 0.9) && closeTo(y+2.75, Minecraft.getInstance().thePlayer.posY, 1.0) && closeTo(z-3.0, Minecraft.getInstance().thePlayer.posZ, 2.9)) || 
+							(closeTo(x-3.0, Minecraft.getInstance().thePlayer.posX, 2.9) && closeTo(y+2.75, Minecraft.getInstance().thePlayer.posY, 1.0) && closeTo(z-0.5, Minecraft.getInstance().thePlayer.posZ, 0.9)))){ //The ride is over bro
 						ride.progress++;
 						IMSM.eventHandler.ySync=new YSync(y+2.5+ride.animation[0][ride.progress]);
 					} else if (ride.progress>=0 && ride.progress<ride.animation[0].length && !(
-							(closeTo(x+0.5, Minecraft.getMinecraft().thePlayer.posX, 0.9) /*&& closeTo(y+2.75+ride.animation[0][ride.progress-1], Minecraft.getMinecraft().thePlayer.posY, 1.0)*/ && closeTo(z-3.0, Minecraft.getMinecraft().thePlayer.posZ, 2.9)) || 
-							(closeTo(x-3.0, Minecraft.getMinecraft().thePlayer.posX, 2.9) /*&& closeTo(y+2.75+ride.animation[0][ride.progress-1], Minecraft.getMinecraft().thePlayer.posY, 1.0)*/ && closeTo(z-6.5, Minecraft.getMinecraft().thePlayer.posZ, 0.9)) || 
-							(closeTo(x-6.5, Minecraft.getMinecraft().thePlayer.posX, 0.9) /*&& closeTo(y+2.75+ride.animation[0][ride.progress-1], Minecraft.getMinecraft().thePlayer.posY, 1.0)*/ && closeTo(z-3.0, Minecraft.getMinecraft().thePlayer.posZ, 2.9)) || 
-							(closeTo(x-3.0, Minecraft.getMinecraft().thePlayer.posX, 2.9) /*&& closeTo(y+2.75+ride.animation[0][ride.progress-1], Minecraft.getMinecraft().thePlayer.posY, 1.0)*/ && closeTo(z-0.5, Minecraft.getMinecraft().thePlayer.posZ, 0.9)))){ //The ride is over bro
-						Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("Thanks for your visit. We hope to see you again soon!"));
+							(closeTo(x+0.5, Minecraft.getInstance().thePlayer.posX, 0.9) /*&& closeTo(y+2.75+ride.animation[0][ride.progress-1], Minecraft.getInstance().thePlayer.posY, 1.0)*/ && closeTo(z-3.0, Minecraft.getInstance().thePlayer.posZ, 2.9)) || 
+							(closeTo(x-3.0, Minecraft.getInstance().thePlayer.posX, 2.9) /*&& closeTo(y+2.75+ride.animation[0][ride.progress-1], Minecraft.getInstance().thePlayer.posY, 1.0)*/ && closeTo(z-6.5, Minecraft.getInstance().thePlayer.posZ, 0.9)) || 
+							(closeTo(x-6.5, Minecraft.getInstance().thePlayer.posX, 0.9) /*&& closeTo(y+2.75+ride.animation[0][ride.progress-1], Minecraft.getInstance().thePlayer.posY, 1.0)*/ && closeTo(z-3.0, Minecraft.getInstance().thePlayer.posZ, 2.9)) || 
+							(closeTo(x-3.0, Minecraft.getInstance().thePlayer.posX, 2.9) /*&& closeTo(y+2.75+ride.animation[0][ride.progress-1], Minecraft.getInstance().thePlayer.posY, 1.0)*/ && closeTo(z-0.5, Minecraft.getInstance().thePlayer.posZ, 0.9)))){ //The ride is over bro
+						Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("Thanks for your visit. We hope to see you again soon!"));
 						ride=null;
 						IMSM.eventHandler.isRiding=null;
 						IMSM.eventHandler.ySync=null;
 					}else if(ride.progress>=0 && ride.progress<ride.animation[0].length-1){ // The ride itself
 						ride.progress++;
-						setAllPlayersToPosition(Minecraft.getMinecraft().thePlayer.posX,y+2.5+ride.animation[0][ride.progress],Minecraft.getMinecraft().thePlayer.posZ);
+						setAllPlayersToPosition(Minecraft.getInstance().thePlayer.posX,y+2.5+ride.animation[0][ride.progress],Minecraft.getInstance().thePlayer.posZ);
 						IMSM.eventHandler.ySync.setY(y+2.5+ride.animation[0][ride.progress]);
 						//setAllPlayersToPosition(y+1+ride.animation[0][ride.progress],ride.animation[1][ride.progress]-ride.animation[1][ride.progress-1]);
 					}
@@ -297,20 +297,20 @@ public class LiveStructure {
 
 	public void setAllPlayersToPosition( double x, double y, double z) {
 		//System.out.println("SET ALL TO POS "+x+", "+y+", "+z);
-		if(Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().playerEntities!=null){
-		for(Object playerObject : Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().playerEntities){
+		if(Minecraft.getInstance().getIntegratedServer().getEntityWorld().playerEntities!=null){
+		for(Object playerObject : Minecraft.getInstance().getIntegratedServer().getEntityWorld().playerEntities){
 			EntityPlayerMP player = (EntityPlayerMP)playerObject;
 			setPlayerToPosition(player,x,y,z);
 		}
 		} else {
-			EntityPlayerMP player = (EntityPlayerMP)Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getPlayerEntityByName(Minecraft.getMinecraft().thePlayer.getName());
+			EntityPlayerMP player = (EntityPlayerMP)Minecraft.getInstance().getIntegratedServer().getEntityWorld().getPlayerEntityByName(Minecraft.getInstance().thePlayer.getName());
 			setPlayerToPosition(player,x,y,z);
 		}
 	}
 	/*public void setAllPlayersToPosition( double y, double z) {
 		System.out.println(z);
 		// TODO Auto-generated method stub
-		for(Object playerObject : Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().playerEntities){
+		for(Object playerObject : Minecraft.getInstance().getIntegratedServer().getEntityWorld().playerEntities){
 			EntityPlayerMP player = (EntityPlayerMP)playerObject;
 			setPlayerToPosition(player,y,z);
 		}
@@ -318,22 +318,22 @@ public class LiveStructure {
 
 	void setPlayerToPosition(EntityPlayerMP player, double x, double y, double z){
 		player.setPosition(x,y,z);
-		if(player.getName().equals(Minecraft.getMinecraft().thePlayer.getName())){
-			Minecraft.getMinecraft().thePlayer.setPosition(x,y,z);
+		if(player.getName().equals(Minecraft.getInstance().thePlayer.getName())){
+			Minecraft.getInstance().thePlayer.setPosition(x,y,z);
 		}
 	}
 	
 	/*void setPlayerToPosition(EntityPlayerMP player, double y, double z){
 		player.posY=y;
 		player.posZ+=z;
-		if(player.getName().equals(Minecraft.getMinecraft().thePlayer.getName())){
-			Minecraft.getMinecraft().thePlayer.posY=y;
-			Minecraft.getMinecraft().thePlayer.posZ+=z;
+		if(player.getName().equals(Minecraft.getInstance().thePlayer.getName())){
+			Minecraft.getInstance().thePlayer.posY=y;
+			Minecraft.getInstance().thePlayer.posZ+=z;
 		}
 	}
 	*/
 	private int distanceToPlayer(double x1, double y1, double z1) {
-		return (int) Math.sqrt(Math.pow(Minecraft.getMinecraft().thePlayer.posX-x1,2)+Math.pow(Minecraft.getMinecraft().thePlayer.posY-y1,2)+Math.pow(Minecraft.getMinecraft().thePlayer.posZ-z1,2));
+		return (int) Math.sqrt(Math.pow(Minecraft.getInstance().thePlayer.posX-x1,2)+Math.pow(Minecraft.getInstance().thePlayer.posY-y1,2)+Math.pow(Minecraft.getInstance().thePlayer.posZ-z1,2));
 	}
 
 	private boolean checkWithinBounds(EntityPlayerMP player, int sizex, int sizey, int sizez){
@@ -368,8 +368,8 @@ public class LiveStructure {
 		if(!world.isRemote){
 		PrintWriter writer;
 		try {
-			(new File("saves/"+Minecraft.getMinecraft().getIntegratedServer().getFolderName()+"/LiveStructures")).mkdirs();
-			writer = new PrintWriter("saves/"+Minecraft.getMinecraft().getIntegratedServer().getFolderName()+"/LiveStructures/"+at+".txt", "UTF-8");
+			(new File("saves/"+Minecraft.getInstance().getIntegratedServer().getFolderName()+"/LiveStructures")).mkdirs();
+			writer = new PrintWriter("saves/"+Minecraft.getInstance().getIntegratedServer().getFolderName()+"/LiveStructures/"+at+".txt", "UTF-8");
 		
 			writer.println(liveStructure.structureName);
 		writer.println(liveStructure.x);
@@ -406,19 +406,19 @@ public class LiveStructure {
 				IMSM.eventHandler.liveCreators.get(i).id--;
 			}
 		}
-		//System.out.println(new File("saves/"+Minecraft.getMinecraft().getIntegratedServer().getFolderName()+"/LiveStructures/"+id+".txt").getAbsolutePath());
-		new File("saves/"+Minecraft.getMinecraft().getIntegratedServer().getFolderName()+"/LiveStructures/"+id+".txt").delete();
+		//System.out.println(new File("saves/"+Minecraft.getInstance().getIntegratedServer().getFolderName()+"/LiveStructures/"+id+".txt").getAbsolutePath());
+		new File("saves/"+Minecraft.getInstance().getIntegratedServer().getFolderName()+"/LiveStructures/"+id+".txt").delete();
 		//System.out.println("Removed "+id);
 		//if(!windows){
 		for(int i = id+1; i<IMSM.eventHandler.liveCreators.size(); i++){
 			//System.out.println("Loop 2");
-			new File("saves/"+Minecraft.getMinecraft().getIntegratedServer().getFolderName()+"/LiveStructures/"+i+".txt").renameTo(new File("saves/"+Minecraft.getMinecraft().getIntegratedServer().getFolderName()+"/LiveStructures/"+(i-1)+".txt"));
+			new File("saves/"+Minecraft.getInstance().getIntegratedServer().getFolderName()+"/LiveStructures/"+i+".txt").renameTo(new File("saves/"+Minecraft.getInstance().getIntegratedServer().getFolderName()+"/LiveStructures/"+(i-1)+".txt"));
 			//System.out.println("Removed "+i+" then added "+(i-1));
 		}
 		if(renameFiles){
 			int i = id+1;
 			while(fileExists(i+".txt")){
-				new File("saves/"+Minecraft.getMinecraft().getIntegratedServer().getFolderName()+"/LiveStructures/"+i+".txt").renameTo(new File("saves/"+Minecraft.getMinecraft().getIntegratedServer().getFolderName()+"/LiveStructures/"+(i-1)+".txt"));
+				new File("saves/"+Minecraft.getInstance().getIntegratedServer().getFolderName()+"/LiveStructures/"+i+".txt").renameTo(new File("saves/"+Minecraft.getInstance().getIntegratedServer().getFolderName()+"/LiveStructures/"+(i-1)+".txt"));
 				i++;
 			}
 		}
@@ -439,7 +439,7 @@ public class LiveStructure {
 	}
 
 		boolean fileExists(String path){
-			File f = new File("saves/"+Minecraft.getMinecraft().getIntegratedServer().getFolderName()+"/LiveStructures/"+path);
+			File f = new File("saves/"+Minecraft.getInstance().getIntegratedServer().getFolderName()+"/LiveStructures/"+path);
 			if(f.exists() && !f.isDirectory()) { 
 			    return true;
 			}
@@ -451,13 +451,13 @@ public class LiveStructure {
 	for(int x = 0; x<removeX; x++){
 		for(int y =0; y<removeY; y++){
 			for(int z =0; z<removeZ; z++){
-				setBlock(Minecraft.getMinecraft().theWorld, new BlockPos(posx-x,posy+y,posz-z), Blocks.AIR.getDefaultState());
+				setBlock(Minecraft.getInstance().theWorld, new BlockPos(posx-x,posy+y,posz-z), Blocks.AIR.getDefaultState());
 				setBlock(world, new BlockPos(posx-x,posy+y,posz-z), Blocks.AIR.getDefaultState());
 				
 			}
 		}
 	}
-	Minecraft.getMinecraft().theWorld.markBlockRangeForRenderUpdate(new BlockPos(posx,posy,posz), new BlockPos(posx-removeX,posy+removeY,posz-removeZ));//TODO: This is a hack, and has to be changed in the future
+	Minecraft.getInstance().theWorld.markBlockRangeForRenderUpdate(new BlockPos(posx,posy,posz), new BlockPos(posx-removeX,posy+removeY,posz-removeZ));//TODO: This is a hack, and has to be changed in the future
 	}
 
 	public void setBlock(World world, BlockPos pos, IBlockState state){

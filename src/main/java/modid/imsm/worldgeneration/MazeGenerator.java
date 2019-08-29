@@ -49,7 +49,7 @@ public class MazeGenerator extends CreatorBlocks implements ICreatorBlock {
 	
 	public void startGeneration(){
 		//System.out.println("Running Start Generation");
-		//Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("A huge random maze will now be generated at your location!"));
+		//Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("A huge random maze will now be generated at your location!"));
 		IMSM.eventHandler.delayedPrints.add("A huge random maze will now be generated at your location!");
 		maze.initCollisions(true);
 		init();
@@ -65,7 +65,7 @@ public class MazeGenerator extends CreatorBlocks implements ICreatorBlock {
       		  int xPos =  x+(posX*blockSize)+((int)(Math.random()*(blockSize-1)));
       		int zPos =  z+(posY*blockSize)+((int)(Math.random()*(blockSize-1)));
       		BlockPlaceHandler.placeBlock(Blocks.CHEST, xPos, y, zPos);
-      		TileEntityChest chest = (TileEntityChest) Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getTileEntity(new BlockPos(xPos, y, zPos));
+      		TileEntityChest chest = (TileEntityChest) Minecraft.getInstance().getIntegratedServer().getEntityWorld().getTileEntity(new BlockPos(xPos, y, zPos));
       		if(chest!=null){
       			generateChestContents(chest);
       		}
@@ -203,7 +203,7 @@ public class MazeGenerator extends CreatorBlocks implements ICreatorBlock {
 
 	private void init(){
 		//Init scoreboard
-		scoreBoard = Minecraft.getMinecraft().theWorld.getScoreboard().addScoreObjective("Score", IScoreCriteria.DUMMY);
+		scoreBoard = Minecraft.getInstance().theWorld.getScoreboard().addScoreObjective("Score", IScoreCriteria.DUMMY);
 		scoreBoard.setRenderType(EnumRenderType.INTEGER);
 		scoreBoard.getScoreboard().setObjectiveInDisplaySlot(Scoreboard.getObjectiveDisplaySlotNumber("sidebar"), scoreBoard);
 		displayProgress = scoreBoard.getScoreboard().getOrCreateScore("Maze Building Progress (%)", scoreBoard);
@@ -213,8 +213,8 @@ public class MazeGenerator extends CreatorBlocks implements ICreatorBlock {
 		this.size = maze.nodeRegister[0].length/2;
 		this.x-=(blockSize*maze.nodeRegister[0].length)/2;
 		this.z-=(blockSize*maze.nodeRegister[1].length)/2;
-		World worldIn = Minecraft.getMinecraft().theWorld;
-		World serverWorld = Minecraft.getMinecraft().getIntegratedServer().getEntityWorld();
+		World worldIn = Minecraft.getInstance().theWorld;
+		World serverWorld = Minecraft.getInstance().getIntegratedServer().getEntityWorld();
 		BlockPos pos;
 		Block block;
 		for(int x = 0; x<blockSize*maze.nodeRegister[0].length; x++){
@@ -303,7 +303,7 @@ public boolean run() {
 				i=0;
 				if(j>=maze.nodeRegister[0].length){
 					scoreBoard.getScoreboard().removeObjective(scoreBoard);
-					Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("A random maze has been generated!"));
+					Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("A random maze has been generated!"));
 					return true;
 				}
 			}
@@ -312,7 +312,7 @@ public boolean run() {
 	displayProgress.setScorePoints((int)(generated/(float)(maze.nodeRegister.length*maze.nodeRegister[0].length)*100.00));
 				if(generated>maze.nodeRegister.length*maze.nodeRegister[0].length){
 					scoreBoard.getScoreboard().removeObjective(scoreBoard);
-					Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("A random maze has been generated!"));
+					Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("A random maze has been generated!"));
 					return true;
 				}
 				

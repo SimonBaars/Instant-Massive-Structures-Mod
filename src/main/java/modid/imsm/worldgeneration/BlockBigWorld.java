@@ -25,7 +25,7 @@ public class BlockBigWorld extends Block
 
   public BlockBigWorld(int i)
     {
-        super(Material.ROCK);
+	  super(Block.Properties.create(Material.ROCK));
         this.name="BlockBigWorld";
     }
   
@@ -38,7 +38,7 @@ public class BlockBigWorld extends Block
 			if(nCheckers>20000){
 				nCheckers=1;
 			}
-			Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("This block will now edit "+nCheckers+" rows of landscape"));
+			Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("This block will now edit "+nCheckers+" rows of landscape"));
 			
 			}
   	} else if(playerIn.getActiveItemStack()!=null && playerIn.getActiveItemStack().getItem() instanceof ItemDye){
@@ -47,7 +47,7 @@ public class BlockBigWorld extends Block
 		if(checkerSize>64){
 			checkerSize=2;
 		}
-		Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("This block will now increase the blocksize by "+checkerSize+""));
+		Minecraft.getInstance().thePlayer.addChatMessage(new TextComponentString("This block will now increase the blocksize by "+checkerSize+""));
 		
 		}
 	} else {
