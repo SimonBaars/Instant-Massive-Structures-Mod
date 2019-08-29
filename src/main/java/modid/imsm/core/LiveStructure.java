@@ -118,7 +118,7 @@ public class LiveStructure {
 				}  
 			}
 			if(animation!=null){
-				for(Object playerObject : Minecraft.getInstance().getIntegratedServer().getEntityWorld().playerEntities){
+				for(Object playerObject : Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).playerEntities){
 					EntityPlayerMP player = (EntityPlayerMP)playerObject;
 				if(checkWithinBounds(player,struct.width, struct.height+5, struct.length)){
 					//Minecraft.getInstance().player.motionX+=relativeSpawnPointX/2.25;
@@ -127,7 +127,7 @@ public class LiveStructure {
 						double thisY = player.posY;
 					if(relativeSpawnPointY>0){
 						if(IMSM.eventHandler.ySync!=null){
-							if(Minecraft.getInstance().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY-1,player.posZ)).getBlock()!=Blocks.AIR || Minecraft.getInstance().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY,player.posZ)).getBlock()!=Blocks.AIR){
+							if(Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getBlockState(new BlockPos(player.posX,player.posY-1,player.posZ)).getBlock()!=Blocks.AIR || Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getBlockState(new BlockPos(player.posX,player.posY,player.posZ)).getBlock()!=Blocks.AIR){
 						thisY=IMSM.eventHandler.ySync.getY()+1;
 							} 
 							IMSM.eventHandler.ySync.setY(thisY);	
@@ -246,8 +246,8 @@ public class LiveStructure {
 					//System.out.println("BUT HAS POS "+Minecraft.getInstance().player.getPosition().getX()+", "+Minecraft.getInstance().player.getPosition().getY()+", "+Minecraft.getInstance().player.getPosition().getZ());
 				}else if(ride.progress>=0 && ride.progress<ride.animation[0].length-1){ // The ride itself
 					ride.progress++;
-					//System.out.println(Minecraft.getInstance().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(Minecraft.getInstance().player.posX,y+1+ride.animation[0][ride.progress],Minecraft.getInstance().player.posZ-(ride.animation[1][ride.progress]-ride.animation[1][ride.progress-1]))).getBlock());
-					//if(Minecraft.getInstance().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(Minecraft.getInstance().player.posX,y+1+ride.animation[0][ride.progress],Minecraft.getInstance().player.posZ-(ride.animation[1][ride.progress]-ride.animation[1][ride.progress-1]))).getBlock() instanceof BlockAir){
+					//System.out.println(Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getBlockState(new BlockPos(Minecraft.getInstance().player.posX,y+1+ride.animation[0][ride.progress],Minecraft.getInstance().player.posZ-(ride.animation[1][ride.progress]-ride.animation[1][ride.progress-1]))).getBlock());
+					//if(Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getBlockState(new BlockPos(Minecraft.getInstance().player.posX,y+1+ride.animation[0][ride.progress],Minecraft.getInstance().player.posZ-(ride.animation[1][ride.progress]-ride.animation[1][ride.progress-1]))).getBlock() instanceof BlockAir){
 					//	setAllPlayersToPosition(Minecraft.getInstance().player.posX,y+1+ride.animation[0][ride.progress],Minecraft.getInstance().player.posZ-(ride.animation[1][ride.progress]-ride.animation[1][ride.progress-1]));
 					//} else {
 						setAllPlayersToPosition(x-4-0.5,y+1+ride.animation[0][ride.progress],z-36-ride.animation[1][ride.progress]+0.5);
@@ -297,20 +297,20 @@ public class LiveStructure {
 
 	public void setAllPlayersToPosition( double x, double y, double z) {
 		//System.out.println("SET ALL TO POS "+x+", "+y+", "+z);
-		if(Minecraft.getInstance().getIntegratedServer().getEntityWorld().playerEntities!=null){
-		for(Object playerObject : Minecraft.getInstance().getIntegratedServer().getEntityWorld().playerEntities){
+		if(Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).playerEntities!=null){
+		for(Object playerObject : Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).playerEntities){
 			EntityPlayerMP player = (EntityPlayerMP)playerObject;
 			setPlayerToPosition(player,x,y,z);
 		}
 		} else {
-			EntityPlayerMP player = (EntityPlayerMP)Minecraft.getInstance().getIntegratedServer().getEntityWorld().getPlayerEntityByName(Minecraft.getInstance().player.getName());
+			EntityPlayerMP player = (EntityPlayerMP)Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getPlayerEntityByName(Minecraft.getInstance().player.getName());
 			setPlayerToPosition(player,x,y,z);
 		}
 	}
 	/*public void setAllPlayersToPosition( double y, double z) {
 		System.out.println(z);
 		// TODO Auto-generated method stub
-		for(Object playerObject : Minecraft.getInstance().getIntegratedServer().getEntityWorld().playerEntities){
+		for(Object playerObject : Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).playerEntities){
 			EntityPlayerMP player = (EntityPlayerMP)playerObject;
 			setPlayerToPosition(player,y,z);
 		}
@@ -451,13 +451,13 @@ public class LiveStructure {
 	for(int x = 0; x<removeX; x++){
 		for(int y =0; y<removeY; y++){
 			for(int z =0; z<removeZ; z++){
-				setBlock(Minecraft.getInstance().theWorld, new BlockPos(posx-x,posy+y,posz-z), Blocks.AIR.getDefaultState());
+				setBlock(Minecraft.getInstance().world, new BlockPos(posx-x,posy+y,posz-z), Blocks.AIR.getDefaultState());
 				setBlock(world, new BlockPos(posx-x,posy+y,posz-z), Blocks.AIR.getDefaultState());
 				
 			}
 		}
 	}
-	Minecraft.getInstance().theWorld.markBlockRangeForRenderUpdate(new BlockPos(posx,posy,posz), new BlockPos(posx-removeX,posy+removeY,posz-removeZ));//TODO: This is a hack, and has to be changed in the future
+	Minecraft.getInstance().world.markBlockRangeForRenderUpdate(new BlockPos(posx,posy,posz), new BlockPos(posx-removeX,posy+removeY,posz-removeZ));//TODO: This is a hack, and has to be changed in the future
 	}
 
 	public void setBlock(World world, BlockPos pos, IBlockState state){

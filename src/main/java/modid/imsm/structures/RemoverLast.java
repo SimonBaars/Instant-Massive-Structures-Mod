@@ -44,8 +44,8 @@ public class RemoverLast extends Block
 					   // Get the default state(basically metadata 0)
 					   IBlockState state0=blk.getDefaultState();
 					   // set the block
-					   Minecraft.getInstance().theWorld.setBlockState(pos0, state0);
-					   Minecraft.getInstance().getIntegratedServer().getEntityWorld().setBlockState(pos0, state0);
+					   Minecraft.getInstance().world.setBlockState(pos0, state0);
+					   Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).setBlockState(pos0, state0);
 				}
 			}
 		}

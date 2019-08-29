@@ -67,7 +67,7 @@ public class EventHandler {
 		
 			loadLiveCreators();
 			loadStructures();
-			lightUpdate= new LightUpdateCheck(Minecraft.getInstance().theWorld, Minecraft.getInstance().getIntegratedServer().getEntityWorld());
+			lightUpdate= new LightUpdateCheck(Minecraft.getInstance().world, Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension));
 			isLoaded=true;
 	}
 	
@@ -101,10 +101,10 @@ public class EventHandler {
 		//if(isRiding!=null){
 			if(ySync!=null){
 			//if(isRiding.ride.progress>=0 && isRiding.ride.progress<isRiding.ride.animation[0].length){
-				if(Minecraft.getInstance().getIntegratedServer().getEntityWorld().playerEntities==null){
-			for(Object playerObject : Minecraft.getInstance().getIntegratedServer().getEntityWorld().playerEntities){
+				if(Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).playerEntities==null){
+			for(Object playerObject : Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).playerEntities){
 				EntityPlayerMP player = (EntityPlayerMP)playerObject;
-				if(ySync.isVehicle==null || (/*Minecraft.getInstance().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY-1,player.posZ)).getBlock()!=Blocks.air ||*/ Minecraft.getInstance().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY,player.posZ)).getBlock()!=Blocks.AIR)){
+				if(ySync.isVehicle==null || (/*Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getBlockState(new BlockPos(player.posX,player.posY-1,player.posZ)).getBlock()!=Blocks.air ||*/ Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getBlockState(new BlockPos(player.posX,player.posY,player.posZ)).getBlock()!=Blocks.AIR)){
 				player.posY=/*isRiding.y+isRiding.ride.getHeight()+isRiding.ride.animation[0][isRiding.ride.progress]*/ySync.getY();
 				if(player.getName().equals(Minecraft.getInstance().player.getName())){
 					Minecraft.getInstance().player.posY=/*isRiding.y+isRiding.ride.getHeight()+isRiding.ride.animation[0][isRiding.ride.progress]*/ySync.getY();
@@ -115,8 +115,8 @@ public class EventHandler {
 				}
 			}
 			} else {
-				EntityPlayerMP player = (EntityPlayerMP) Minecraft.getInstance().getIntegratedServer().getEntityWorld().getPlayerEntityByName(Minecraft.getInstance().player.getName());
-				if(ySync.isVehicle==null || (/*Minecraft.getInstance().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY-1,player.posZ)).getBlock()!=Blocks.air ||*/ Minecraft.getInstance().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY,player.posZ)).getBlock()!=Blocks.AIR)){
+				EntityPlayerMP player = (EntityPlayerMP) Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getPlayerEntityByName(Minecraft.getInstance().player.getName());
+				if(ySync.isVehicle==null || (/*Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getBlockState(new BlockPos(player.posX,player.posY-1,player.posZ)).getBlock()!=Blocks.air ||*/ Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getBlockState(new BlockPos(player.posX,player.posY,player.posZ)).getBlock()!=Blocks.AIR)){
 				player.posY=/*isRiding.y+isRiding.ride.getHeight()+isRiding.ride.animation[0][isRiding.ride.progress]*/ySync.getY();
 				//if(player.getName().equals(Minecraft.getInstance().player.getName())){
 					Minecraft.getInstance().player.posY=/*isRiding.y+isRiding.ride.getHeight()+isRiding.ride.animation[0][isRiding.ride.progress]*/ySync.getY();
@@ -154,7 +154,7 @@ public class EventHandler {
 	
 	@SubscribeEvent
 	public void update(TickEvent.ServerTickEvent event){
-		if(!IMSM.updateChecked && Minecraft.getInstance().theWorld!=null){
+		if(!IMSM.updateChecked && Minecraft.getInstance().world!=null){
 			load();
 			IMSM.updateChecked=true;
 		}
@@ -181,7 +181,7 @@ public class EventHandler {
 		//System.out.println("render"+System.currentTimeMillis());
 	//long tickTime = System.currentTimeMillis();
 		for(int i = 0; i<scheduledExplosions.size(); i+=3){
-			Minecraft.getInstance().getIntegratedServer().getEntityWorld().newExplosion((Entity)null, scheduledExplosions.get(0), scheduledExplosions.get(1), scheduledExplosions.get(2), 25.0F, true, true);
+			Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).newExplosion((Entity)null, scheduledExplosions.get(0), scheduledExplosions.get(1), scheduledExplosions.get(2), 25.0F, true, true);
 		}
 		scheduledExplosions.clear();
 		if(postProcessors.size()>0){

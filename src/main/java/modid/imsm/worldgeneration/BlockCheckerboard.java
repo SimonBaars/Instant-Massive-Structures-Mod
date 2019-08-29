@@ -43,7 +43,7 @@ public class BlockCheckerboard extends Block
   	//AtlantisThread loadThread = new AtlantisThread(pos.getX(), pos.getY(), pos.getZ(), nCheckers, worldIn,serverWorld);
 	  BlockPos newPos = new BlockPos(pos.getX(), pos.getY(), pos.getZ());
 	  IMSM.eventHandler.serverCreators.add(new CheckerboardCreator(pos.getX(), pos.getY(), pos.getZ(), nCheckers));
-  	worldIn.setBlockToAir(newPos);
+  	worldIn.setBlockState(newPos, new BlockState(Blocks.AIR, ImmutableMap.of()));
   }
   	}
       return true;

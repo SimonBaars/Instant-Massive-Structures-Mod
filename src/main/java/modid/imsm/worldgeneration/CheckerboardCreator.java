@@ -17,7 +17,7 @@ public class CheckerboardCreator extends CreatorBlocks implements ICreatorBlock 
 	boolean color;
 	
     public CheckerboardCreator(int x, int y, int z, int nCheckers){
-    	this.world= Minecraft.getInstance().getIntegratedServer().getEntityWorld();
+    	this.world= Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension);
     	this.x=x;
     	this.y=y;
     	this.z=z;

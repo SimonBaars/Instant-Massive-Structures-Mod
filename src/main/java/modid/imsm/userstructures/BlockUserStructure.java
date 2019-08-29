@@ -68,7 +68,7 @@ public class BlockUserStructure extends Block {
     	}*/
     	BlockPos newPos = new BlockPos(pos.getX(), pos.getY(), pos.getZ());
     	IMSM.eventHandler.creators.add(new StructureCreatorUser(name, pos.getX()+modifierx, pos.getY()+modifiery, pos.getZ()+modifierz, doReplaceAir,getSize(IMSM.eventHandler.creators.size())));
-    	worldIn.setBlockToAir(newPos);
+    	worldIn.setBlockState(newPos, new BlockState(Blocks.AIR, ImmutableMap.of()));
 
     	}
         return true;
@@ -87,8 +87,8 @@ public class BlockUserStructure extends Block {
 					   // Get the default state(basically metadata 0)
 					   IBlockState state0=blk.getDefaultState();
 					   // set the block
-					   Minecraft.getInstance().theWorld.setBlockState(pos0, state0);
-					   Minecraft.getInstance().getIntegratedServer().getEntityWorld().setBlockState(pos0, state0);
+					   Minecraft.getInstance().world.setBlockState(pos0, state0);
+					   Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).setBlockState(pos0, state0);
 				}
 			}
 		}
@@ -108,7 +108,7 @@ public class BlockUserStructure extends Block {
 	@Override
     public void onBlockDestroyedByPlayer(World worldIn, BlockPos pos, IBlockState state) {
     	if(hasOutline && !worldIn.isRemote){
-    		if(Minecraft.getInstance().theWorld!=null){
+    		if(Minecraft.getInstance().world!=null){
     	SchematicStructure struct = new SchematicStructure(name+".structure");
     	struct.readFromFile();
     	//for(int i = 0; i<IMSM.worlds.length; i++){

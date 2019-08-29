@@ -1,10 +1,14 @@
 package modid.imsm.core;
 
+import com.google.common.collect.ImmutableMap;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -48,10 +52,10 @@ public class BlockLiveStructure extends Block {
       if(animation==null){
   	IMSM.eventHandler.creators.add(new StructureCreatorClient(name, pos.getX()+modifierx, pos.getY()+modifiery, pos.getZ()+modifierz, doReplaceAir,IMSM.eventHandler.creators.size()));
       }
-                      //liveCreators.add(new LiveStructure(array[0], Minecraft.getInstance().theWorld, Minecraft.getInstance().getIntegratedServer().worldServerForDimension(0), Integer.parseInt(array[1]),Integer.parseInt(array[2]),Integer.parseInt(array[3]), array[4].equals("true"), Integer.parseInt(array[8]), Integer.parseInt(array[9]),  i, getAnimationFor(array[0]),array[7].equals("true")));
+                      //liveCreators.add(new LiveStructure(array[0], Minecraft.getInstance().world, Minecraft.getInstance().getIntegratedServer().worldServerForDimension(0), Integer.parseInt(array[1]),Integer.parseInt(array[2]),Integer.parseInt(array[3]), array[4].equals("true"), Integer.parseInt(array[8]), Integer.parseInt(array[9]),  i, getAnimationFor(array[0]),array[7].equals("true")));
   	IMSM.eventHandler.liveCreators.add(new LiveStructureServer(name, pos.getX()+modifierx-spawnPosModifierX, pos.getY()+modifiery-spawnPosModifierY, pos.getZ()+modifierz-spawnPosModifierZ, doReplaceAir, amountOfSlides, waitTime, IMSM.eventHandler.liveCreators.size(), animation, doLoop));
   	IMSM.eventHandler.liveCreators.get(IMSM.eventHandler.liveCreators.size()-1).registerLiveCreator(IMSM.eventHandler.liveCreators.get(IMSM.eventHandler.liveCreators.size()-1),IMSM.eventHandler.liveCreators.size()-1);
-  	worldIn.setBlockToAir(newPos);
+  	worldIn.setBlockState(newPos, new BlockState(Blocks.AIR, ImmutableMap.of()));
   	if(IMSM.eventHandler.liveCreators.size()>4){
   		Minecraft.getInstance().player.sendChatMessage("You have now placed more than 5 Live Structures, which may cause some lag.");
   		Minecraft.getInstance().player.sendChatMessage("Do the command /removelive to remove all live structures");

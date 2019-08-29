@@ -65,7 +65,7 @@ public class MazeGenerator extends CreatorBlocks implements ICreatorBlock {
       		  int xPos =  x+(posX*blockSize)+((int)(Math.random()*(blockSize-1)));
       		int zPos =  z+(posY*blockSize)+((int)(Math.random()*(blockSize-1)));
       		BlockPlaceHandler.placeBlock(Blocks.CHEST, xPos, y, zPos);
-      		TileEntityChest chest = (TileEntityChest) Minecraft.getInstance().getIntegratedServer().getEntityWorld().getTileEntity(new BlockPos(xPos, y, zPos));
+      		TileEntityChest chest = (TileEntityChest) Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getTileEntity(new BlockPos(xPos, y, zPos));
       		if(chest!=null){
       			generateChestContents(chest);
       		}
@@ -203,7 +203,7 @@ public class MazeGenerator extends CreatorBlocks implements ICreatorBlock {
 
 	private void init(){
 		//Init scoreboard
-		scoreBoard = Minecraft.getInstance().theWorld.getScoreboard().addScoreObjective("Score", IScoreCriteria.DUMMY);
+		scoreBoard = Minecraft.getInstance().world.getScoreboard().addScoreObjective("Score", IScoreCriteria.DUMMY);
 		scoreBoard.setRenderType(EnumRenderType.INTEGER);
 		scoreBoard.getScoreboard().setObjectiveInDisplaySlot(Scoreboard.getObjectiveDisplaySlotNumber("sidebar"), scoreBoard);
 		displayProgress = scoreBoard.getScoreboard().getOrCreateScore("Maze Building Progress (%)", scoreBoard);
@@ -213,8 +213,8 @@ public class MazeGenerator extends CreatorBlocks implements ICreatorBlock {
 		this.size = maze.nodeRegister[0].length/2;
 		this.x-=(blockSize*maze.nodeRegister[0].length)/2;
 		this.z-=(blockSize*maze.nodeRegister[1].length)/2;
-		World worldIn = Minecraft.getInstance().theWorld;
-		World serverWorld = Minecraft.getInstance().getIntegratedServer().getEntityWorld();
+		World worldIn = Minecraft.getInstance().world;
+		World serverWorld = Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension);
 		BlockPos pos;
 		Block block;
 		for(int x = 0; x<blockSize*maze.nodeRegister[0].length; x++){
