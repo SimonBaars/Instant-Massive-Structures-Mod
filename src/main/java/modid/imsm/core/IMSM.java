@@ -42,8 +42,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 
 @Mod (value = "imsm")
@@ -1127,7 +1129,7 @@ public class IMSM {
 			br = new BufferedReader(new FileReader(registry));
 		    String line;
 		    while ((line = br.readLine()) != null) {
-		       blocks.add(new BlockUserStructure(line).setUnlocalizedName(line).setCreativeTab(IMSM.User));
+		       blocks.add(new BlockUserStructure(line).setCreativeTab(IMSM.User));
 		    }
 		} catch (Exception e){
 			e.printStackTrace();
@@ -2047,7 +2049,6 @@ public class IMSM {
 	FMLCommonHandler.instance().bus().register(eventHandler);
 	MinecraftForge.EVENT_BUS.register(new modid.imsm.core.ForgeEventHandler());
 	regAll();
-	proxy.registerRenderInformation();
 	/*
 		regAll();
 		System.out.println("IMSM has rendered sooooo many blocks");
@@ -2055,10 +2056,8 @@ public class IMSM {
 	
 	}
 	   
-	   @EventHandler
-		public void preInit(FMLPreInitializationEvent e){
-		   
-		proxy.registerRenderInformation();
+	   @SubscribeEvent
+		public void preInit(FMLCommonSetupEvent e){
 		//TODO: Thing commented without reason?
 		//LanguageRegistry.instance().addStringLocalization("itemGroup.Structures", "en_US", "Structures");
 		/**
