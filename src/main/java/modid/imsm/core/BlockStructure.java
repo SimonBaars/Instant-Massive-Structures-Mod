@@ -12,7 +12,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBook;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -29,12 +31,17 @@ public class BlockStructure extends Block {
 	private int modifierz;
 
 	public BlockStructure(String name, boolean doReplaceAir, int modifierx, int modifiery, int modifierz){
-		super(Block.Properties.create(Material.ROCK));
+		super(Block.Properties.create(Material.ROCK).hardnessAndResistance(1.0F));
 		this.name=name;
 		this.doReplaceAir=doReplaceAir;
 		this.modifierx=modifierx;
 		this.modifiery=modifiery;
 		this.modifierz=modifierz;
+	}
+	
+	public Block setCreativeTab(ItemGroup g) {
+		Item.BLOCK_TO_ITEM.get(this).getCreativeTabs().add(g);
+		return this;
 	}
 	
 	@Override

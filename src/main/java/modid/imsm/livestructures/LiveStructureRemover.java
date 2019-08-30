@@ -13,6 +13,8 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -20,6 +22,11 @@ import net.minecraft.world.World;
 public class LiveStructureRemover extends Block {
 	public LiveStructureRemover(){
 		super(Block.Properties.create(Material.ROCK));
+	}
+	
+	public Block setCreativeTab(ItemGroup g) {
+		Item.BLOCK_TO_ITEM.get(this).getCreativeTabs().add(g);
+		return this;
 	}
 	
 	@Override

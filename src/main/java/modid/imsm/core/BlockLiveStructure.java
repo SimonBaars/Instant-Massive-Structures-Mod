@@ -9,6 +9,8 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -41,6 +43,12 @@ public class BlockLiveStructure extends Block {
 		this.waitTime=waitTime;
 		this.doLoop=doLoop;
 	}
+	
+	public Block setCreativeTab(ItemGroup g) {
+		Item.BLOCK_TO_ITEM.get(this).getCreativeTabs().add(g);
+		return this;
+	}
+	
 	@Override
 	public boolean onBlockActivated(IBlockState state, World worldIn, BlockPos pos, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {

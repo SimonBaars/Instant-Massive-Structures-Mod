@@ -6,7 +6,9 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemDye;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemRedstone;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -28,6 +30,11 @@ public class BlockBigWorld extends Block
 	  super(Block.Properties.create(Material.ROCK));
         this.name="BlockBigWorld";
     }
+  
+  public Block setCreativeTab(ItemGroup g) {
+		Item.BLOCK_TO_ITEM.get(this).getCreativeTabs().add(g);
+		return this;
+	}
   
   @Override
 	public boolean onBlockActivated(IBlockState state, World worldIn, BlockPos pos, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)

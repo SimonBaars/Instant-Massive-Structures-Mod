@@ -60,10 +60,8 @@ public class EventHandler {
 		
 	public void load(){
 		if(!IMSM.updateChecked){
-			IMSM.updateChecked=true;
-			UpdateThread updateThread = new UpdateThread();
-			updateThread.start();
 			loadLanguageFile();
+			IMSM.updateChecked  = true;
 		}
 		
 			loadLiveCreators();
