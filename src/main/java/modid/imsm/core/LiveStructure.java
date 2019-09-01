@@ -14,10 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
 public class LiveStructure {
 	public World world;
@@ -461,19 +458,20 @@ public class LiveStructure {
 	}
 
 	public void setBlock(World world, BlockPos pos, IBlockState state){
-		try{
+		world.setBlockState(pos, state);
+		/*try{
 			Chunk chunk = world.getChunk(pos);
 			ExtendedBlockStorage storageArray = chunk.getBlockStorageArray()[pos.getY() >> 4];
 			if (storageArray == null) storageArray = chunk.getBlockStorageArray()[pos.getY() >> 4] = new ExtendedBlockStorage(pos.getY() >> 4 << 4, !world.provider.getHasNoSky());
 
 			if (storageArray.get(pos.getX() & 15, pos.getY() & 15, pos.getZ() & 15).getBlock() != state.getBlock())
 			{
-				IBlockState oldState = world.getBlockState(pos);
+				//IBlockState oldState = world.getBlockState(pos);
 				storageArray.set(pos.getX() & 15, pos.getY() & 15, pos.getZ() & 15, state);
 			}
 		} catch (Exception e){
 			
-		}
+		}*/
 	}
 	
 	

@@ -29,16 +29,9 @@ import modid.imsm.userstructures.PMCParser;
 import modid.imsm.worldgeneration.BlockBigWorld;
 import modid.imsm.worldgeneration.BlockCheckerboard;
 import modid.imsm.worldgeneration.BlockCloud;
-import modid.imsm.worldgeneration.LiveCommand;
-import modid.imsm.worldgeneration.MazeCommand;
-import modid.imsm.worldgeneration.RideCommand;
-import modid.imsm.worldgeneration.UndoCommand;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraft.command.Commands;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -46,10 +39,9 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 @Mod (value = "imsm")
 //@NetworkMod(clientSideRequired = true, serverSideRequired = false)
@@ -2060,7 +2052,7 @@ public class IMSM {
 	}
 	   
 @SubscribeEvent
-public void registerBlocks(RegistryEvent<IForgeRegistryEntry<T>>.Register<Block> event) {
+public void registerBlocks(RegistryEvent.Register<Block> event) {
 		//TODO: Thing commented without reason?
 		//LanguageRegistry.instance().addStringLocalization("itemGroup.Structures", "en_US", "Structures");
 		/**
@@ -3174,14 +3166,13 @@ event.getRegistry().register(BlockUnlimited);
 	
 	}
 	   
-	   @EventHandler
+	   @SubscribeEvent
 	   public void serverLoad(FMLServerStartingEvent event)
 	   {
-		   Commands.
-	     event.getCommandDispatcher().register(new MazeCommand());
-	     event.registerServerCommand(new LiveCommand());
-	     event.registerServerCommand(new RideCommand());
-	     event.registerServerCommand(new UndoCommand());
+	     //event.getCommandDispatcher().register(new MazeCommand());
+	     //event.registerServerCommand(new LiveCommand());
+	     //event.registerServerCommand(new RideCommand());
+	     //event.registerServerCommand(new UndoCommand());
 	   }
 	  
 }
