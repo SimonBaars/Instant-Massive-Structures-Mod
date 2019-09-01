@@ -10,8 +10,10 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBook;
 import net.minecraft.item.ItemFireball;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemRedstone;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -32,6 +34,11 @@ public class BlockUserStructure extends Block {
 	public BlockUserStructure(String name){
 		super(Block.Properties.create(Material.ROCK));
 		this.name=name;
+	}
+	
+	public Block setCreativeTab(ItemGroup g) {
+		Item.BLOCK_TO_ITEM.get(this).getCreativeTabs().add(g);
+		return this;
 	}
 	
 	@Override
