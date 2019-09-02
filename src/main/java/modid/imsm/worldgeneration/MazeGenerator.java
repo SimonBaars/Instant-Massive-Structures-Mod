@@ -12,14 +12,13 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.scoreboard.IScoreCriteria;
-import net.minecraft.scoreboard.IScoreCriteria.EnumRenderType;
 import net.minecraft.scoreboard.Score;
+import net.minecraft.scoreboard.ScoreCriteria;
+import net.minecraft.scoreboard.ScoreCriteria.RenderType;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 public class MazeGenerator extends CreatorBlocks implements ICreatorBlock { 
@@ -153,17 +152,17 @@ public class MazeGenerator extends CreatorBlocks implements ICreatorBlock {
 		case 34: return Items.PORKCHOP;
 		case 35: return Items.COOKED_PORKCHOP;
 		case 36: return Items.GOLDEN_APPLE;
-		case 37: return Items.REEDS;
+		case 37: return Items.GREEN_BED;
 		case 38: return Items.SADDLE;
 		case 39: return Items.SNOWBALL;
 		case 40: return Items.PAPER;
 		case 41: return Items.COMPASS;
 		case 42: return Items.FISHING_ROD;
 		case 43: return Items.CLOCK;
-		case 44: return Items.FISH;
-		case 45: return Items.COOKED_FISH;
-		case 46: return Items.CAKE;
-		case 47: return Items.BED;
+		case 44: return Items.PUFFERFISH;
+		case 45: return Items.TROPICAL_FISH;
+		case 46: return Items.TROPICAL_FISH_SPAWN_EGG;
+		case 47: return Items.BLACK_BED;
 		case 48: return Items.COOKIE;
 		case 49: return Items.MAP;
 		case 50: return Items.BEEF;
@@ -178,7 +177,7 @@ public class MazeGenerator extends CreatorBlocks implements ICreatorBlock {
 		case 59: return Items.BAKED_POTATO;
 		case 60: return Items.POISONOUS_POTATO;
 		case 61: return Items.GOLDEN_CARROT;
-		case 62: return Items.SKULL;
+		case 62: return Items.BEETROOT_SEEDS;
 		case 63: return Items.PUMPKIN_PIE;
 		case 64: return Items.RABBIT_STEW;
 		case 65: return Items.RABBIT;
@@ -203,8 +202,7 @@ public class MazeGenerator extends CreatorBlocks implements ICreatorBlock {
 
 	private void init(){
 		//Init scoreboard
-		scoreBoard = Minecraft.getInstance().world.getScoreboard().addScoreObjective("Score", IScoreCriteria.DUMMY);
-		scoreBoard.setRenderType(EnumRenderType.INTEGER);
+		scoreBoard = Minecraft.getInstance().world.getScoreboard().addObjective("Score", ScoreCriteria.DUMMY, null ,RenderType.INTEGER);
 		scoreBoard.getScoreboard().setObjectiveInDisplaySlot(Scoreboard.getObjectiveDisplaySlotNumber("sidebar"), scoreBoard);
 		displayProgress = scoreBoard.getScoreboard().getOrCreateScore("Maze Building Progress (%)", scoreBoard);
 		displayProgress.setScorePoints(0);
@@ -228,7 +226,7 @@ public class MazeGenerator extends CreatorBlocks implements ICreatorBlock {
 							BlockPlaceHandler.setBlock(serverWorld, new BlockPos(this.x+i+x,this.y+y,this.z+j+z), Blocks.tallgrass.getDefaultState());
 						}*/
 					} else {
-						block = Blocks.STONEBRICK;
+						block = Blocks.STONE_BRICKS;
 					}
 					
 					BlockPlaceHandler.setBlock(worldIn,pos, block.getDefaultState());
@@ -303,7 +301,7 @@ public boolean run() {
 				i=0;
 				if(j>=maze.nodeRegister[0].length){
 					scoreBoard.getScoreboard().removeObjective(scoreBoard);
-					Minecraft.getInstance().player.sendChatMessage("A random maze has been generated!"));
+					Minecraft.getInstance().player.sendChatMessage("A random maze has been generated!");
 					return true;
 				}
 			}
@@ -312,7 +310,7 @@ public boolean run() {
 	displayProgress.setScorePoints((int)(generated/(float)(maze.nodeRegister.length*maze.nodeRegister[0].length)*100.00));
 				if(generated>maze.nodeRegister.length*maze.nodeRegister[0].length){
 					scoreBoard.getScoreboard().removeObjective(scoreBoard);
-					Minecraft.getInstance().player.sendChatMessage("A random maze has been generated!"));
+					Minecraft.getInstance().player.sendChatMessage("A random maze has been generated!");
 					return true;
 				}
 				

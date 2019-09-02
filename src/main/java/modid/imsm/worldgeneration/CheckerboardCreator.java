@@ -7,7 +7,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.EnumSkyBlock;
+import net.minecraft.world.EnumLightType;
 
 public class CheckerboardCreator extends CreatorBlocks implements ICreatorBlock {
 	int i,j,k;
@@ -75,9 +75,9 @@ public class CheckerboardCreator extends CreatorBlocks implements ICreatorBlock 
 		for(int i = 0; i<checkerSize; i++){
 			for(int j = 0; j<checkerSize; j++){
 				for(int k = 0; k<2; k++){
-					Block blk= Blocks.WOOL;
+					Block blk= Blocks.WHITE_WOOL;
 					if(color){
-						blk=Blocks.COAL_BLOCK;
+						blk=Blocks.BLACK_WOOL;
 					}
 				createBlock(blk,i,j,k);
 				}
@@ -93,6 +93,6 @@ public class CheckerboardCreator extends CreatorBlocks implements ICreatorBlock 
 		   // set the block
 		   world.setBlockState(pos0, state0);
 		   
-		   world.checkLightFor(EnumSkyBlock.SKY, pos0);
+		   world.checkLightFor(EnumLightType.SKY, pos0);
 	}
 }

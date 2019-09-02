@@ -5,10 +5,7 @@ import modid.imsm.core.ICreatorBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
 public class BigWorldCreator extends CreatorBlocks implements ICreatorBlock {
 	int i,j,k;
@@ -96,7 +93,7 @@ public class BigWorldCreator extends CreatorBlocks implements ICreatorBlock {
 	}
 	
 	public void createBlock(BlockPos pos, IBlockState state){
-		try{
+		/*try{
 			Chunk chunk = worldIn[k].getChunkFromBlockCoords(pos);
 			ExtendedBlockStorage storageArray = chunk.getBlockStorageArray()[pos.getY() >> 4];
 			if (storageArray == null) storageArray = chunk.getBlockStorageArray()[pos.getY() >> 4] = new ExtendedBlockStorage(pos.getY() >> 4 << 4, !worldIn[k].provider.getHasNoSky());
@@ -110,6 +107,7 @@ public class BigWorldCreator extends CreatorBlocks implements ICreatorBlock {
 			worldIn[k].checkLightFor(EnumSkyBlock.SKY, pos);
 		} catch (Exception e){
 			
-		}
+		}*/
+		worldIn[k].setBlockState(pos, state);
 	}
 }

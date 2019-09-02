@@ -1,12 +1,16 @@
 package modid.imsm.worldgeneration;
 
+import com.google.common.collect.ImmutableMap;
+
 import modid.imsm.core.IMSM;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemRedstone;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -26,7 +30,7 @@ public class BlockAtlantis extends Block
   
   public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ)
   {
-		if(playerIn.getHeldItemMainhand()!=null && playerIn.getHeldItemMainhand().getItem() instanceof ItemRedstone){
+		if(playerIn.getHeldItemMainhand()!=null && playerIn.getHeldItemMainhand().getItem() == Items.REDSTONE){
 			if(worldIn.isRemote){
 			nCheckers*=2;
 			if(nCheckers>20000){
