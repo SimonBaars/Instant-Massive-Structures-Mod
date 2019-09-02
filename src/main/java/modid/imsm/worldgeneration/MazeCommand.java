@@ -3,6 +3,8 @@ package modid.imsm.worldgeneration;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mojang.brigadier.Command;
+
 import modid.imsm.core.IMSM;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.ICommand;
@@ -11,7 +13,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 
-public class MazeCommand implements ICommand
+public class MazeCommand implements Command<S> ICommand
 {
   private List aliases;
   public MazeCommand()

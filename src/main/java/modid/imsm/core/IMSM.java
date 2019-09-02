@@ -29,6 +29,8 @@ import modid.imsm.userstructures.PMCParser;
 import modid.imsm.worldgeneration.BlockBigWorld;
 import modid.imsm.worldgeneration.BlockCheckerboard;
 import modid.imsm.worldgeneration.BlockCloud;
+import modid.imsm.worldgeneration.RideCommand;
+import modid.imsm.worldgeneration.UndoCommand;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
@@ -41,7 +43,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
 @Mod (value = "imsm")
 //@NetworkMod(clientSideRequired = true, serverSideRequired = false)
@@ -2050,6 +2051,12 @@ public class IMSM {
 */
 	
 	}
+
+@SubscribeEvent
+public void serverStarting(FMLServerStartingEvent event) {
+    UndoCommand.register(event.getCommandDispatcher());
+    RideCommand.register(event.getCommandDispatcher());
+}
 	   
 @SubscribeEvent
 public void registerBlocks(RegistryEvent.Register<Block> event) {
