@@ -1,13 +1,10 @@
 package modid.imsm.structureloader;
 
-import modid.imsm.core.IMSM;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
 public class BlockPlaceHandler {
 	public static void placeBlocks(World worldIn, World serverWorld, Block block, int posx, int posy, int posz, int sizex, int sizey, int sizez){
@@ -52,7 +49,7 @@ public class BlockPlaceHandler {
 	
 	public static void setBlock(World world, BlockPos pos, IBlockState state){
 		//if(addToMap(state, pos.getX(),pos.getY(),pos.getZ())){
-		try{
+		/*try{
 			Chunk chunk = world.getChunkFromBlockCoords(pos);
 			ExtendedBlockStorage storageArray = chunk.getBlockStorageArray()[pos.getY() >> 4];
 			if (storageArray == null) storageArray = chunk.getBlockStorageArray()[pos.getY() >> 4] = new ExtendedBlockStorage(pos.getY() >> 4 << 4, !world.provider.getHasNoSky());
@@ -68,12 +65,14 @@ public class BlockPlaceHandler {
 				}
 				//world.checkLightFor(EnumSkyBlock.SKY, pos);
 				//world.markBlockForUpdate(pos);
-				/*if(world.isRemote){
-				IMSM.eventHandler.lightUpdate.processes.add(pos);
-				}*/
+				//if(world.isRemote){
+				//IMSM.eventHandler.lightUpdate.processes.add(pos);
+				//}
 			}
 		} catch (Exception e){
 			//e.printStackTrace();
 		}
+		*/
+		world.setBlockState(pos, state);
 	}
 }

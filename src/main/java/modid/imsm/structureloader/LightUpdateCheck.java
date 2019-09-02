@@ -3,6 +3,7 @@ package modid.imsm.structureloader;
 import java.util.ArrayList;
 
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.EnumLightType;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 
@@ -29,7 +30,7 @@ public class LightUpdateCheck {
 	public void runClient() {
 		for(int i = clientProcesses.size()-1; i>=0; i--){
 			if(clientProcesses.get(i)!=null){
-			worldIn.checkLightFor(EnumSkyBlock.SKY, clientProcesses.get(i));
+			worldIn.checkLightFor(EnumLightType.SKY, clientProcesses.get(i));
 			}
 			clientProcesses.remove(i);
 		}	
@@ -37,7 +38,7 @@ public class LightUpdateCheck {
 	public void runServer() {
 		for(int i = serverProcesses.size()-1; i>=0; i--){
 			if(serverProcesses.get(i)!=null){
-				serverWorld.checkLightFor(EnumSkyBlock.SKY, serverProcesses.get(i));
+				serverWorld.checkLightFor(EnumLightType.SKY, serverProcesses.get(i));
 			}
 			serverProcesses.remove(i);
 		}	

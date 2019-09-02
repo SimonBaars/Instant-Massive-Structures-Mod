@@ -88,7 +88,7 @@ public class BlockPlacer
 			}
 			if(block instanceof BlockDoor){
 				BlockPos pos = new BlockPos(blockPos.getX(),blockPos.getY()+1,blockPos.getZ());
-				world.setBlockState(blockPos, blockState.withProperty(BlockDoor.HALF, BlockDoor.EnumDoorHalf.LOWER), 2);
+				world.setBlockState(blockPos, blockState.with(BlockDoor.HALF, 0), 2);
 		        world.setBlockState(pos, blockState.withProperty(BlockDoor.HALF, BlockDoor.EnumDoorHalf.UPPER), 2);
 		        disabledPos.add(pos);
 		        return true;
