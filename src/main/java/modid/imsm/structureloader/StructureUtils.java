@@ -38,12 +38,12 @@ public class StructureUtils
 
 		world.removeTileEntity(pos);
 		BlockPos chunkPos = new BlockPos(pos.getX() & 15, pos.getY(), pos.getZ() & 15);
-		TileEntity blockTileEntity = world.getChunkFromBlockCoords(pos).getTileEntity(chunkPos, Chunk.EnumCreateEntityType.CHECK);
+		TileEntity blockTileEntity = world.getChunk(pos).getTileEntity(chunkPos, Chunk.EnumCreateEntityType.CHECK);
 
-		blockTileEntity = blockState.getBlock().createTileEntity(world, blockState);
-		blockTileEntity.readFromNBT(tileEntity);
+		blockTileEntity = blockState.getBlock().createTileEntity(blockState, world);
+		blockTileEntity.read(tileEntity);
 		blockTileEntity.setPos(pos);
-		blockTileEntity.setWorldObj(world);
+		blockTileEntity.setWorld(world);
 
 		world.setTileEntity(pos, blockTileEntity);
 		blockTileEntity.updateContainingBlockInfo();
@@ -55,7 +55,7 @@ public class StructureUtils
 		BlockPos pos = getWorldPos(tileEntity.getPos(), structCenter, harvestPos);
 		world.removeTileEntity(pos);
 		tileEntity.setPos(pos);
-		tileEntity.setWorldObj(world);
+		tileEntity.setWorld(world);
 		world.setTileEntity(pos, tileEntity);
 		} catch (ArrayIndexOutOfBoundsException e){
 		}
@@ -64,7 +64,7 @@ public class StructureUtils
 	public static void setEntity(World world, Entity entity, Vec3d structCenter, Vec3d harvestPos)
 	{
 		Vec3d pos = getWorldPos(entity.getPositionVector(), structCenter, harvestPos);
-		entity.setPosition(pos.xCoord, pos.yCoord, pos.zCoord);
-		world.spawnEntityInWorld(entity);
+		entity.setPosition(pos.x, pos.y, pos.z);
+		world.spawnEntity(entity);
 	}
 }

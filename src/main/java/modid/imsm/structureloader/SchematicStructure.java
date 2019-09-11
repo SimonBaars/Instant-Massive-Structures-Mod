@@ -176,22 +176,22 @@ public class SchematicStructure extends Structure
 			 for(int i = 0; i<signEntity.signText.length; i++){
 				 signEntity.signText[i].appendText(tileEntity.getString("Text" + (i + 1)));
 			 }
-			 signEntity.setPos(new BlockPos(tileEntity.getInteger("x"), tileEntity.getInteger("y"), tileEntity.getInteger("z")));
+			 signEntity.setPos(new BlockPos(tileEntity.getInt("x"), tileEntity.getInt("y"), tileEntity.getInt("z")));
 			 tE = signEntity;
 			} else if(tileEntity.getString("id").equals("Chest")){
 				TileEntityChest chestEntity = /*(TileEntityChest)TileEntity.createTileEntity(Minecraft.getInstance().getIntegratedServer(), tileEntity)*/new TileEntityChest();
 				//System.out.println(tileEntity.getTagList("Items", tileEntity.getId()).toString());
 				//System.out.println(tileEntity.toString());
-				NBTTagList chestItemList = tileEntity.getTagList("Items", tileEntity.getId());
-				for(int i = 0; i<chestItemList.tagCount(); i++){
-					Item item = Item.getItemById(chestItemList.getCompoundTagAt(i).getInteger("id"));
-					//System.out.println(chestItemList.getCompoundTagAt(i).toString());
+				NBTTagList chestItemList = tileEntity.getList("Items", tileEntity.getId());
+				for(int i = 0; i<chestItemList.size(); i++){
+					Item item = Item.getItemById(chestItemList.getCompound(i).getInteger("id"));
+					//System.out.println(chestItemList.getCompound(i).toString());
 					//System.out.println(item.getUnlocalizedName());
-					chestEntity.setInventorySlotContents(chestItemList.getCompoundTagAt(i).getByte("Slot"), new ItemStack(item,chestItemList.getCompoundTagAt(i).getByte("Count")));
-					//System.out.println(new ItemStack(item,chestItemList.getCompoundTagAt(i).getByte("Count")).toString()+" at "+chestItemList.getCompoundTagAt(i).getByte("Slot"));
+					chestEntity.setInventorySlotContents(chestItemList.getCompound(i).getByte("Slot"), new ItemStack(item,chestItemList.getCompound(i).getByte("Count")));
+					//System.out.println(new ItemStack(item,chestItemList.getCompound(i).getByte("Count")).toString()+" at "+chestItemList.getCompound(i).getByte("Slot"));
 				}
-				chestEntity.setPos(new BlockPos(tileEntity.getInteger("x"), tileEntity.getInteger("y"), tileEntity.getInteger("z")));
-				//System.out.println("Tile entity at "+Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getBlockState(StructureUtils.getWorldPos(new BlockPos(tileEntity.getInteger("x"), tileEntity.getInteger("y"), tileEntity.getInteger("z")), this.getCenterPos(), this.harvestPos)).getBlock().tile);
+				chestEntity.setPos(new BlockPos(tileEntity.getInt("x"), tileEntity.getInt("y"), tileEntity.getInt("z")));
+				//System.out.println("Tile entity at "+Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getBlockState(StructureUtils.getWorldPos(new BlockPos(tileEntity.getInt("x"), tileEntity.getInt("y"), tileEntity.getInt("z")), this.getCenterPos(), this.harvestPos)).getBlock().tile);
 				tE=chestEntity;
 			}else {
 			tE=TileEntity.func_190200_a(Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension), tileEntity);
@@ -209,25 +209,25 @@ public class SchematicStructure extends Structure
 		 for(int i = 0; i<signEntity.signText.length; i++){
 			 signEntity.signText[i].appendText(tileEntity.getString("Text" + (i + 1)));
 		 }
-		 signEntity.setPos(new BlockPos(tileEntity.getInteger("x"), tileEntity.getInteger("y"), tileEntity.getInteger("z")));
+		 signEntity.setPos(new BlockPos(tileEntity.getInt("x"), tileEntity.getInt("y"), tileEntity.getInt("z")));
 		 tE = signEntity;
 		}else if(tileEntity.getString("id").equals("Chest")){
 				TileEntityChest chestEntity = /*(TileEntityChest)TileEntity.createTileEntity(Minecraft.getInstance().getIntegratedServer(), tileEntity)*/new TileEntityChest();
 				//System.out.println(tileEntity.getTagList("Items", tileEntity.getId()).toString());
 				//System.out.println(tileEntity.toString());
 				NBTTagList chestItemList = tileEntity.getTagList("Items", tileEntity.getId());
-				for(int i = 0; i<chestItemList.tagCount(); i++){
-					Item item = Item.getItemById(chestItemList.getCompoundTagAt(i).getInteger("id"));
-					//System.out.println(chestItemList.getCompoundTagAt(i).toString());
+				for(int i = 0; i<chestItemList.size(); i++){
+					Item item = Item.getItemById(chestItemList.getCompound(i).getInteger("id"));
+					//System.out.println(chestItemList.getCompound(i).toString());
 					//System.out.println(item.getUnlocalizedName());
-					chestEntity.setInventorySlotContents(chestItemList.getCompoundTagAt(i).getByte("Slot"), new ItemStack(item,chestItemList.getCompoundTagAt(i).getByte("Count")));
-					//System.out.println(new ItemStack(item,chestItemList.getCompoundTagAt(i).getByte("Count")).toString()+" at "+chestItemList.getCompoundTagAt(i).getByte("Slot"));
+					chestEntity.setInventorySlotContents(chestItemList.getCompound(i).getByte("Slot"), new ItemStack(item,chestItemList.getCompound(i).getByte("Count")));
+					//System.out.println(new ItemStack(item,chestItemList.getCompound(i).getByte("Count")).toString()+" at "+chestItemList.getCompound(i).getByte("Slot"));
 				}
-				chestEntity.setPos(new BlockPos(tileEntity.getInteger("x"), tileEntity.getInteger("y"), tileEntity.getInteger("z")));
-				//System.out.println("Tile entity at "+Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getBlockState(StructureUtils.getWorldPos(new BlockPos(tileEntity.getInteger("x"), tileEntity.getInteger("y"), tileEntity.getInteger("z")), this.getCenterPos(), this.harvestPos)).getBlock().tile);
+				chestEntity.setPos(new BlockPos(tileEntity.getInt("x"), tileEntity.getInt("y"), tileEntity.getInt("z")));
+				//System.out.println("Tile entity at "+Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getBlockState(StructureUtils.getWorldPos(new BlockPos(tileEntity.getInt("x"), tileEntity.getInt("y"), tileEntity.getInt("z")), this.getCenterPos(), this.harvestPos)).getBlock().tile);
 				tE=chestEntity;
 			}else {
-		tE=TileEntity.func_190200_a(Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension), tileEntity);
+		tE=TileEntity.create(tileEntity);
 		}
 			StructureUtils.setTileEntity(Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension), tE, this.getCenterPos(), harvestPos);
 			//TODO: THE ABOVE LINE SHOULD NOT BE COMMENTED!!
@@ -362,15 +362,15 @@ public class SchematicStructure extends Structure
 			}
 		}
 
-		NBTTagList entityList = nbtTagCompound.getTagList("Entities", 10);
-		this.entities = new NBTTagCompound[entityList.tagCount()];
-		for (int i = 0; i < entityList.tagCount(); i++)
-			this.entities[i] = entityList.getCompoundTagAt(i);
+		NBTTagList entityList = nbtTagCompound.getList("Entities", 10);
+		this.entities = new NBTTagCompound[entityList.size()];
+		for (int i = 0; i < entityList.size(); i++)
+			this.entities[i] = entityList.getCompound(i);
 
-		NBTTagList tileEntityList = nbtTagCompound.getTagList("TileEntities", 10);
-		this.tileEntities = new NBTTagCompound[tileEntityList.tagCount()];
-		for (int i = 0; i < tileEntityList.tagCount(); i++)
-			this.tileEntities[i] = tileEntityList.getCompoundTagAt(i);
+		NBTTagList tileEntityList = nbtTagCompound.getList("TileEntities", 10);
+		this.tileEntities = new NBTTagCompound[tileEntityList.size()];
+		for (int i = 0; i < tileEntityList.size(); i++)
+			this.tileEntities[i] = tileEntityList.getCompound(i);
 
 		this.initCenterPos();
 	}
