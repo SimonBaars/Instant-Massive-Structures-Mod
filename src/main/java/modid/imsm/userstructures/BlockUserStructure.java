@@ -10,17 +10,13 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBook;
-import net.minecraft.item.ItemFireball;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemRedstone;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
 public class BlockUserStructure extends Block {
@@ -47,16 +43,16 @@ public class BlockUserStructure extends Block {
 		if(worldIn.isRemote){
 			return true;
 		}
-		if(playerIn.getHeldItemMainhand()!=null && playerIn.getHeldItemMainhand().getItem() instanceof ItemRedstone){
+		if(playerIn.getHeldItemMainhand()!=null && playerIn.getHeldItemMainhand().getItem() == Items.REDSTONE){
 			
         	IMSM.eventHandler.serverCreators.add(new OutlineCreator(name,pos,modifierx,modifiery,modifierz));
         	hasOutline=true;
     	} else if(playerIn.getHeldItemMainhand()!=null && playerIn.getHeldItemMainhand().getItem() instanceof ItemBook) {
     			doReplaceAir=!doReplaceAir;
     			if(doReplaceAir){
-    				Minecraft.getInstance().player.sendChatMessage("I will replace all existing blocks in the part I'm gonna spawn in with air now"));
+    				Minecraft.getInstance().player.sendChatMessage("I will replace all existing blocks in the part I'm gonna spawn in with air now");
     			} else {
-    				Minecraft.getInstance().player.sendChatMessage("I won't replace any existing blocks with air"));
+    				Minecraft.getInstance().player.sendChatMessage("I won't replace any existing blocks with air");
     			}
     	} /*else if(playerIn.getCurrentEquippedItem()!=null && playerIn.getCurrentEquippedItem().getItem() instanceof ItemAppleGold) {
     		if(worldIn.isRemote){
@@ -64,7 +60,7 @@ public class BlockUserStructure extends Block {
     			IMSM.spawnSpeed++;
     				Minecraft.getInstance().player.sendChatMessage("The speed in which structures will be created has been increased to "+IMSM.spawnSpeed+" (default is 4).");
     			}}
-    	}*/ else if(playerIn.getHeldItemMainhand()!=null && playerIn.getHeldItemMainhand().getItem() instanceof ItemFireball) {
+    	}*/ else if(playerIn.getHeldItemMainhand()!=null && playerIn.getHeldItemMainhand().getItem() == Items.FIRE_CHARGE) {
     			remove(new StructureCreatorServer(name, pos.getX()+modifierx, pos.getY()+modifiery, pos.getZ()+modifierz, doReplaceAir,getSize(IMSM.eventHandler.creators.size())));
     	} else {
     	/*if(hasOutline){
@@ -75,7 +71,7 @@ public class BlockUserStructure extends Block {
     	}*/
     	BlockPos newPos = new BlockPos(pos.getX(), pos.getY(), pos.getZ());
     	IMSM.eventHandler.creators.add(new StructureCreatorUser(name, pos.getX()+modifierx, pos.getY()+modifiery, pos.getZ()+modifierz, doReplaceAir,getSize(IMSM.eventHandler.creators.size())));
-    	worldIn.setBlockState(newPos, new BlockState(Blocks.AIR, ImmutableMap.of()));
+    	worldIn.setBlockState(newPos, Blocks.AIR.getDefaultState());
 
     	}
         return true;
@@ -99,10 +95,10 @@ public class BlockUserStructure extends Block {
 				}
 			}
 		}
-		Minecraft.getInstance().player.sendChatMessage("The last placed structure has been removed."));
+		Minecraft.getInstance().player.sendChatMessage("The last placed structure has been removed.");
 		//IMSM.lastPlaced=null;
 	}else {
-		Minecraft.getInstance().player.sendChatMessage("You didn't place a structure to undo."));
+		Minecraft.getInstance().player.sendChatMessage("You didn't place a structure to undo.");
 	}
 	}
 
@@ -123,16 +119,6 @@ public class BlockUserStructure extends Block {
     	//}
     	hasOutline=false;
     		}
-    	}
-    }
-    
-    @Override
-    public void onBlockDestroyedByExplosion(World worldIn, BlockPos pos, Explosion explosionIn) {
-    	if(hasOutline && !worldIn.isRemote){
-    	SchematicStructure struct = new SchematicStructure(name+".structure");
-    	struct.readFromFile();
-    	struct.removeOutline(pos.getX(),modifierx, pos.getY(),modifiery, pos.getZ(),modifierz);
-    	hasOutline=false;
     	}
     }
     

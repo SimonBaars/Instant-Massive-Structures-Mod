@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -49,7 +50,7 @@ public class BlockUnlimited extends Block
 		  IMSM.dialoge = 11;
 		  ForgeEventHandler.searchingPage=1;
 	  }
-	  worldIn.setBlockToAir(pos);
+	  worldIn.setBlockState(pos, Blocks.AIR.getDefaultState());
 	  return true;
   }
 }

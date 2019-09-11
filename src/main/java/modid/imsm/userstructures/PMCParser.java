@@ -481,9 +481,9 @@ while ((bytesRead = inputStream.read(buffer)) != -1) {
 	private void addBlock(final String realFileName) {
 		Block block = new BlockUserStructure(realFileName).setCreativeTab(IMSM.User);
 		  IMSM.userBlocks.add(block);
-		  GameRegistry.registerBlock(block, realFileName);
+		 // GameRegistry.registerBlock(block, realFileName); TODO
 		 // GameRegistry.registerWithItem(block);
-		  Minecraft.getInstance().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(block), 0, new ModelResourceLocation(IMSM.modid + ":" + realFileName, "inventory"));
+		// TODO  Minecraft.getInstance().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(block), 0, new ModelResourceLocation(IMSM.modid + ":" + realFileName, "inventory"));
 		  /*Minecraft.getInstance().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(block),  new ItemMeshDefinition() {
 			  
 			    @Override
@@ -494,7 +494,7 @@ while ((bytesRead = inputStream.read(buffer)) != -1) {
 			});*/
 		  try {
 				InputStream languageFile = new FileInputStream(new File("structures/last.lang"));
-				LanguageMap.inject(languageFile);
+				// TODO LanguageMap.inject(languageFile);
 				languageFile.close();
 			} catch (Exception e2) {
 				e2.printStackTrace();
