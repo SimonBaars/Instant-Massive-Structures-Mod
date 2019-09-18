@@ -11,7 +11,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityType;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -22,9 +21,13 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.tileentity.TileEntitySign;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.datafix.fixes.ItemIntIDToString;
+import net.minecraft.util.datafix.fixes.ItemStackDataFlattening;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class SchematicStructure extends Structure
 {
@@ -93,7 +96,7 @@ public class SchematicStructure extends Structure
 					//System.out.println("DATA=="+this.blocks[y][z][x]+blockPlacer+this.getCenterPos()+harvestPos);
 					if (this.blockMode.equals("overlay") && this.blocks[y][z][x] == Blocks.AIR) continue;
 					//StructureUtils.setBlock(blockPlacer2, this.blocks[y][z][x].getStateFromMeta(this.blockData[y][z][x]), new BlockPos(x, y, z), this.getCenterPos(), harvestPos);
-					StructureUtils.setBlock(blockPlacer, this.blocks[y][z][x].getStateFromMeta(this.blockData[y][z][x]), new BlockPos(x, y, z), this.getCenterPos(), harvestPos);
+					StructureUtils.setBlock(blockPlacer, this.blocks[y][z][x].getStateById(this.blockData[y][z][x]), new BlockPos(x, y, z), this.getCenterPos(), harvestPos);
 				}
 					//BlockPlaceHandler.setBlock(serverWorld,  new BlockPos(this.posX+x, this.posY+y,this.posZ-z), this.blocks[y][z][x].getStateFromMeta(this.blockData[y][z][x]));
 					//BlockPlaceHandler.setBlock(world,  new BlockPos(this.posX+x, this.posY+y,this.posZ-z), this.blocks[y][z][x].getStateFromMeta(this.blockData[y][z][x]));}
@@ -143,7 +146,7 @@ public class SchematicStructure extends Structure
 						UndoCommand.removedPositions.add(translatedPosition);
 						}
 						//System.out.prinln(daddy.i+", "+daddy.j+", "+daddy.k+", "+height+", "+width+", "+length);
-					StructureUtils.setBlock(this.blockPlacer, this.blocks[daddy.i][daddy.j][daddy.k].getStateFromMeta(this.blockData[daddy.i][daddy.j][daddy.k]), position, this.getCenterPos(), this.harvestPos);
+					StructureUtils.setBlock(this.blockPlacer, this.blocks[daddy.i][daddy.j][daddy.k].getStateById(this.blockData[daddy.i][daddy.j][daddy.k]), position, this.getCenterPos(), this.harvestPos);
 					//BlockPlaceHandler.setBlock(serverWorld,  new BlockPos(daddy.x-daddy.k, daddy.y+daddy.i,daddy.z-daddy.j), this.blocks[daddy.i][daddy.j][daddy.k].getStateFromMeta(this.blockData[daddy.i][daddy.j][daddy.k]));
 						//BlockPlaceHandler.setBlock(world,  new BlockPos(daddy.x-daddy.k, daddy.y+daddy.i,daddy.z-daddy.j), this.blocks[daddy.i][daddy.j][daddy.k].getStateFromMeta(this.blockData[daddy.i][daddy.j][daddy.k]));
 					if(this.blocks[daddy.i][daddy.j][daddy.k] instanceof BlockChest){
@@ -347,7 +350,16 @@ public class SchematicStructure extends Structure
 		for (int i = 0; i < blockIdsByte.length; i++)
 		{
 			int blockId = (short) (blockIdsByte[i] & 0xFF);
-			this.blocks[y - 1][z - 1][x - 1] = Block.getBlockById(blockId);
+			byte blockData = blockDataByte[i];
+			
+			String legacyName = ItemIntIDToString.getItem(blockId);
+            String name = ItemStackDataFlattening.updateItem(legacyName, blockData);
+            if (legacyName.equals("minecraft:air") && blockId > 0) name = "minecraft:stone";
+            if (name == null) name = legacyName;
+
+            Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(name));
+			
+			this.blocks[y - 1][z - 1][x - 1] = block;
 			this.blockData[y - 1][z - 1][x - 1] = blockDataByte[i];
 			x++;
 			if (x > this.length)
