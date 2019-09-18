@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumLightType;
-import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 
 public class LightUpdateCheck {

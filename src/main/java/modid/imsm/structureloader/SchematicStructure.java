@@ -12,6 +12,7 @@ import net.minecraft.block.BlockChest;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityType;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -184,7 +185,7 @@ public class SchematicStructure extends Structure
 				//System.out.println(tileEntity.toString());
 				NBTTagList chestItemList = tileEntity.getList("Items", tileEntity.getId());
 				for(int i = 0; i<chestItemList.size(); i++){
-					Item item = Item.getItemById(chestItemList.getCompound(i).getInteger("id"));
+					Item item = Item.getItemById(chestItemList.getCompound(i).getInt("id"));
 					//System.out.println(chestItemList.getCompound(i).toString());
 					//System.out.println(item.getUnlocalizedName());
 					chestEntity.setInventorySlotContents(chestItemList.getCompound(i).getByte("Slot"), new ItemStack(item,chestItemList.getCompound(i).getByte("Count")));
@@ -194,13 +195,13 @@ public class SchematicStructure extends Structure
 				//System.out.println("Tile entity at "+Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getBlockState(StructureUtils.getWorldPos(new BlockPos(tileEntity.getInt("x"), tileEntity.getInt("y"), tileEntity.getInt("z")), this.getCenterPos(), this.harvestPos)).getBlock().tile);
 				tE=chestEntity;
 			}else {
-			tE=TileEntity.func_190200_a(Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension), tileEntity);
+			tE=TileEntity.create(tileEntity);
 			}
 			
 			StructureUtils.setTileEntity(Minecraft.getInstance().world, tE, this.getCenterPos(), harvestPos);
 			}
 		for (NBTTagCompound entity : this.entities)
-			StructureUtils.setEntity(Minecraft.getInstance().world, EntityList.createEntityFromNBT(entity, world), this.getCenterPos(), harvestPos);
+			StructureUtils.setEntity(Minecraft.getInstance().world, EntityType.create(entity, world), this.getCenterPos(), harvestPos);
 		
 		for (NBTTagCompound tileEntity : this.tileEntities){
 			TileEntity tE;
@@ -215,9 +216,9 @@ public class SchematicStructure extends Structure
 				TileEntityChest chestEntity = /*(TileEntityChest)TileEntity.createTileEntity(Minecraft.getInstance().getIntegratedServer(), tileEntity)*/new TileEntityChest();
 				//System.out.println(tileEntity.getTagList("Items", tileEntity.getId()).toString());
 				//System.out.println(tileEntity.toString());
-				NBTTagList chestItemList = tileEntity.getTagList("Items", tileEntity.getId());
+				NBTTagList chestItemList = tileEntity.getList("Items", tileEntity.getId());
 				for(int i = 0; i<chestItemList.size(); i++){
-					Item item = Item.getItemById(chestItemList.getCompound(i).getInteger("id"));
+					Item item = Item.getItemById(chestItemList.getCompound(i).getInt("id"));
 					//System.out.println(chestItemList.getCompound(i).toString());
 					//System.out.println(item.getUnlocalizedName());
 					chestEntity.setInventorySlotContents(chestItemList.getCompound(i).getByte("Slot"), new ItemStack(item,chestItemList.getCompound(i).getByte("Count")));
@@ -228,12 +229,11 @@ public class SchematicStructure extends Structure
 				tE=chestEntity;
 			}else {
 		tE=TileEntity.create(tileEntity);
-		}
+		}	
 			StructureUtils.setTileEntity(Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension), tE, this.getCenterPos(), harvestPos);
-			//TODO: THE ABOVE LINE SHOULD NOT BE COMMENTED!!
 		}
 		for (NBTTagCompound entity : this.entities)
-			StructureUtils.setEntity(Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension), EntityList.createEntityFromNBT(entity, world), this.getCenterPos(), harvestPos);
+			StructureUtils.setEntity(Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension), EntityType.create(entity, world), this.getCenterPos(), harvestPos);
 		
 		blockPlacer.processSpecialBlocks();
 		

@@ -88,8 +88,8 @@ public class BlockPlacer
 			}
 			if(block instanceof BlockDoor){
 				BlockPos pos = new BlockPos(blockPos.getX(),blockPos.getY()+1,blockPos.getZ());
-				world.setBlockState(blockPos, blockState.with(BlockDoor.HALF, 0), 2);
-		        world.setBlockState(pos, blockState.withProperty(BlockDoor.HALF, BlockDoor.EnumDoorHalf.UPPER), 2);
+				//world.setBlockState(blockPos, blockState..with(BlockDoor.HALF, 0), 2); TODO
+		        //world.setBlockState(pos, blockState.withProperty(BlockDoor.HALF, BlockDoor.EnumDoorHalf.UPPER), 2);
 		        disabledPos.add(pos);
 		        return true;
 			} else if(block instanceof BlockBed){
@@ -106,7 +106,7 @@ public class BlockPlacer
 		boolean blockAdded = DropFuncBlock.setBlock(this.world, blockState, blockPos, false, isLive);
 		//this.updatePos.add(blockPos);
 		//this.updateState.add(blockState);
-		this.world.markAndNotifyBlock(blockPos, this.world.getChunkFromBlockCoords(blockPos), this.world.getBlockState(blockPos), blockState, 3);
+		this.world.markAndNotifyBlock(blockPos, this.world.getChunk(blockPos), this.world.getBlockState(blockPos), blockState, 3);
 		return blockAdded;
 	}
 
