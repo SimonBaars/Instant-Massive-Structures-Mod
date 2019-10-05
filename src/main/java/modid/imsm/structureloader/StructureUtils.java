@@ -1,5 +1,6 @@
 package modid.imsm.structureloader;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
@@ -7,7 +8,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 
 public class StructureUtils
 {
@@ -34,11 +34,11 @@ public class StructureUtils
 	public static void setTileEntity(World world, NBTTagCompound tileEntity, BlockPos structPos, Vec3d structCenter, Vec3d harvestPos)
 	{
 		BlockPos pos = getWorldPos(structPos, structCenter, harvestPos);
-		IBlockState blockState = world.getBlockState(pos);
+		BlockState blockState = world.getBlockState(pos);
 
 		world.removeTileEntity(pos);
 		BlockPos chunkPos = new BlockPos(pos.getX() & 15, pos.getY(), pos.getZ() & 15);
-		TileEntity blockTileEntity = world.getChunk(pos).getTileEntity(chunkPos, Chunk.EnumCreateEntityType.CHECK);
+		TileEntity blockTileEntity = world.getChunk(pos).getTileEntity(chunkPos);
 
 		blockTileEntity = blockState.getBlock().createTileEntity(blockState, world);
 		blockTileEntity.read(tileEntity);
@@ -65,6 +65,6 @@ public class StructureUtils
 	{
 		Vec3d pos = getWorldPos(entity.getPositionVector(), structCenter, harvestPos);
 		entity.setPosition(pos.x, pos.y, pos.z);
-		world.spawnEntity(entity);
+		world.addEntity(entity);
 	}
 }
