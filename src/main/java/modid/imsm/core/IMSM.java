@@ -69,6 +69,7 @@ public class IMSM {
 	public static modid.imsm.core.EventHandler eventHandler;
 	
 	public IMSM() {
+		System.out.println("Construct IMSM");
         // Register the setup method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerBlocks);
         // Register the enqueueIMC method for modloading
@@ -2082,7 +2083,7 @@ public void registerBlocks(RegistryEvent.Register<Block> event) {
 				"OOO", "OSO", "OOO", 'S', House, 'O', Items.leather);
 
 			*/
-
+System.out.println("REGISTER IMSM BLOCKS;");
 event.getRegistry().register(LiveStructureRemover);
 		
 
