@@ -2,30 +2,29 @@ package modid.imsm.structureloader;
 
 import java.util.ArrayList;
 
+import net.minecraft.block.BannerBlock;
+import net.minecraft.block.BedBlock;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockBanner;
-import net.minecraft.block.BlockBasePressurePlate;
-import net.minecraft.block.BlockBed;
-import net.minecraft.block.BlockBrewingStand;
-import net.minecraft.block.BlockBush;
-import net.minecraft.block.BlockButton;
-import net.minecraft.block.BlockCactus;
-import net.minecraft.block.BlockCake;
-import net.minecraft.block.BlockDoor;
-import net.minecraft.block.BlockFlowerPot;
-import net.minecraft.block.BlockLadder;
-import net.minecraft.block.BlockLever;
-import net.minecraft.block.BlockRailBase;
-import net.minecraft.block.BlockRedstoneComparator;
-import net.minecraft.block.BlockRedstoneTorch;
-import net.minecraft.block.BlockRedstoneWire;
-import net.minecraft.block.BlockSign;
-import net.minecraft.block.BlockTorch;
-import net.minecraft.block.BlockTripWireHook;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.BrewingStandBlock;
+import net.minecraft.block.BushBlock;
+import net.minecraft.block.CactusBlock;
+import net.minecraft.block.CakeBlock;
+import net.minecraft.block.DoorBlock;
+import net.minecraft.block.FlowerPotBlock;
+import net.minecraft.block.LadderBlock;
+import net.minecraft.block.LeverBlock;
+import net.minecraft.block.PressurePlateBlock;
+import net.minecraft.block.RedstoneTorchBlock;
+import net.minecraft.block.RedstoneWireBlock;
+import net.minecraft.block.StandingSignBlock;
+import net.minecraft.block.TorchBlock;
+import net.minecraft.block.TripWireHookBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 
 public class BlockPlacer
 {
@@ -33,9 +32,9 @@ public class BlockPlacer
 	//private ArrayList<BlockPos> updatePos;
 	//private ArrayList<IBlockState> updateState;
 	boolean isLive;
-	private ArrayList<IBlockState> specialBlocks = new ArrayList<IBlockState>();
-	private ArrayList<BlockPos> specialBlockPos = new ArrayList<BlockPos>();
-	private ArrayList<BlockPos> disabledPos = new ArrayList<BlockPos>();
+	private ArrayList<BlockState> specialBlocks = new ArrayList<>();
+	private ArrayList<BlockPos> specialBlockPos = new ArrayList<>();
+	private ArrayList<BlockPos> disabledPos = new ArrayList<>();
 	
 	public BlockPlacer(World world, boolean isLive)
 	{
@@ -52,12 +51,12 @@ public class BlockPlacer
 			}
 	}
 
-	public boolean add(IBlockState blockState, BlockPos blockPos)
+	public boolean add(BlockState blockState, BlockPos blockPos)
 	{
 		return add(blockState, blockPos, true);
 	}
 	
-	public boolean add(IBlockState blockState, BlockPos blockPos, boolean doCheckSpecialBlock)
+	public boolean add(BlockState blockState, BlockPos blockPos, boolean doCheckSpecialBlock)
 	{
 		/*Field field;
 		try {
@@ -86,13 +85,13 @@ public class BlockPlacer
 			if(isLive){
 				return false;
 			}
-			if(block instanceof BlockDoor){
+			if(block instanceof DoorBlock){
 				BlockPos pos = new BlockPos(blockPos.getX(),blockPos.getY()+1,blockPos.getZ());
 				//world.setBlockState(blockPos, blockState..with(BlockDoor.HALF, 0), 2); TODO
 		        //world.setBlockState(pos, blockState.withProperty(BlockDoor.HALF, BlockDoor.EnumDoorHalf.UPPER), 2);
 		        disabledPos.add(pos);
 		        return true;
-			} else if(block instanceof BlockBed){
+			} else if(block instanceof BedBlock){
                 //world.setBlockState(blockPos, blockState.withProperty(BlockBed.PART, BlockBed.EnumPartType.FOOT), 11);
                 return false;
 			}
@@ -106,30 +105,30 @@ public class BlockPlacer
 		boolean blockAdded = DropFuncBlock.setBlock(this.world, blockState, blockPos, false, isLive);
 		//this.updatePos.add(blockPos);
 		//this.updateState.add(blockState);
-		this.world.markAndNotifyBlock(blockPos, this.world.getChunk(blockPos), this.world.getBlockState(blockPos), blockState, 3);
+		this.world.markAndNotifyBlock(blockPos, (Chunk) this.world.getChunk(blockPos), this.world.getBlockState(blockPos), blockState, 3);
 		return blockAdded;
 	}
 
 	private boolean isSpecialBlock(Block block) {
-		return (block instanceof BlockBanner || 
-				block instanceof BlockBasePressurePlate ||
-				block instanceof BlockBed ||
-				block instanceof BlockBrewingStand ||
-				block instanceof BlockButton ||
-				block instanceof BlockCactus ||
-				block instanceof BlockCake ||
-				block instanceof BlockDoor ||
-				block instanceof BlockFlowerPot ||
-				block instanceof BlockLadder ||
-				block instanceof BlockRailBase ||
-				block instanceof BlockRedstoneComparator ||
-				block instanceof BlockRedstoneTorch ||
-				block instanceof BlockRedstoneWire ||
-				block instanceof BlockSign ||
-				block instanceof BlockBush ||
-				block instanceof BlockTorch ||
-				block instanceof BlockLever ||
-				block instanceof BlockTripWireHook);
+		return (block instanceof BannerBlock || 
+				block instanceof PressurePlateBlock ||
+				block instanceof BedBlock ||
+				block instanceof BrewingStandBlock ||
+				block == Blocks.STONE_BUTTON ||
+				block instanceof CactusBlock ||
+				block instanceof CakeBlock ||
+				block instanceof DoorBlock ||
+				block instanceof FlowerPotBlock ||
+				block instanceof LadderBlock ||
+				block == Blocks.RAIL ||
+				block == Blocks.COMPARATOR ||
+				block instanceof RedstoneTorchBlock ||
+				block instanceof RedstoneWireBlock ||
+				block instanceof StandingSignBlock ||
+				block instanceof BushBlock ||
+				block instanceof TorchBlock ||
+				block instanceof LeverBlock ||
+				block instanceof TripWireHookBlock);
 	}
 
 	/*public void update()

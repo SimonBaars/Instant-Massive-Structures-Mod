@@ -1,7 +1,7 @@
 package modid.imsm.structureloader;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -47,7 +47,7 @@ public class BlockPlaceHandler {
 		setBlock(serverWorld, pos, block.getDefaultState());
 	}
 	
-	public static void setBlock(World world, BlockPos pos, IBlockState state){
+	public static void setBlock(World world, BlockPos pos, BlockState state){
 		//if(addToMap(state, pos.getX(),pos.getY(),pos.getZ())){
 		/*try{
 			Chunk chunk = world.getChunkFromBlockCoords(pos);

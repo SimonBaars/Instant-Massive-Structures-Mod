@@ -7,12 +7,11 @@ import com.google.common.collect.ImmutableMap;
 import modid.imsm.core.IMSM;
 import modid.imsm.structureloader.SchematicStructure;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockState;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.Blocks;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -30,8 +29,8 @@ public class LiveStructureRemover extends Block {
 	}
 	
 	@Override
-	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, @Nullable EntityLivingBase placer, ItemStack stack) {
-		if(worldIn.isRemote){
+	public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+	  	if(worldIn.isRemote){
 			for(int i = 0; i<IMSM.eventHandler.liveCreators.size(); i++){
 				SchematicStructure struct = new SchematicStructure(IMSM.eventHandler.liveCreators.get(i).structureName+".structure", true);
 				struct.readFromFile();

@@ -1,21 +1,71 @@
 package modid.imsm.structureloader;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.block.BlockState;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 
 public class DropFuncBlock
 {
-	public static boolean setBlock(World world, IBlockState state, BlockPos pos, boolean update, boolean isLive)
+	public static void setBlock(IWorld world, BlockState state, BlockPos pos, boolean update) {
+        setBlock(world, state, pos, null, update);
+    }
+
+    public static void setBlock(IWorld world, BlockState state, BlockPos pos,
+                                CompoundNBT tileEntity, boolean update) {
+
+        if (world.getBlockState(pos) != state)
+            world.setBlockState(pos, state, 2);
+
+        if (update && world instanceof World)
+            ((World) world).markAndNotifyBlock(pos, ((World) world).getChunkAt(pos),
+                world.getBlockState(pos), state, 3);
+
+        if (tileEntity != null && state.getBlock().hasTileEntity(state)) {
+            setTileEntity(world, state, pos, tileEntity);
+        }
+    }
+
+    public static void setTileEntity(IWorld world, BlockState state,
+        BlockPos pos, CompoundNBT tileEntityData) {
+
+        TileEntity tileEntity = world.getTileEntity(pos);
+        if (tileEntity != null) {
+            tileEntity.handleUpdateTag(tileEntityData);
+            if (world instanceof World)
+                ((World) world).setTileEntity(pos, tileEntity);
+        }
+
+        /*
+        if (tileEntityData != null && state.getBlock().hasTileEntity(state)) {
+            world.removeTileEntity(pos);
+
+            TileEntity tileEntity = state.getBlock().createTileEntity(state, world);
+
+            if (tileEntity == null) {
+                Lucky.error(null, "Invalid tile entity '" + tileEntityData
+                    + "' for block '" + state);
+                return;
+            }
+
+            tileEntity.read(tileEntityData);
+            world.setTileEntity(pos, tileEntity);
+            tileEntity.updateContainingBlockInfo();
+        }
+         */
+    }
+	
+	
+	
+	public static boolean setBlock(World world, BlockState state, BlockPos pos, boolean update, boolean isLive)
 	{
-		 setBlock(world, state, pos, null, update, isLive);
+		 setBlock(world, state, pos, update, isLive);
 		 return true;
 	}
 
-	private static boolean setBlock(World world, IBlockState state, BlockPos pos, NBTTagCompound tileEntity, boolean update, boolean isLive)
+	/*private static boolean setBlock(World world, BlockState state, BlockPos pos, NBTTagCompound tileEntity, boolean update, boolean isLive)
 	{
 		//try{
 		Chunk chunk = world.getChunk(pos);
@@ -40,7 +90,7 @@ public class DropFuncBlock
 			
 			//world.setBlockState(pos, state);
 			//int timesFaster=1;
-			//if(!isLive || IMSM.eventHandler.lightUpdate.getProcessesSize()<200 /*&& pos.getX()%timesFaster==0 && pos.getY()%timesFaster==0 && pos.getZ()%timesFaster==0*/){
+			//if(!isLive || IMSM.eventHandler.lightUpdate.getProcessesSize()<200 /*&& pos.getX()%timesFaster==0 && pos.getY()%timesFaster==0 && pos.getZ()%timesFaster==0*///){
 				//if(!isLive || IMSM.eventHandler.lightUpdate.getProcessesSize()<200){
 				//if(!world.isRemote){
 						//IMSM.eventHandler.lightUpdate.processes.add(pos);
@@ -85,7 +135,7 @@ world.checkLight(pos);
 			//Minecraft.getInstance().world.markAndNotifyBlock(pos, chunk, state, oldState, 3);
 		//}
 
-		if (tileEntity != null && state.getBlock().hasTileEntity(state) && !isLive)
+		/*if (tileEntity != null && state.getBlock().hasTileEntity(state) && !isLive)
 		{
 			world.removeTileEntity(pos);
 			BlockPos chunkPos = new BlockPos(pos.getX() & 15, pos.getY(), pos.getZ() & 15);
@@ -100,9 +150,9 @@ world.checkLight(pos);
 		//	return false;
 		//}
 		return true;
-	}
+	}*/
 
-	public static synchronized void setTileEntity(World world, IBlockState state, BlockPos pos, NBTTagCompound nbt)
+	/*public static synchronized void setTileEntity(World world, BlockState state, BlockPos pos, NBTTagCompound nbt)
 	{
 		TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity != null) {
@@ -127,5 +177,5 @@ world.checkLight(pos);
 			world.setTileEntity(pos, blockTileEntity);
 			blockTileEntity.updateContainingBlockInfo();
 		}*/
-	}
+	//}
 }
