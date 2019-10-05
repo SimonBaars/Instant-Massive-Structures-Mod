@@ -5,22 +5,18 @@ import com.google.common.collect.ImmutableMap;
 import modid.imsm.structureloader.SchematicStructure;
 import modid.imsm.userstructures.OutlineCreator;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockState;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBook;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.item.Items;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.Explosion;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 
 public class BlockStructure extends Block {
 	private final String name;
@@ -45,8 +41,7 @@ public class BlockStructure extends Block {
 	}
 	
 	@Override
-	public boolean onBlockActivated(IBlockState state, World worldIn, BlockPos pos, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
-    {
+	public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
 		/*if(IMSM.worlds[0]==null || IMSM.worlds[1]==null){
 		if (worldIn.isRemote) {
 		      IMSM.worlds[0] = worldIn;
@@ -57,13 +52,13 @@ public class BlockStructure extends Block {
 		if(worldIn.isRemote){
 			return true;
 		}
-		if(playerIn.getHeldItemMainhand()!=null && playerIn.getHeldItemMainhand().getItem() == Items.REDSTONE){
+		if(player.getHeldItemMainhand()!=null && player.getHeldItemMainhand().getItem() == Items.REDSTONE){
 			
         	//SchematicStructure struct = new SchematicStructure(name+".structure", false);
         	//struct.readFromFile();
 IMSM.eventHandler.serverCreators.add(new OutlineCreator(name, pos ,modifierx, modifiery, modifierz));
         	hasOutline=true;
-    	} else if(playerIn.getHeldItemMainhand()!=null && playerIn.getHeldItemMainhand().getItem() instanceof ItemBook) {
+    	} else if(player.getHeldItemMainhand()!=null && player.getHeldItemMainhand().getItem() == Items.BOOK) {
     			doReplaceAir=!doReplaceAir;
     			if(doReplaceAir){
     				Minecraft.getInstance().player.sendChatMessage("I will replace all existing blocks in the part I'm gonna spawn in with air now");
@@ -76,7 +71,7 @@ IMSM.eventHandler.serverCreators.add(new OutlineCreator(name, pos ,modifierx, mo
     			IMSM.spawnSpeed++;
     				Minecraft.getInstance().player.sendChatMessage("The speed in which structures will be created has been increased to "+IMSM.spawnSpeed+" (default is 4).");
     			}}
-    	}*/ else if(playerIn.getHeldItemMainhand()!=null && playerIn.getHeldItemMainhand().getItem() == Items.FIRE_CHARGE) {
+    	}*/ else if(player.getHeldItemMainhand()!=null && player.getHeldItemMainhand().getItem() == Items.FIRE_CHARGE) {
     			remove(new StructureCreatorServer(name, pos.getX()+modifierx, pos.getY()+modifiery, pos.getZ()+modifierz, doReplaceAir,getSize(IMSM.eventHandler.creators.size())));
     	} else {
     	/*if(hasOutline){
@@ -104,7 +99,7 @@ IMSM.eventHandler.serverCreators.add(new OutlineCreator(name, pos ,modifierx, mo
 					   // Make a position.
 					   BlockPos pos0 = new BlockPos(structure.x-x, structure.y+y ,structure.z-z);
 					   // Get the default state(basically metadata 0)
-					   IBlockState state0=blk.getDefaultState();
+					   BlockState state0=blk.getDefaultState();
 					   // set the block
 					   Minecraft.getInstance().world.setBlockState(pos0, state0);
 					   Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).setBlockState(pos0, state0);
@@ -125,7 +120,7 @@ IMSM.eventHandler.serverCreators.add(new OutlineCreator(name, pos ,modifierx, mo
   }
 	
 	@Override
-    public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player)   {
+    public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player)   {
     	if(hasOutline && !worldIn.isRemote){
     		if(Minecraft.getInstance().world!=null){
     	SchematicStructure struct = new SchematicStructure(name+".structure", false);
