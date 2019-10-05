@@ -1,9 +1,8 @@
 package modid.imsm.structureloader;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -26,12 +25,12 @@ public class StructureUtils
 		return harvestPos.add(structPos).subtract(structCenter);
 	}
 
-	public static boolean setBlock(BlockPlacer blockPlacer, IBlockState blockState, BlockPos structPos, Vec3d structCenter, Vec3d harvestPos)
+	public static boolean setBlock(BlockPlacer blockPlacer, BlockState blockState, BlockPos structPos, Vec3d structCenter, Vec3d harvestPos)
 	{
 		return blockPlacer.add(blockState, StructureUtils.getWorldPos(structPos, structCenter, harvestPos));
 	}
 
-	public static void setTileEntity(World world, NBTTagCompound tileEntity, BlockPos structPos, Vec3d structCenter, Vec3d harvestPos)
+	public static void setTileEntity(World world, CompoundNBT tileEntity, BlockPos structPos, Vec3d structCenter, Vec3d harvestPos)
 	{
 		BlockPos pos = getWorldPos(structPos, structCenter, harvestPos);
 		BlockState blockState = world.getBlockState(pos);
