@@ -7,17 +7,17 @@ import modid.imsm.core.StructureCreator;
 import modid.imsm.core.StructureCreatorClient;
 import modid.imsm.structureloader.BlockPlaceHandler;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.scoreboard.Score;
 import net.minecraft.scoreboard.ScoreCriteria;
 import net.minecraft.scoreboard.ScoreCriteria.RenderType;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.Scoreboard;
-import net.minecraft.tileentity.TileEntityChest;
+import net.minecraft.tileentity.ChestTileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -64,7 +64,7 @@ public class MazeGenerator extends CreatorBlocks implements ICreatorBlock {
       		  int xPos =  x+(posX*blockSize)+((int)(Math.random()*(blockSize-1)));
       		int zPos =  z+(posY*blockSize)+((int)(Math.random()*(blockSize-1)));
       		BlockPlaceHandler.placeBlock(Blocks.CHEST, xPos, y, zPos);
-      		TileEntityChest chest = (TileEntityChest) Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getTileEntity(new BlockPos(xPos, y, zPos));
+      		ChestTileEntity chest = (ChestTileEntity) Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getTileEntity(new BlockPos(xPos, y, zPos));
       		if(chest!=null){
       			generateChestContents(chest);
       		}
@@ -103,7 +103,7 @@ public class MazeGenerator extends CreatorBlocks implements ICreatorBlock {
 	  	}
 
 
-	private void generateChestContents(TileEntityChest chest) {
+	private void generateChestContents(ChestTileEntity chest) {
 		// TODO Auto-generated method stub
 		for(int i = 0; i<27; i++){
 			if(Math.random()<0.2){

@@ -3,10 +3,9 @@ package modid.imsm.worldgeneration;
 import modid.imsm.core.CreatorBlocks;
 import modid.imsm.core.ICreatorBlock;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockGrass;
-import net.minecraft.block.BlockStone;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.GrassBlock;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -74,7 +73,7 @@ public class AtlantisCreator extends CreatorBlocks implements ICreatorBlock {
 				for(int l = 0; l<256; l++){
 					for(int k = 0; k<2; k++){
 						Block replace = worldIn[k].getBlockState(new BlockPos(x,l,z)).getBlock();
-						if(replace instanceof BlockStone || replace == Blocks.DIRT || replace instanceof BlockGrass){
+						if(replace == Blocks.STONE || replace == net.minecraft.block.Blocks.DIRT || replace instanceof GrassBlock){
 							createBlock(Blocks.WATER,x,z,k,l);
 						}
 					}
@@ -85,7 +84,7 @@ public class AtlantisCreator extends CreatorBlocks implements ICreatorBlock {
 		// Make a position.
 		   BlockPos pos0 = new BlockPos(i,l,j);
 		   // Get the default state(basically metadata 0)
-		   IBlockState state0=blk.getDefaultState();
+		   BlockState state0=blk.getDefaultState();
 		   // set the block
 		   worldIn[k].setBlockState(pos0, state0);
 	}

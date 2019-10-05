@@ -3,7 +3,7 @@ package modid.imsm.worldgeneration;
 import modid.imsm.core.CreatorBlocks;
 import modid.imsm.core.ICreatorBlock;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -87,12 +87,12 @@ public class BigWorldCreator extends CreatorBlocks implements ICreatorBlock {
 		// Make a position.
 		   BlockPos pos0 = new BlockPos(i,l,j);
 		   // Get the default state(basically metadata 0)
-		   IBlockState state0=blk.getDefaultState();
+		   BlockState state0=blk.getDefaultState();
 		   // set the block
 		   worldIn[k].setBlockState(pos0, state0);
 	}
 	
-	public void createBlock(BlockPos pos, IBlockState state){
+	public void createBlock(BlockPos pos, BlockState state){
 		/*try{
 			Chunk chunk = worldIn[k].getChunkFromBlockCoords(pos);
 			ExtendedBlockStorage storageArray = chunk.getBlockStorageArray()[pos.getY() >> 4];

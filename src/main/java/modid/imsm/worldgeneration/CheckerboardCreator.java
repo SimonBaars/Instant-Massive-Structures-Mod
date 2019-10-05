@@ -3,11 +3,10 @@ package modid.imsm.worldgeneration;
 import modid.imsm.core.CreatorBlocks;
 import modid.imsm.core.ICreatorBlock;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.EnumLightType;
 
 public class CheckerboardCreator extends CreatorBlocks implements ICreatorBlock {
 	int i,j,k;
@@ -89,10 +88,10 @@ public class CheckerboardCreator extends CreatorBlocks implements ICreatorBlock 
 		// Make a position.
 		   BlockPos pos0 = new BlockPos(x+i, y , z+j);
 		   // Get the default state(basically metadata 0)
-		   IBlockState state0=blk.getDefaultState();
+		   BlockState state0=blk.getDefaultState();
 		   // set the block
 		   world.setBlockState(pos0, state0);
 		   
-		   world.checkLightFor(EnumLightType.SKY, pos0);
+		   //world.checkLightFor(EnumLightType.SKY, pos0);
 	}
 }
