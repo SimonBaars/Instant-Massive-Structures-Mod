@@ -43,6 +43,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod ("imsm")
 //@NetworkMod(clientSideRequired = true, serverSideRequired = false)
@@ -66,6 +67,20 @@ public class IMSM {
 	 // public static IMSMProxy proxy;
 	
 	public static modid.imsm.core.EventHandler eventHandler;
+	
+	public IMSM() {
+        // Register the setup method for modloading
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerBlocks);
+        // Register the enqueueIMC method for modloading
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
+        // Register the processIMC method for modloading
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverLoad);
+        // Register the doClientStuff method for modloading
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverStarting);
+
+        // Register ourselves for server and other game events we are interested in
+        MinecraftForge.EVENT_BUS.register(this);
+    }
 	
 	public static ItemGroup Structures = new ItemGroup("Structures"){
 		@Override public ItemStack createIcon() {
