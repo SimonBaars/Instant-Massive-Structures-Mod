@@ -44,7 +44,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 
-@Mod (value = "imsm")
+@Mod ("imsm")
 //@NetworkMod(clientSideRequired = true, serverSideRequired = false)
 
 public class IMSM {

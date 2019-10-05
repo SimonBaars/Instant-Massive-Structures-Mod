@@ -8,11 +8,10 @@ import java.io.UnsupportedEncodingException;
 import modid.imsm.livestructures.RideStructure;
 import modid.imsm.livestructures.YSync;
 import modid.imsm.structureloader.SchematicStructure;
-import net.minecraft.block.BlockAir;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -115,8 +114,7 @@ public class LiveStructure {
 				}  
 			}
 			if(animation!=null){
-				for(Object playerObject : Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).playerEntities){
-					EntityPlayerMP player = (EntityPlayerMP)playerObject;
+				for(ServerPlayerEntity player : Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getPlayers()){
 				if(checkWithinBounds(player,struct.width, struct.height+5, struct.length)){
 					//Minecraft.getInstance().player.motionX+=relativeSpawnPointX/2.25;
 					
@@ -179,7 +177,7 @@ public class LiveStructure {
 						//worldIn.setBlockState(new BlockPos(checkx, y+(struct.height/2), checkz), Blocks.redstone_block.getDefaultState());
 						//serverWorld.setBlockState(new BlockPos(checkx, y+(struct.height/2), checkz), Blocks.redstone_block.getDefaultState());
 						
-					if(!(world.getBlockState(new BlockPos(checkx, y+(struct.height/2), checkz)).getBlock() instanceof BlockAir)){
+					if(!(world.getBlockState(new BlockPos(checkx, y+(struct.height/2), checkz)).getBlock() == Blocks.AIR)){
 						//System.out.println("Exploded due to "+worldIn.getBlockState(new BlockPos(checkx, y+(struct.height/2), checkz)).getBlock()+" at "+checkx+", "+(y+(struct.height/2))+", "+checkz);
 						IMSM.eventHandler.scheduleExplosion(x-(struct.length/2), y+(struct.height/2), z-(struct.width/2));
 						removeThisLiveStructure(false);
@@ -294,13 +292,12 @@ public class LiveStructure {
 
 	public void setAllPlayersToPosition( double x, double y, double z) {
 		//System.out.println("SET ALL TO POS "+x+", "+y+", "+z);
-		if(Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).playerEntities!=null){
-		for(Object playerObject : Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).playerEntities){
-			EntityPlayerMP player = (EntityPlayerMP)playerObject;
+		if(Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getPlayers()!=null){
+		for(ServerPlayerEntity player : Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getPlayers()){
 			setPlayerToPosition(player,x,y,z);
 		}
 		} else {
-			EntityPlayerMP player = (EntityPlayerMP)Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getPlayerEntityByName(Minecraft.getInstance().player.getName().getUnformattedComponentText());
+			ServerPlayerEntity player = (ServerPlayerEntity)Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getPlayerByUuid(Minecraft.getInstance().player.getUniqueID());
 			setPlayerToPosition(player,x,y,z);
 		}
 	}
@@ -313,7 +310,7 @@ public class LiveStructure {
 		}
 	}*/
 
-	void setPlayerToPosition(EntityPlayerMP player, double x, double y, double z){
+	void setPlayerToPosition(ServerPlayerEntity player, double x, double y, double z){
 		player.setPosition(x,y,z);
 		if(player.getName().equals(Minecraft.getInstance().player.getName())){
 			Minecraft.getInstance().player.setPosition(x,y,z);
@@ -333,7 +330,7 @@ public class LiveStructure {
 		return (int) Math.sqrt(Math.pow(Minecraft.getInstance().player.posX-x1,2)+Math.pow(Minecraft.getInstance().player.posY-y1,2)+Math.pow(Minecraft.getInstance().player.posZ-z1,2));
 	}
 
-	private boolean checkWithinBounds(EntityPlayerMP player, int sizex, int sizey, int sizez){
+	private boolean checkWithinBounds(ServerPlayerEntity player, int sizex, int sizey, int sizez){
 		int playerX = player.getPosition().getX();
 		int playerY = player.getPosition().getY();
 		int playerZ = player.getPosition().getZ();
@@ -454,10 +451,10 @@ public class LiveStructure {
 			}
 		}
 	}
-	Minecraft.getInstance().world.markBlockRangeForRenderUpdate(new BlockPos(posx,posy,posz), new BlockPos(posx-removeX,posy+removeY,posz-removeZ));//TODO: This is a hack, and has to be changed in the future
+	//Minecraft.getInstance().world.markBlockRangeForRenderUpdate(new BlockPos(posx,posy,posz), new BlockPos(posx-removeX,posy+removeY,posz-removeZ));//TODO: This is a hack, and has to be changed in the future
 	}
 
-	public void setBlock(World world, BlockPos pos, IBlockState state){
+	public void setBlock(World world, BlockPos pos, BlockState state){
 		world.setBlockState(pos, state);
 		/*try{
 			Chunk chunk = world.getChunk(pos);
