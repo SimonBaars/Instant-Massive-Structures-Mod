@@ -12,28 +12,28 @@ issueTrackerURL="http://my.issue.tracker/" #optional
 # A list of mods - how many allowed here is determined by the individual mod loader
 [[mods]] #mandatory
 # The modid of the mod
-modId="examplemod" #mandatory
+modId="imsm" #mandatory
 # The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
 version="${file.jarVersion}" #mandatory
  # A display name for the mod
-displayName="Example Mod" #mandatory
+displayName="Instant Massive Structures Mod" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification <here>
 updateJSONURL="http://myurl.me/" #optional
 # A URL for the "homepage" for this mod, displayed in the mod UI
-displayURL="http://example.com/" #optional
+displayURL="https://www.planetminecraft.com/mod/11-instant-massive-structures-mod-v10/" #optional
 # A file name (in the root of the mod JAR) containing a logo for display
 logoFile="examplemod.png" #optional
 # A text field displayed in the mod UI
-credits="Thanks for this example mod goes to Java" #optional
+credits="SimJoo" #optional
 # A text field displayed in the mod UI
-authors="Love, Cheese and small house plants" #optional
+authors="SimJoo" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description='''
-This is a long form description of the mod. You can write whatever you want here
+Build massive structures instantly using the Instant Massive Structures Mod. I made this mod to be awesome in both survival and creative. This mod has a set of more than 30 survival structures, that are optimized for usage in your survival world and enhance your survival experience. If you are not much the builder (but love tnt :P), this mod is perfect for you.
 
-Have some lorem ipsum.
+There are also over 800 structures optimized to create the biggest cities. With this mod you should be able to create entire cities in no time! Also, with the use of the upcoming checkerboard-chunk generator, building gets even easier. I will upload a video very soon explaining this even better, and show some examples of cities build in 1 hour, or even 10 minutes!
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed mollis lacinia magna. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Sed sagittis luctus odio eu tempus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque volutpat ligula eget lacus auctor sagittis. In hac habitasse platea dictumst. Nunc gravida elit vitae sem vehicula efficitur. Donec mattis ipsum et arcu lobortis, eleifend sagittis sem rutrum. Cras pharetra quam eget posuere fermentum. Sed id tincidunt justo. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+So, do you have ideas for the most awesome cities, but have very little time to actually create these cities, this mod is perfect for you! Click the "Download this mod" button on the yellow button on the right of this text to download this mod right now!
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.examplemod]] #optional

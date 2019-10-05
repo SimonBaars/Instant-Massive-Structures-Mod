@@ -1,5 +1,7 @@
 package modid.imsm.core;
 
+import java.util.ArrayList;
+
 import com.google.common.collect.ImmutableMap;
 
 import modid.imsm.structureloader.SchematicStructure;
@@ -10,8 +12,8 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -36,7 +38,7 @@ public class BlockStructure extends Block {
 	}
 	
 	public Block setCreativeTab(ItemGroup g) {
-		Item.BLOCK_TO_ITEM.get(this).getCreativeTabs().add(g);
+		//Item.BLOCK_TO_ITEM.get(this).getCreativeTabs().add(g);
 		return this;
 	}
 	

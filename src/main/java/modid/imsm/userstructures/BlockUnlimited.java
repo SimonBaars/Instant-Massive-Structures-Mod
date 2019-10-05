@@ -23,7 +23,7 @@ public class BlockUnlimited extends Block
     }
   
   public Block setCreativeTab(ItemGroup g) {
-		Item.BLOCK_TO_ITEM.get(this).getCreativeTabs().add(g);
+		//Item.BLOCK_TO_ITEM.get(this).getCreativeTabs().add(g);
 		return this;
 	}
   
