@@ -7,15 +7,15 @@ import com.mojang.brigadier.context.CommandContext;
 
 import modid.imsm.core.IMSM;
 import modid.imsm.core.StructureRemover;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.util.math.BlockPos;
 
 public final class UndoCommand {
 	
-	  public static ArrayList<IBlockState> removedStates = new ArrayList<IBlockState>();
-	  public static ArrayList<BlockPos> removedPositions = new ArrayList<BlockPos>();
+	  public static ArrayList<BlockState> removedStates = new ArrayList<>();
+	  public static ArrayList<BlockPos> removedPositions = new ArrayList<>();
 	public static int numBlocksUndoable = 0;
 
     private UndoCommand() {}

@@ -14,14 +14,15 @@ import java.util.Properties;
 import modid.imsm.livestructures.YSync;
 import modid.imsm.structureloader.LightUpdateCheck;
 import modid.imsm.structureloader.SchematicStructure;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.translation.LanguageMap;
+import net.minecraft.world.Explosion;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class EventHandler {
 	public ArrayList<SchematicStructure> postProcessors = new ArrayList<SchematicStructure>();
@@ -104,9 +105,8 @@ public class EventHandler {
 		//if(isRiding!=null){
 			if(ySync!=null){
 			//if(isRiding.ride.progress>=0 && isRiding.ride.progress<isRiding.ride.animation[0].length){
-				if(Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).playerEntities==null){
-			for(Object playerObject : Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).playerEntities){
-				EntityPlayerMP player = (EntityPlayerMP)playerObject;
+				if(Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getPlayers()==null){
+			for(ServerPlayerEntity player : Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getPlayers()){
 				if(ySync.isVehicle==null || (/*Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getBlockState(new BlockPos(player.posX,player.posY-1,player.posZ)).getBlock()!=Blocks.air ||*/ Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getBlockState(new BlockPos(player.posX,player.posY,player.posZ)).getBlock()!=Blocks.AIR)){
 				player.posY=/*isRiding.y+isRiding.ride.getHeight()+isRiding.ride.animation[0][isRiding.ride.progress]*/ySync.getY();
 				if(player.getName().equals(Minecraft.getInstance().player.getName())){
@@ -118,7 +118,7 @@ public class EventHandler {
 				}
 			}
 			} else {
-				EntityPlayerMP player = (EntityPlayerMP) Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getPlayerEntityByName(Minecraft.getInstance().player.getName().getUnformattedComponentText());
+				ServerPlayerEntity player = (ServerPlayerEntity) Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getPlayerByUuid(Minecraft.getInstance().player.getUniqueID());
 				if(ySync.isVehicle==null || (/*Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getBlockState(new BlockPos(player.posX,player.posY-1,player.posZ)).getBlock()!=Blocks.air ||*/ Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getBlockState(new BlockPos(player.posX,player.posY,player.posZ)).getBlock()!=Blocks.AIR)){
 				player.posY=/*isRiding.y+isRiding.ride.getHeight()+isRiding.ride.animation[0][isRiding.ride.progress]*/ySync.getY();
 				//if(player.getName().equals(Minecraft.getInstance().player.getName())){
@@ -184,7 +184,7 @@ public class EventHandler {
 		//System.out.println("render"+System.currentTimeMillis());
 	//long tickTime = System.currentTimeMillis();
 		for(int i = 0; i<scheduledExplosions.size(); i+=3){
-			Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).newExplosion((Entity)null, scheduledExplosions.get(0), scheduledExplosions.get(1), scheduledExplosions.get(2), 25.0F, true, true);
+			Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).createExplosion((Entity)null, scheduledExplosions.get(0), scheduledExplosions.get(1), scheduledExplosions.get(2), 25.0F, true, Explosion.Mode.DESTROY);
 		}
 		scheduledExplosions.clear();
 		if(postProcessors.size()>0){
@@ -195,7 +195,7 @@ public class EventHandler {
 			
 			
 			
-			while(delayedPrints.size()>0 && Minecraft.getInstance().getIntegratedServer().isCallingFromMinecraftThread()){
+			while(delayedPrints.size()>0 && Minecraft.getInstance().getIntegratedServer().isOnExecutionThread()){
 					Minecraft.getInstance().player.sendChatMessage(delayedPrints.get(0));
 					
 				delayedPrints.remove(0);
