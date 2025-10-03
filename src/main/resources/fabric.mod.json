@@ -1,0 +1,35 @@
+{
+	"schemaVersion": 1,
+	"id": "imsm",
+	"version": "${version}",
+	"name": "Instant Massive Structures Mod",
+	"description": "Create Massive structures in Minecraft. Instantly.",
+	"authors": [
+		"SimJoo"
+	],
+	"contact": {
+		"homepage": "https://www.planetminecraft.com/mod/11-instant-massive-structures-mod-v10/",
+		"sources": "https://github.com/SimonBaars/Instant-Massive-Structures-Mod"
+	},
+	"license": "MIT",
+	"icon": "assets/imsm/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"modid.imsm.core.IMSMNew"
+		],
+		"client": [
+			"modid.imsm.core.IMSMClientNew"
+		]
+	},
+	"mixins": [
+	],
+	"depends": {
+		"fabricloader": ">=0.16.0",
+		"minecraft": "~1.21.1",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+	}
+}
