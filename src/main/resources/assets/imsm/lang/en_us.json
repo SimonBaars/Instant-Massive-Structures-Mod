@@ -1,3 +1,26 @@
 {
-  "itemGroup.imsm.structures": "Instant Massive Structures"
+  "itemGroup.imsm.structures": "Structures",
+  "itemGroup.imsm.decoration": "Decoration",
+  "itemGroup.imsm.food": "Food",
+  "itemGroup.imsm.industry_high_density": "Industry High Density",
+  "itemGroup.imsm.other": "Other",
+  
+  "block.imsm.block_house": "Instant House",
+  "block.imsm.block_mega_house": "Instant Mega House",
+  "block.imsm.block_stadium": "Instant Stadium",
+  
+  "block.imsm.decoration_park_south": "Park (South)",
+  "block.imsm.decoration_park_north": "Park (North)",
+  "block.imsm.decoration_park_east": "Park (East)",
+  "block.imsm.decoration_park_west": "Park (West)",
+  
+  "block.imsm.food_farm_south": "Farm (South)",
+  "block.imsm.food_farm_north": "Farm (North)",
+  "block.imsm.food_farm_east": "Farm (East)",
+  "block.imsm.food_farm_west": "Farm (West)",
+  
+  "block.imsm.industry_high_density_blue_east": "Industrial Building Blue (East)",
+  "block.imsm.industry_high_density_blue_north": "Industrial Building Blue (North)",
+  "block.imsm.industry_high_density_blue_south": "Industrial Building Blue (South)",
+  "block.imsm.industry_high_density_blue_west": "Industrial Building Blue (West)"
 }
