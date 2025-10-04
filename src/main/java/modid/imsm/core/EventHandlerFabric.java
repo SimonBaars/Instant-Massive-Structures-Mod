@@ -42,6 +42,12 @@ public class EventHandlerFabric {
     public void addOutlineCreator(String structureName, BlockPos pos, int modifierX, int modifierY, int modifierZ, ServerWorld world) {
         outlineCreators.add(new OutlineCreatorFabric(structureName, pos, modifierX, modifierY, modifierZ, world));
     }
+    
+    public void addLiveStructureCreator(String structureName, BlockPos pos, boolean doReplaceAir, 
+                                       int amountOfSlides, int waitTime, boolean doLoop, ServerWorld world) {
+        // For now, just place the structure - animations would need more complex implementation
+        creators.add(new StructureCreatorFabric(structureName, pos.getX(), pos.getY(), pos.getZ(), doReplaceAir, world));
+    }
 }
 
 class StructureCreatorFabric {

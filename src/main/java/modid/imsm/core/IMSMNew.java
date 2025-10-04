@@ -33,6 +33,7 @@ public class IMSMNew implements ModInitializer {
     public static final RegistryKey<ItemGroup> TRANSPORT_KEY = RegistryKey.of(RegistryKeys.ITEM_GROUP, Identifier.of(MOD_ID, "transport"));
     public static final RegistryKey<ItemGroup> UTILITY_KEY = RegistryKey.of(RegistryKeys.ITEM_GROUP, Identifier.of(MOD_ID, "utility"));
     public static final RegistryKey<ItemGroup> SEASONAL_KEY = RegistryKey.of(RegistryKeys.ITEM_GROUP, Identifier.of(MOD_ID, "seasonal"));
+    public static final RegistryKey<ItemGroup> LIVE_STRUCTURES_KEY = RegistryKey.of(RegistryKeys.ITEM_GROUP, Identifier.of(MOD_ID, "live_structures"));
     public static final RegistryKey<ItemGroup> OTHER_KEY = RegistryKey.of(RegistryKeys.ITEM_GROUP, Identifier.of(MOD_ID, "other"));
     
     @Override
@@ -119,6 +120,12 @@ public class IMSMNew implements ModInitializer {
             FabricItemGroup.builder()
                 .icon(() -> new ItemStack(ModBlocks.CHRISTMASTREE))
                 .displayName(Text.translatable("itemGroup.imsm.seasonal"))
+                .build());
+                
+        Registry.register(Registries.ITEM_GROUP, LIVE_STRUCTURES_KEY,
+            FabricItemGroup.builder()
+                .icon(() -> new ItemStack(ModBlocks.BLOCKFERRISWHEEL))
+                .displayName(Text.translatable("itemGroup.imsm.live_structures"))
                 .build());
                 
         Registry.register(Registries.ITEM_GROUP, OTHER_KEY,

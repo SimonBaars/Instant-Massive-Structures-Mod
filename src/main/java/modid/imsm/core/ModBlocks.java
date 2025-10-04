@@ -85,14 +85,282 @@ public class ModBlocks {
     public static final Block BLOCKHOUNTEDHOUSE = registerBlock("block_hounted_house",
         new BlockStructureFabric(AbstractBlock.Settings.create().strength(1.0F), "BlockHountedHouse", true, 0, 0, 0));
 
+    // Live Structures (Animated)
+    public static final Block BLOCKFERRISWHEEL = registerBlock("block_ferris_wheel",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_FerrisWheel", true, 3, 500, 1, -1, 36, 4, -2, 0, false));
+
+    public static final Block LIVEAIRBALLOON = registerBlock("live_air_balloon",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "LiveAirBalloon", true, 6, 10000, 0, 0, 0, 0, 0, 0, false));
+
+    public static final Block LIVEAIRPLANE = registerBlock("live_airplane",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "LiveAirplane", true, 6, 300, 0, 1, 1, 0, 0, 0, false));
+
+    public static final Block LIVEBOAT = registerBlock("live_boat",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "LiveBoat", true, 2, 1000, 0, 0, 0, 0, 0, 0, false));
+
+    public static final Block LIVEFLYINGSHIP = registerBlock("live_flying_ship",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "LiveFlyingShip1", true, 6, 500, 0, 1, 1, 0, 0, 0, false));
+
+    public static final Block LIVEFLYINGSHIP2 = registerBlock("live_flying_ship2",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "LiveFlyingShip2", true, 6, 500, 0, 1, 1, 0, 0, 0, false));
+
+    public static final Block LIVEPLANE = registerBlock("live_plane",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "LivePlane", true, 6, 200, 0, 1, 1, 0, 0, 0, false));
+
+    public static final Block LIVE_BUS = registerBlock("live__bus",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_Bus", true, 2, 1000, 0, 0, 0, 0, 0, 0, false));
+
+    public static final Block LIVE_BUS2 = registerBlock("live__bus2",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_Bus2", true, 2, 1000, 0, 0, 0, 0, 0, 0, false));
+
+    public static final Block LIVE_CINEMA = registerBlock("live__cinema",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_Cinema", true, 2, 3000, -9, 0, -11, 0, 0, 0, true));
+
+    public static final Block LIVE_FAIR_FREEFALL = registerBlock("live__fair__free_fall",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_Fair_FreeFall", true, 13, 500, 14, 0, 0, 0, 0, 0, true));
+
+    public static final Block LIVE_FLYING_HELICOPTER = registerBlock("live__flying__helicopter",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_Flying_Helicopter", true, 6, 300, 0, 1, 1, 0, 0, 0, false));
+
+    public static final Block LIVE_HELICOPTER = registerBlock("live__helicopter",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_Helicopter", true, 2, 5, 0, 0, 0, 0, 0, 0, true));
+
+    public static final Block LIVE_MILL = registerBlock("live__mill",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_Mill", true, 2, 20, 0, 0, 0, 0, 0, 0, true));
+
+    public static final Block LIVE_POWER_WINDMILL_EAST = registerBlock("live__power__windmill__east",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_Power_Windmill_East", true, 2, 20, 0, 0, 0, 0, 0, 0, true));
+
+    public static final Block LIVE_WATERMILL = registerBlock("live__water_mill",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_WaterMill", true, 2, 20, 0, 0, 0, 0, 0, 0, true));
+
+    // Regular Structure Blocks
+
     public static final Block BLOCKHOUSE = registerBlock("block_house",
         new BlockStructureFabric(AbstractBlock.Settings.create().strength(1.0F), "BlockHouse", true, 0, 0, 0));
+
+    // Live Structures (Animated)
+    public static final Block BLOCKFERRISWHEEL = registerBlock("block_ferris_wheel",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_FerrisWheel", true, 3, 500, 1, -1, 36, 4, -2, 0, false));
+
+    public static final Block LIVEAIRBALLOON = registerBlock("live_air_balloon",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "LiveAirBalloon", true, 6, 10000, 0, 0, 0, 0, 0, 0, false));
+
+    public static final Block LIVEAIRPLANE = registerBlock("live_airplane",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "LiveAirplane", true, 6, 300, 0, 1, 1, 0, 0, 0, false));
+
+    public static final Block LIVEBOAT = registerBlock("live_boat",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "LiveBoat", true, 2, 1000, 0, 0, 0, 0, 0, 0, false));
+
+    public static final Block LIVEFLYINGSHIP = registerBlock("live_flying_ship",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "LiveFlyingShip1", true, 6, 500, 0, 1, 1, 0, 0, 0, false));
+
+    public static final Block LIVEFLYINGSHIP2 = registerBlock("live_flying_ship2",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "LiveFlyingShip2", true, 6, 500, 0, 1, 1, 0, 0, 0, false));
+
+    public static final Block LIVEPLANE = registerBlock("live_plane",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "LivePlane", true, 6, 200, 0, 1, 1, 0, 0, 0, false));
+
+    public static final Block LIVE_BUS = registerBlock("live__bus",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_Bus", true, 2, 1000, 0, 0, 0, 0, 0, 0, false));
+
+    public static final Block LIVE_BUS2 = registerBlock("live__bus2",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_Bus2", true, 2, 1000, 0, 0, 0, 0, 0, 0, false));
+
+    public static final Block LIVE_CINEMA = registerBlock("live__cinema",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_Cinema", true, 2, 3000, -9, 0, -11, 0, 0, 0, true));
+
+    public static final Block LIVE_FAIR_FREEFALL = registerBlock("live__fair__free_fall",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_Fair_FreeFall", true, 13, 500, 14, 0, 0, 0, 0, 0, true));
+
+    public static final Block LIVE_FLYING_HELICOPTER = registerBlock("live__flying__helicopter",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_Flying_Helicopter", true, 6, 300, 0, 1, 1, 0, 0, 0, false));
+
+    public static final Block LIVE_HELICOPTER = registerBlock("live__helicopter",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_Helicopter", true, 2, 5, 0, 0, 0, 0, 0, 0, true));
+
+    public static final Block LIVE_MILL = registerBlock("live__mill",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_Mill", true, 2, 20, 0, 0, 0, 0, 0, 0, true));
+
+    public static final Block LIVE_POWER_WINDMILL_EAST = registerBlock("live__power__windmill__east",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_Power_Windmill_East", true, 2, 20, 0, 0, 0, 0, 0, 0, true));
+
+    public static final Block LIVE_WATERMILL = registerBlock("live__water_mill",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_WaterMill", true, 2, 20, 0, 0, 0, 0, 0, 0, true));
+
+    // Regular Structure Blocks
 
     public static final Block BLOCKHOUSE2 = registerBlock("block_house2",
         new BlockStructureFabric(AbstractBlock.Settings.create().strength(1.0F), "BlockHouse2", true, 0, 0, 0));
 
+    // Live Structures (Animated)
+    public static final Block BLOCKFERRISWHEEL = registerBlock("block_ferris_wheel",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_FerrisWheel", true, 3, 500, 1, -1, 36, 4, -2, 0, false));
+
+    public static final Block LIVEAIRBALLOON = registerBlock("live_air_balloon",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "LiveAirBalloon", true, 6, 10000, 0, 0, 0, 0, 0, 0, false));
+
+    public static final Block LIVEAIRPLANE = registerBlock("live_airplane",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "LiveAirplane", true, 6, 300, 0, 1, 1, 0, 0, 0, false));
+
+    public static final Block LIVEBOAT = registerBlock("live_boat",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "LiveBoat", true, 2, 1000, 0, 0, 0, 0, 0, 0, false));
+
+    public static final Block LIVEFLYINGSHIP = registerBlock("live_flying_ship",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "LiveFlyingShip1", true, 6, 500, 0, 1, 1, 0, 0, 0, false));
+
+    public static final Block LIVEFLYINGSHIP2 = registerBlock("live_flying_ship2",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "LiveFlyingShip2", true, 6, 500, 0, 1, 1, 0, 0, 0, false));
+
+    public static final Block LIVEPLANE = registerBlock("live_plane",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "LivePlane", true, 6, 200, 0, 1, 1, 0, 0, 0, false));
+
+    public static final Block LIVE_BUS = registerBlock("live__bus",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_Bus", true, 2, 1000, 0, 0, 0, 0, 0, 0, false));
+
+    public static final Block LIVE_BUS2 = registerBlock("live__bus2",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_Bus2", true, 2, 1000, 0, 0, 0, 0, 0, 0, false));
+
+    public static final Block LIVE_CINEMA = registerBlock("live__cinema",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_Cinema", true, 2, 3000, -9, 0, -11, 0, 0, 0, true));
+
+    public static final Block LIVE_FAIR_FREEFALL = registerBlock("live__fair__free_fall",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_Fair_FreeFall", true, 13, 500, 14, 0, 0, 0, 0, 0, true));
+
+    public static final Block LIVE_FLYING_HELICOPTER = registerBlock("live__flying__helicopter",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_Flying_Helicopter", true, 6, 300, 0, 1, 1, 0, 0, 0, false));
+
+    public static final Block LIVE_HELICOPTER = registerBlock("live__helicopter",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_Helicopter", true, 2, 5, 0, 0, 0, 0, 0, 0, true));
+
+    public static final Block LIVE_MILL = registerBlock("live__mill",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_Mill", true, 2, 20, 0, 0, 0, 0, 0, 0, true));
+
+    public static final Block LIVE_POWER_WINDMILL_EAST = registerBlock("live__power__windmill__east",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_Power_Windmill_East", true, 2, 20, 0, 0, 0, 0, 0, 0, true));
+
+    public static final Block LIVE_WATERMILL = registerBlock("live__water_mill",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_WaterMill", true, 2, 20, 0, 0, 0, 0, 0, 0, true));
+
+    // Regular Structure Blocks
+
     public static final Block BLOCKHOUSETRAP1 = registerBlock("block_house_trap1",
         new BlockStructureFabric(AbstractBlock.Settings.create().strength(1.0F), "BlockHouseTrap1", true, 0, 0, 0));
+
+    // Live Structures (Animated)
+    public static final Block BLOCKFERRISWHEEL = registerBlock("block_ferris_wheel",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_FerrisWheel", true, 3, 500, 1, -1, 36, 4, -2, 0, false));
+
+    public static final Block LIVEAIRBALLOON = registerBlock("live_air_balloon",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "LiveAirBalloon", true, 6, 10000, 0, 0, 0, 0, 0, 0, false));
+
+    public static final Block LIVEAIRPLANE = registerBlock("live_airplane",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "LiveAirplane", true, 6, 300, 0, 1, 1, 0, 0, 0, false));
+
+    public static final Block LIVEBOAT = registerBlock("live_boat",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "LiveBoat", true, 2, 1000, 0, 0, 0, 0, 0, 0, false));
+
+    public static final Block LIVEFLYINGSHIP = registerBlock("live_flying_ship",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "LiveFlyingShip1", true, 6, 500, 0, 1, 1, 0, 0, 0, false));
+
+    public static final Block LIVEFLYINGSHIP2 = registerBlock("live_flying_ship2",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "LiveFlyingShip2", true, 6, 500, 0, 1, 1, 0, 0, 0, false));
+
+    public static final Block LIVEPLANE = registerBlock("live_plane",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "LivePlane", true, 6, 200, 0, 1, 1, 0, 0, 0, false));
+
+    public static final Block LIVE_BUS = registerBlock("live__bus",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_Bus", true, 2, 1000, 0, 0, 0, 0, 0, 0, false));
+
+    public static final Block LIVE_BUS2 = registerBlock("live__bus2",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_Bus2", true, 2, 1000, 0, 0, 0, 0, 0, 0, false));
+
+    public static final Block LIVE_CINEMA = registerBlock("live__cinema",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_Cinema", true, 2, 3000, -9, 0, -11, 0, 0, 0, true));
+
+    public static final Block LIVE_FAIR_FREEFALL = registerBlock("live__fair__free_fall",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_Fair_FreeFall", true, 13, 500, 14, 0, 0, 0, 0, 0, true));
+
+    public static final Block LIVE_FLYING_HELICOPTER = registerBlock("live__flying__helicopter",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_Flying_Helicopter", true, 6, 300, 0, 1, 1, 0, 0, 0, false));
+
+    public static final Block LIVE_HELICOPTER = registerBlock("live__helicopter",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_Helicopter", true, 2, 5, 0, 0, 0, 0, 0, 0, true));
+
+    public static final Block LIVE_MILL = registerBlock("live__mill",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_Mill", true, 2, 20, 0, 0, 0, 0, 0, 0, true));
+
+    public static final Block LIVE_POWER_WINDMILL_EAST = registerBlock("live__power__windmill__east",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_Power_Windmill_East", true, 2, 20, 0, 0, 0, 0, 0, 0, true));
+
+    public static final Block LIVE_WATERMILL = registerBlock("live__water_mill",
+        new BlockLiveStructureFabric(AbstractBlock.Settings.create().strength(1.0F),
+            "Live_WaterMill", true, 2, 20, 0, 0, 0, 0, 0, 0, true));
+
+    // Regular Structure Blocks
 
     public static final Block BLOCKHOUSETRAP2 = registerBlock("block_house_trap2",
         new BlockStructureFabric(AbstractBlock.Settings.create().strength(1.0F), "BlockHouseTrap2", true, 0, 0, 0));
@@ -3082,6 +3350,25 @@ public class ModBlocks {
         });
 
         ItemGroupEvents.modifyEntriesEvent(IMSMNew.SEASONAL_KEY).register(content -> {
+
+        ItemGroupEvents.modifyEntriesEvent(IMSMNew.LIVE_STRUCTURES_KEY).register(content -> {
+            content.add(BLOCKFERRISWHEEL);
+            content.add(LIVEAIRBALLOON);
+            content.add(LIVEAIRPLANE);
+            content.add(LIVEBOAT);
+            content.add(LIVEFLYINGSHIP);
+            content.add(LIVEFLYINGSHIP2);
+            content.add(LIVEPLANE);
+            content.add(LIVE_BUS);
+            content.add(LIVE_BUS2);
+            content.add(LIVE_CINEMA);
+            content.add(LIVE_FAIR_FREEFALL);
+            content.add(LIVE_FLYING_HELICOPTER);
+            content.add(LIVE_HELICOPTER);
+            content.add(LIVE_MILL);
+            content.add(LIVE_POWER_WINDMILL_EAST);
+            content.add(LIVE_WATERMILL);
+        });
             content.add(CHRISTMASHOUSE);
             content.add(CHRISTMASHOUSE2);
             content.add(CHRISTMASHOUSE3);

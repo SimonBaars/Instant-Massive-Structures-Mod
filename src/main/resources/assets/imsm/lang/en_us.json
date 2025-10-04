@@ -12,5 +12,6 @@
   "itemGroup.imsm.transport": "Transportation",
   "itemGroup.imsm.utility": "Utilities",
   "itemGroup.imsm.seasonal": "Seasonal",
+  "itemGroup.imsm.live_structures": "Live Structures (Animated)",
   "itemGroup.imsm.other": "Other Structures"
 }
