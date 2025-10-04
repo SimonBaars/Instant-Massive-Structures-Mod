@@ -1,0 +1,17 @@
+{
+  "itemGroup.imsm.structures": "Structures",
+  "itemGroup.imsm.decoration": "Decoration",
+  "itemGroup.imsm.food": "Food",
+  "itemGroup.imsm.industry_high_density": "Industry High Density",
+  "itemGroup.imsm.industry_medium_density": "Industry Medium Density",
+  "itemGroup.imsm.industry_low_density": "Industry Low Density",
+  "itemGroup.imsm.office": "Office Buildings",
+  "itemGroup.imsm.public": "Public Buildings",
+  "itemGroup.imsm.residential": "Residential Buildings",
+  "itemGroup.imsm.shopping": "Shopping Centers",
+  "itemGroup.imsm.transport": "Transportation",
+  "itemGroup.imsm.utility": "Utilities",
+  "itemGroup.imsm.seasonal": "Seasonal",
+  "itemGroup.imsm.live_structures": "Live Structures (Animated)",
+  "itemGroup.imsm.other": "Other Structures"
+}
