@@ -34,6 +34,7 @@ import modid.imsm.worldgeneration.UndoCommand;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -71,7 +72,8 @@ public class IMSM {
 	public IMSM() {
 		System.out.println("Construct IMSM");
         // Register the setup method for modloading
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerBlocks);
+        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Block.class, this::registerBlocks);
+        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Item.class, this::registerItems);
         // Register the enqueueIMC method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
         // Register the processIMC method for modloading
@@ -83,143 +85,149 @@ public class IMSM {
         MinecraftForge.EVENT_BUS.register(this);
     }
 	
-	public static ItemGroup Structures = new ItemGroup("Structures"){
+	private static ItemStack safeIcon(Block block) {
+		Item item = block.asItem();
+		if (item != null && item != net.minecraft.item.Items.AIR) return new ItemStack(item);
+		return new ItemStack(net.minecraft.block.Blocks.STONE);
+	}
+
+	public static ItemGroup Structures = new ItemGroup("structures"){
 		@Override public ItemStack createIcon() {
-			return new ItemStack(IMSM.BlockMegaHouse);
+			return safeIcon(IMSM.BlockMegaHouse);
 		}		
 	};
 	
 	public static ItemGroup Decoration = new ItemGroup("Decoration"){
 		@Override public ItemStack createIcon() {
-			return new ItemStack(IMSM.DecorationParkSouth);
+			return safeIcon(IMSM.DecorationParkSouth);
 		}		
 	};
 	
 	public static ItemGroup Food = new ItemGroup("Food"){
 		@Override public ItemStack createIcon() {
-			return new ItemStack(IMSM.FoodFarmSouth);
+			return safeIcon(IMSM.FoodFarmSouth);
 		}		
 	};
 	
 	public static ItemGroup IndustryHigh_Density = new ItemGroup("IndustryHigh_Density"){
 		@Override public ItemStack createIcon() {
-			return new ItemStack(IMSM.IndustryHigh_DensityBlueEast);
+			return safeIcon(IMSM.IndustryHigh_DensityBlueEast);
 		}		
 	};
 	
 	public static ItemGroup IndustryMedium_Density = new ItemGroup("IndustryMedium_Density"){
 		@Override public ItemStack createIcon() {
-			return new ItemStack(IMSM.IndustryMedium_DensityBrickWest);
+			return safeIcon(IMSM.IndustryMedium_DensityBrickWest);
 		}		
 	};
 	
 	public static ItemGroup IndustryLow_Density = new ItemGroup("IndustryLow_Density"){
 		@Override public ItemStack createIcon() {
-			return new ItemStack(IMSM.IndustryLow_DensityGreenNorth);
+			return safeIcon(IMSM.IndustryLow_DensityGreenNorth);
 		}		
 	};
 	
 	public static ItemGroup Office = new ItemGroup("Office"){
 		@Override public ItemStack createIcon() {
-			return new ItemStack(IMSM.OfficeHigh_DensityBrickEastWest);
+			return safeIcon(IMSM.OfficeHigh_DensityBrickEastWest);
 		}		
 	};
 	
 	public static ItemGroup Public = new ItemGroup("Public"){
 		@Override public ItemStack createIcon() {
-			return new ItemStack(IMSM.PublicFireServiceBigEast);
+			return safeIcon(IMSM.PublicFireServiceBigEast);
 		}		
 	};
 	
 	public static ItemGroup ResidentalEnormous_Density = new ItemGroup("ResidentalEnormous_Density"){
 		@Override public ItemStack createIcon() {
-			return new ItemStack(IMSM.ResidentalEnormous_DensityBlockNorthEastSouthWest);
+			return safeIcon(IMSM.ResidentalEnormous_DensityBlockNorthEastSouthWest);
 		}		
 	};
 	
 	public static ItemGroup ResidentalHigh_Density = new ItemGroup("ResidentalHigh_Density"){
 		@Override public ItemStack createIcon() {
-			return new ItemStack(IMSM.ResidentalHigh_DensityBrickEastWest);
+			return safeIcon(IMSM.ResidentalHigh_DensityBrickEastWest);
 		}		
 	};
 	
 	public static ItemGroup ResidentalMedium_Density = new ItemGroup("ResidentalMedium_Density"){
 		@Override public ItemStack createIcon() {
-			return new ItemStack(IMSM.ResidentalMedium_DensityOrangeGreenEast);
+			return safeIcon(IMSM.ResidentalMedium_DensityOrangeGreenEast);
 		}		
 	};
 	
 	public static ItemGroup ResidentalLow_Density = new ItemGroup("ResidentalLow_Density"){
 		@Override public ItemStack createIcon() {
-			return new ItemStack(IMSM.ResidentalLow_DensityGreenEast2);
+			return safeIcon(IMSM.ResidentalLow_DensityGreenEast2);
 		}		
 	};
 	
 	public static ItemGroup Shopping = new ItemGroup("Shopping"){
 		@Override public ItemStack createIcon() {
-			return new ItemStack(IMSM.ShoppingMedium_DensityQuartzEast);
+			return safeIcon(IMSM.ShoppingMedium_DensityQuartzEast);
 		}		
 	};
 	
 	/*public static ItemGroup TransportAirport = new ItemGroup("TransportAirport"){
 		@Override public ItemStack createIcon() {
-			return new ItemStack(IMSM.TransportAirportRunway_EastWestBuilding_South);
+			return safeIcon(IMSM.TransportAirportRunway_EastWestBuilding_South);
 		}		
 	};*/
 	
 	public static ItemGroup TransportHarbour = new ItemGroup("TransportHarbour"){
 		@Override public ItemStack createIcon() {
-			return new ItemStack(IMSM.TransportHarbourSide2CornerWest);
+			return safeIcon(IMSM.TransportHarbourSide2CornerWest);
 		}		
 	};
 	
 	public static ItemGroup TransportPublic = new ItemGroup("TransportPublic"){
 		@Override public ItemStack createIcon() {
-			return new ItemStack(IMSM.TransportPublicHightramLSouthWest);
+			return safeIcon(IMSM.TransportPublicHightramLSouthWest);
 		}		
 	};
 	
 	public static ItemGroup TransportRoads = new ItemGroup("TransportRoads"){
 		@Override public ItemStack createIcon() {
-			return new ItemStack(IMSM.TransportRoadTNorthSouthWest);
+			return safeIcon(IMSM.TransportRoadTNorthSouthWest);
 		}		
 	};
 	
 	public static ItemGroup TransportWater = new ItemGroup("TransportWater"){
 		@Override public ItemStack createIcon() {
-			return new ItemStack(IMSM.TransportWater2CornerWest);
+			return safeIcon(IMSM.TransportWater2CornerWest);
 		}		
 	};
 	
 	public static ItemGroup Utility = new ItemGroup("Utility"){
 		@Override public ItemStack createIcon() {
-			return new ItemStack(IMSM.UtilityPower_NuclearEast);
+			return safeIcon(IMSM.UtilityPower_NuclearEast);
 		}		
 	};
 	
 	public static ItemGroup Remover = new ItemGroup("Remover"){
 		@Override public ItemStack createIcon() {
-			return new ItemStack(IMSM.RemoverLast);
+			return safeIcon(IMSM.RemoverLast);
 		}		
 	};
 	
 	public static ItemGroup Other = new ItemGroup("Other"){
 		@Override public ItemStack createIcon() {
-			return new ItemStack(IMSM.BlockStadium);
+			return safeIcon(IMSM.BlockStadium);
 		}		
 	};
 	
 	public static ItemGroup LiveStructures = new ItemGroup("LiveStructures"){
 		@Override
 		public ItemStack createIcon() {
-			return new ItemStack(IMSM.Live_Power_Windmill_East);
+			return safeIcon(IMSM.Live_Power_Windmill_East);
 		}		
 	};
 	
 	public static ItemGroup User = new ItemGroup("User"){
 		@Override
 		public ItemStack createIcon() {
-			return new ItemStack(IMSM.BlockUnlimited);
+			return safeIcon(IMSM.BlockUnlimited);
 		}		
 	};
 	
@@ -2084,9 +2092,19 @@ public void registerBlocks(RegistryEvent.Register<Block> event) {
 
 			*/
 System.out.println("REGISTER IMSM BLOCKS;");
-event.getRegistry().register(LiveStructureRemover);
-		
 
+for (java.lang.reflect.Field field : IMSM.class.getDeclaredFields()) {
+    if (field.getType() == Block.class && java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
+        try {
+            Block block = (Block) field.get(null);
+            if (block != null && block.getRegistryName() == null) {
+                block.setRegistryName("imsm", field.getName().toLowerCase());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
 
 event.getRegistry().register(LiveStructureRemover);
 
@@ -3188,6 +3206,22 @@ event.getRegistry().register(BlockUnlimited);
 						      });*/
 	
 	}
+
+@SubscribeEvent
+public void registerItems(RegistryEvent.Register<Item> event) {
+    for (java.lang.reflect.Field field : IMSM.class.getDeclaredFields()) {
+        if (field.getType() == Block.class && java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
+            try {
+                Block block = (Block) field.get(null);
+                if (block != null && block.getRegistryName() != null) {
+                    event.getRegistry().register(new BlockItem(block, new Item.Properties()).setRegistryName(block.getRegistryName()));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
 	   
 	   @SubscribeEvent
 	   public void serverLoad(FMLServerStartingEvent event)
