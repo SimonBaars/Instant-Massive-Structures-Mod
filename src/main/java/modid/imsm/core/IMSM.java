@@ -3214,7 +3214,7 @@ public void registerItems(RegistryEvent.Register<Item> event) {
             try {
                 Block block = (Block) field.get(null);
                 if (block != null && block.getRegistryName() != null) {
-                    event.getRegistry().register(new BlockItem(block, new Item.Properties()).setRegistryName(block.getRegistryName()));
+                    event.getRegistry().register(new BlockItem(block, new Item.Properties().group(IMSM.Structures)).setRegistryName(block.getRegistryName()));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -3226,10 +3226,25 @@ public void registerItems(RegistryEvent.Register<Item> event) {
 	   @SubscribeEvent
 	   public void serverLoad(FMLServerStartingEvent event)
 	   {
-	     //event.getCommandDispatcher().register(new MazeCommand());
-	     //event.registerServerCommand(new LiveCommand());
-	     //event.registerServerCommand(new RideCommand());
-	     //event.registerServerCommand(new UndoCommand());
+	     event.getCommandDispatcher().register(
+	       net.minecraft.command.Commands.literal("imsm")
+	         .then(net.minecraft.command.Commands.argument("structure", com.mojang.brigadier.arguments.StringArgumentType.string())
+	           .executes(ctx -> {
+	             net.minecraft.entity.player.ServerPlayerEntity player = ctx.getSource().asPlayer();
+	             String structName = com.mojang.brigadier.arguments.StringArgumentType.getString(ctx, "structure");
+	             net.minecraft.util.math.BlockPos pos = new net.minecraft.util.math.BlockPos(player.getPosX(), player.getPosY(), player.getPosZ());
+	             modid.imsm.structureloader.SchematicStructure struct = new modid.imsm.structureloader.SchematicStructure(structName + ".structure", false);
+	             struct.readFromFile();
+	             struct.process(player.getServerWorld(), pos.getX(), pos.getY(), pos.getZ());
+	             ctx.getSource().sendFeedback(new net.minecraft.util.text.StringTextComponent("Placed structure: " + structName), true);
+	             return 1;
+	           })
+	         )
+	         .executes(ctx -> {
+	           ctx.getSource().sendFeedback(new net.minecraft.util.text.StringTextComponent("Usage: /imsm <structure_name>  e.g. /imsm WoodenHouse"), false);
+	           return 1;
+	         })
+	     );
 	   }
 	  
 }
