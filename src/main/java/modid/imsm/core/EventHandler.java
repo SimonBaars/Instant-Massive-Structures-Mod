@@ -67,7 +67,7 @@ public class EventHandler {
 		
 			loadLiveCreators();
 			loadStructures();
-			lightUpdate= new LightUpdateCheck(Minecraft.getMinecraft().theWorld, Minecraft.getMinecraft().getIntegratedServer().getEntityWorld());
+			lightUpdate= new LightUpdateCheck(Minecraft.getMinecraft().world, Minecraft.getMinecraft().getIntegratedServer().getEntityWorld());
 			isLoaded=true;
 	}
 	
@@ -106,8 +106,8 @@ public class EventHandler {
 				EntityPlayerMP player = (EntityPlayerMP)playerObject;
 				if(ySync.isVehicle==null || (/*Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY-1,player.posZ)).getBlock()!=Blocks.air ||*/ Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY,player.posZ)).getBlock()!=Blocks.AIR)){
 				player.posY=/*isRiding.y+isRiding.ride.getHeight()+isRiding.ride.animation[0][isRiding.ride.progress]*/ySync.getY();
-				if(player.getName().equals(Minecraft.getMinecraft().thePlayer.getName())){
-					Minecraft.getMinecraft().thePlayer.posY=/*isRiding.y+isRiding.ride.getHeight()+isRiding.ride.animation[0][isRiding.ride.progress]*/ySync.getY();
+				if(player.getName().equals(Minecraft.getMinecraft().player.getName())){
+					Minecraft.getMinecraft().player.posY=/*isRiding.y+isRiding.ride.getHeight()+isRiding.ride.animation[0][isRiding.ride.progress]*/ySync.getY();
 				}
 				} else {
 					//System.out.println(MathHelper.floor_double(player.posY));
@@ -115,11 +115,11 @@ public class EventHandler {
 				}
 			}
 			} else {
-				EntityPlayerMP player = (EntityPlayerMP) Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getPlayerEntityByName(Minecraft.getMinecraft().thePlayer.getName());
+				EntityPlayerMP player = (EntityPlayerMP) Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getPlayerEntityByName(Minecraft.getMinecraft().player.getName());
 				if(ySync.isVehicle==null || (/*Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY-1,player.posZ)).getBlock()!=Blocks.air ||*/ Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(new BlockPos(player.posX,player.posY,player.posZ)).getBlock()!=Blocks.AIR)){
 				player.posY=/*isRiding.y+isRiding.ride.getHeight()+isRiding.ride.animation[0][isRiding.ride.progress]*/ySync.getY();
-				//if(player.getName().equals(Minecraft.getMinecraft().thePlayer.getName())){
-					Minecraft.getMinecraft().thePlayer.posY=/*isRiding.y+isRiding.ride.getHeight()+isRiding.ride.animation[0][isRiding.ride.progress]*/ySync.getY();
+				//if(player.getName().equals(Minecraft.getMinecraft().player.getName())){
+					Minecraft.getMinecraft().player.posY=/*isRiding.y+isRiding.ride.getHeight()+isRiding.ride.animation[0][isRiding.ride.progress]*/ySync.getY();
 				//}
 				} else {
 					//System.out.println(MathHelper.floor_double(player.posY));
@@ -154,7 +154,7 @@ public class EventHandler {
 	
 	@SubscribeEvent
 	public void update(TickEvent.ServerTickEvent event){
-		if(!IMSM.updateChecked && Minecraft.getMinecraft().theWorld!=null){
+		if(!IMSM.updateChecked && Minecraft.getMinecraft().world!=null){
 			load();
 			IMSM.updateChecked=true;
 		}
@@ -193,7 +193,7 @@ public class EventHandler {
 			
 			
 			while(delayedPrints.size()>0 && Minecraft.getMinecraft().getIntegratedServer().isCallingFromMinecraftThread()){
-					Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString(delayedPrints.get(0)));
+					Minecraft.getMinecraft().player.sendMessage(new TextComponentString(delayedPrints.get(0)));
 					
 				delayedPrints.remove(0);
 			}

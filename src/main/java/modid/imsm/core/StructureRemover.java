@@ -43,7 +43,7 @@ public class StructureRemover implements ICreatorBlock{
 				y=0;
 				x++;
 				if(x>struct.length){
-		Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("The last placed structure has been removed."));
+		Minecraft.getMinecraft().player.sendMessage(new TextComponentString("The last placed structure has been removed."));
 		return true;
 				}
 			}

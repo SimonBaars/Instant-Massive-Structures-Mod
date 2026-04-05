@@ -18,7 +18,7 @@ public class LiveStructureRemover extends Block {
 	}
 	
 	@Override
-	public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
+	public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
     {
 		if(worldIn.isRemote){
 			for(int i = 0; i<IMSM.eventHandler.liveCreators.size(); i++){
@@ -27,8 +27,8 @@ public class LiveStructureRemover extends Block {
 				if(IMSM.eventHandler.liveCreators.get(i).closeTo(2, pos.getX(), pos.getY(), pos.getZ(), struct.width, struct.height, struct.length)){
 					IMSM.eventHandler.liveCreators.get(i).removeThisLiveStructure(false);
 					Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().setBlockToAir(pos);
-					Minecraft.getMinecraft().theWorld.setBlockToAir(pos);
-					Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("You succesfully removed a structure's movements"));
+					Minecraft.getMinecraft().world.setBlockToAir(pos);
+					Minecraft.getMinecraft().player.sendMessage(new TextComponentString("You succesfully removed a structure's movements"));
 					break;
 				}
 			}
