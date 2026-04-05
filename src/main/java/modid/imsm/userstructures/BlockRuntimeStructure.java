@@ -2,6 +2,7 @@ package modid.imsm.userstructures;
 
 import java.util.List;
 
+import net.minecraft.util.NonNullList;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -38,11 +39,11 @@ public class BlockRuntimeStructure extends BlockUserStructure {
      * returns a list of blocks with the same ID, but different meta (eg: wood returns 4 blocks)
      */
     @SideOnly(Side.CLIENT)
-    public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list)
+    public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list)
     {
         for (EnumDyeColor enumdyecolor : EnumDyeColor.values())
         {
-            list.add(new ItemStack(itemIn, 1, enumdyecolor.getMetadata()));
+            list.add(new ItemStack(Item.getItemFromBlock(this), 1, enumdyecolor.getMetadata()));
         }
     }
 

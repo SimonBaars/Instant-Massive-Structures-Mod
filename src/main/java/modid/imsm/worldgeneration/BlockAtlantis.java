@@ -8,7 +8,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemRedstone;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 public class BlockAtlantis extends Block
@@ -24,15 +26,16 @@ public class BlockAtlantis extends Block
         this.name="BlockAtlantis";
     }
   
-  public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ)
+  @Override
+  public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
   {
-		if(playerIn.getHeldItemMainhand()!=null && playerIn.getHeldItemMainhand().getItem() instanceof ItemRedstone){
+		if(!playerIn.getHeldItemMainhand().isEmpty() && playerIn.getHeldItemMainhand().getItem() instanceof ItemRedstone){
 			if(worldIn.isRemote){
 			nCheckers*=2;
 			if(nCheckers>20000){
 				nCheckers=1;
 			}
-			Minecraft.getMinecraft().thePlayer.sendChatMessage("This block will now edit "+nCheckers+" rows of landscape");
+			Minecraft.getMinecraft().player.sendMessage(new TextComponentString("This block will now edit "+nCheckers+" rows of landscape"));
 			
 			}
   	} else {

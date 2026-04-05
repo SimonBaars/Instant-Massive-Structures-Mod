@@ -7,7 +7,7 @@ import net.minecraft.client.Minecraft;
 public class StructureCreatorUser extends StructureCreator{
 
 	public StructureCreatorUser(String name, int i, int j, int k, boolean doReplaceAir, int id) {
-		super(name, Minecraft.getMinecraft().theWorld, i, j, k, doReplaceAir, id);
+		super(name, Minecraft.getMinecraft().world, i, j, k, doReplaceAir, id);
 		// TODO Auto-generated constructor stub
 	}
 	

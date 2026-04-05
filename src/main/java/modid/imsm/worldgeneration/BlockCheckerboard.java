@@ -7,7 +7,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemRedstone;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -27,15 +26,15 @@ public class BlockCheckerboard extends Block
     }
   
   @Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
   {
-		if(playerIn.getHeldItemMainhand()!=null && playerIn.getHeldItemMainhand().getItem() instanceof ItemRedstone){
+		if(!playerIn.getHeldItemMainhand().isEmpty() && playerIn.getHeldItemMainhand().getItem() instanceof ItemRedstone){
 			if(worldIn.isRemote){
 			nCheckers*=2;
 			if(nCheckers>2000){
 				nCheckers=1;
 			}
-			Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("This block will now create "+nCheckers+" rows of checkers"));
+			Minecraft.getMinecraft().player.sendMessage(new TextComponentString("This block will now create "+nCheckers+" rows of checkers"));
 			
 			}
   	} else {

@@ -8,7 +8,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemRedstone;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -30,24 +29,24 @@ public class BlockBigWorld extends Block
     }
   
   @Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
   {
-		if(playerIn.getHeldItemMainhand()!=null && playerIn.getHeldItemMainhand().getItem() instanceof ItemRedstone){
+		if(!playerIn.getHeldItemMainhand().isEmpty() && playerIn.getHeldItemMainhand().getItem() instanceof ItemRedstone){
 			if(worldIn.isRemote){
 			nCheckers*=2;
 			if(nCheckers>20000){
 				nCheckers=1;
 			}
-			Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("This block will now edit "+nCheckers+" rows of landscape"));
+			Minecraft.getMinecraft().player.sendMessage(new TextComponentString("This block will now edit "+nCheckers+" rows of landscape"));
 			
 			}
-  	} else if(playerIn.getActiveItemStack()!=null && playerIn.getActiveItemStack().getItem() instanceof ItemDye){
+  	} else if(!playerIn.getActiveItemStack().isEmpty() && playerIn.getActiveItemStack().getItem() instanceof ItemDye){
 		if(worldIn.isRemote){
 		checkerSize++;
 		if(checkerSize>64){
 			checkerSize=2;
 		}
-		Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("This block will now increase the blocksize by "+checkerSize+""));
+		Minecraft.getMinecraft().player.sendMessage(new TextComponentString("This block will now increase the blocksize by "+checkerSize+""));
 		
 		}
 	} else {
