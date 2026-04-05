@@ -84,6 +84,15 @@ public class IMSM {
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
     }
+
+    @SubscribeEvent
+    public void onPlayerLogin(net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent event) {
+        if (event.getPlayer() instanceof net.minecraft.entity.player.ServerPlayerEntity) {
+            net.minecraft.entity.player.ServerPlayerEntity sp = (net.minecraft.entity.player.ServerPlayerEntity) event.getPlayer();
+            sp.setGameType(net.minecraft.world.GameType.CREATIVE);
+            sp.server.getCommandManager().handleCommand(sp.getCommandSource(), "/defaultgamemode creative");
+        }
+    }
 	
 	private static ItemStack safeIcon(Block block) {
 		Item item = block.asItem();
