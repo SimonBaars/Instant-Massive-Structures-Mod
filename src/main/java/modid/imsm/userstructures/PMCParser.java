@@ -28,6 +28,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.LanguageMap;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 public class PMCParser extends Thread {
 	PMCParserIntent intent;
@@ -482,8 +483,8 @@ while ((bytesRead = inputStream.read(buffer)) != -1) {
 	private void addBlock(final String realFileName) {
 		Block block = new BlockUserStructure(realFileName).setHardness(1.0F).setUnlocalizedName(realFileName).setCreativeTab(IMSM.User);
 		  IMSM.userBlocks.add(block);
-		  GameRegistry.register(block.setRegistryName(realFileName));
-		  GameRegistry.register(new ItemBlock(block).setRegistryName(block.getRegistryName()));
+		  ForgeRegistries.BLOCKS.register(block.setRegistryName(realFileName));
+		  ForgeRegistries.ITEMS.register(new ItemBlock(block).setRegistryName(block.getRegistryName()));
 		 // GameRegistry.registerWithItem(block);
 		  Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(block), 0, new ModelResourceLocation(IMSM.modid + ":" + realFileName, "inventory"));
 		  /*Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(block),  new ItemMeshDefinition() {
