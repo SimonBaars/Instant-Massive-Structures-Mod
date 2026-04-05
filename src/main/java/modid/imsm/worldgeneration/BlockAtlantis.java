@@ -13,6 +13,7 @@ import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.world.World;
 
 public class BlockAtlantis extends Block
@@ -28,7 +29,7 @@ public class BlockAtlantis extends Block
         this.name="BlockAtlantis";
     }
   
-  public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+  public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
 		if(player.getHeldItemMainhand()!=null && player.getHeldItemMainhand().getItem() == Items.REDSTONE){
 			if(worldIn.isRemote){
 			nCheckers*=2;
@@ -49,7 +50,7 @@ public class BlockAtlantis extends Block
   	worldIn.setBlockState(newPos, new BlockState(Blocks.AIR, ImmutableMap.of()));
   }
   	}
-      return true;
+      return ActionResultType.SUCCESS;
   }
 
 public String getName()

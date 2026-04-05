@@ -13,6 +13,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.world.World;
 
 public class BlockUnlimited extends Block
@@ -28,7 +29,7 @@ public class BlockUnlimited extends Block
 	}
   
   @Override
-  public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+  public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
 
 	  if(!worldIn.isRemote){
 		  if(IMSM.pmcParser != null && IMSM.pmcParser.isAlive()){
@@ -50,6 +51,6 @@ public class BlockUnlimited extends Block
 		  ForgeEventHandler.searchingPage=1;
 	  }
 	  worldIn.setBlockState(pos, Blocks.AIR.getDefaultState());
-	  return true;
+	  return ActionResultType.SUCCESS;
   }
 }

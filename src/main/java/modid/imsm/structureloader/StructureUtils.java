@@ -41,8 +41,7 @@ public class StructureUtils
 
 		blockTileEntity = blockState.getBlock().createTileEntity(blockState, world);
 		blockTileEntity.read(tileEntity);
-		blockTileEntity.setPos(pos);
-		blockTileEntity.setWorld(world);
+		blockTileEntity.setWorldAndPos(world, pos);
 
 		world.setTileEntity(pos, blockTileEntity);
 		blockTileEntity.updateContainingBlockInfo();
@@ -53,8 +52,7 @@ public class StructureUtils
 		try{
 		BlockPos pos = getWorldPos(tileEntity.getPos(), structCenter, harvestPos);
 		world.removeTileEntity(pos);
-		tileEntity.setPos(pos);
-		tileEntity.setWorld(world);
+		tileEntity.setWorldAndPos(world, pos);
 		world.setTileEntity(pos, tileEntity);
 		} catch (ArrayIndexOutOfBoundsException e){
 		}

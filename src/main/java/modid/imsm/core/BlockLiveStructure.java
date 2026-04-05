@@ -13,6 +13,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.world.World;
 
 public class BlockLiveStructure extends Block {
@@ -47,9 +48,9 @@ public class BlockLiveStructure extends Block {
 	}
 	
 	@Override
-	public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+	public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
 	if(worldIn.isRemote) {   
-		return true;
+		return ActionResultType.SUCCESS;
 	}
       BlockPos newPos = new BlockPos(pos.getX(), pos.getY(), pos.getZ());
       int[][] animation = IMSM.eventHandler.getAnimationFor(name);
@@ -82,7 +83,7 @@ public class BlockLiveStructure extends Block {
   	} else if (name.equals("Live_FerrisWheel") || name.equals("Live_Fair_FreeFall")){
   		Minecraft.getInstance().player.sendChatMessage("Use /ride to ride this structure!.");
   	}
-        return true;
+        return ActionResultType.SUCCESS;
     }
   
 

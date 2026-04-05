@@ -119,15 +119,15 @@ public class LiveStructure {
 					//Minecraft.getInstance().player.motionX+=relativeSpawnPointX/2.25;
 					
 					
-						double thisY = player.posY;
+						double thisY = player.getPosY();
 					if(relativeSpawnPointY>0){
 						if(IMSM.eventHandler.ySync!=null){
-							if(Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getBlockState(new BlockPos(player.posX,player.posY-1,player.posZ)).getBlock()!=Blocks.AIR || Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getBlockState(new BlockPos(player.posX,player.posY,player.posZ)).getBlock()!=Blocks.AIR){
+							if(Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getBlockState(new BlockPos(player.getPosX(),player.getPosY()-1,player.getPosZ())).getBlock()!=Blocks.AIR || Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getBlockState(new BlockPos(player.getPosX(),player.getPosY(),player.getPosZ())).getBlock()!=Blocks.AIR){
 						thisY=IMSM.eventHandler.ySync.getY()+1;
 							} 
 							IMSM.eventHandler.ySync.setY(thisY);	
 						} else {
-							IMSM.eventHandler.ySync=new YSync(Minecraft.getInstance().player.posY);
+							IMSM.eventHandler.ySync=new YSync(Minecraft.getInstance().player.getPosY());
 							//setYSync=true;
 							IMSM.eventHandler.ySync.isVehicle=this;
 						}
@@ -141,7 +141,7 @@ public class LiveStructure {
 						}
 					}
 					
-					setPlayerToPosition(player,player.posX+relativeSpawnPointX,thisY,player.posZ+relativeSpawnPointZ);
+					setPlayerToPosition(player,player.getPosX()+relativeSpawnPointX,thisY,player.getPosZ()+relativeSpawnPointZ);
 					//System.out.println("Moved "+player.getName()+" to "+player.posX+relativeSpawnPointX+", "+thisY+", "+player.posZ+relativeSpawnPointZ);
 					//setPlayerToPosition(Minecraft.getInstance().player.posX+relativeSpawnPointX,thisY,Minecraft.getInstance().player.posZ+relativeSpawnPointZ);
 					} else if(IMSM.eventHandler.ySync!=null && IMSM.eventHandler.ySync.isVehicle==this){
@@ -232,7 +232,7 @@ public class LiveStructure {
 					//setAllPlayersToPosition(x-4,y+1,z-36);
 				} else if (ride.progress==-1 && distanceToPlayer(x-4,y+1,z-36)==0){ //The ride is over bro
 					ride.progress++;
-					IMSM.eventHandler.ySync=new YSync(Minecraft.getInstance().player.posY);
+					IMSM.eventHandler.ySync=new YSync(Minecraft.getInstance().player.getPosY());
 				} else if ((ride.progress>=0 && ride.progress<ride.animation[0].length && distanceToPlayer(x-4-0.5,y+1+ride.animation[0][ride.progress],z-36-ride.animation[1][ride.progress]+0.5)>1)){ //The ride is over bro
 					Minecraft.getInstance().player.sendChatMessage("Thanks for your visit. We hope to see you again soon!");
 					ride=null;
@@ -258,24 +258,24 @@ public class LiveStructure {
 						waitTime=500;
 						//setAllPlayersToPosition(x-4,y+1,z-36);
 					} else if (ride.progress==-1 && 
-							((closeTo(x+0.5, Minecraft.getInstance().player.posX, 0.9) && closeTo(y+2.75, Minecraft.getInstance().player.posY, 1.0) && closeTo(z-3.0, Minecraft.getInstance().player.posZ, 2.9)) || 
-							(closeTo(x-3.0, Minecraft.getInstance().player.posX, 2.9) && closeTo(y+2.75, Minecraft.getInstance().player.posY, 1.0) && closeTo(z-6.5, Minecraft.getInstance().player.posZ, 0.9)) || 
-							(closeTo(x-6.5, Minecraft.getInstance().player.posX, 0.9) && closeTo(y+2.75, Minecraft.getInstance().player.posY, 1.0) && closeTo(z-3.0, Minecraft.getInstance().player.posZ, 2.9)) || 
-							(closeTo(x-3.0, Minecraft.getInstance().player.posX, 2.9) && closeTo(y+2.75, Minecraft.getInstance().player.posY, 1.0) && closeTo(z-0.5, Minecraft.getInstance().player.posZ, 0.9)))){ //The ride is over bro
+							((closeTo(x+0.5, Minecraft.getInstance().player.getPosX(), 0.9) && closeTo(y+2.75, Minecraft.getInstance().player.getPosY(), 1.0) && closeTo(z-3.0, Minecraft.getInstance().player.getPosZ(), 2.9)) || 
+							(closeTo(x-3.0, Minecraft.getInstance().player.getPosX(), 2.9) && closeTo(y+2.75, Minecraft.getInstance().player.getPosY(), 1.0) && closeTo(z-6.5, Minecraft.getInstance().player.getPosZ(), 0.9)) || 
+							(closeTo(x-6.5, Minecraft.getInstance().player.getPosX(), 0.9) && closeTo(y+2.75, Minecraft.getInstance().player.getPosY(), 1.0) && closeTo(z-3.0, Minecraft.getInstance().player.getPosZ(), 2.9)) || 
+							(closeTo(x-3.0, Minecraft.getInstance().player.getPosX(), 2.9) && closeTo(y+2.75, Minecraft.getInstance().player.getPosY(), 1.0) && closeTo(z-0.5, Minecraft.getInstance().player.getPosZ(), 0.9)))){ //The ride is over bro
 						ride.progress++;
 						IMSM.eventHandler.ySync=new YSync(y+2.5+ride.animation[0][ride.progress]);
 					} else if (ride.progress>=0 && ride.progress<ride.animation[0].length && !(
-							(closeTo(x+0.5, Minecraft.getInstance().player.posX, 0.9) /*&& closeTo(y+2.75+ride.animation[0][ride.progress-1], Minecraft.getInstance().player.posY, 1.0)*/ && closeTo(z-3.0, Minecraft.getInstance().player.posZ, 2.9)) || 
-							(closeTo(x-3.0, Minecraft.getInstance().player.posX, 2.9) /*&& closeTo(y+2.75+ride.animation[0][ride.progress-1], Minecraft.getInstance().player.posY, 1.0)*/ && closeTo(z-6.5, Minecraft.getInstance().player.posZ, 0.9)) || 
-							(closeTo(x-6.5, Minecraft.getInstance().player.posX, 0.9) /*&& closeTo(y+2.75+ride.animation[0][ride.progress-1], Minecraft.getInstance().player.posY, 1.0)*/ && closeTo(z-3.0, Minecraft.getInstance().player.posZ, 2.9)) || 
-							(closeTo(x-3.0, Minecraft.getInstance().player.posX, 2.9) /*&& closeTo(y+2.75+ride.animation[0][ride.progress-1], Minecraft.getInstance().player.posY, 1.0)*/ && closeTo(z-0.5, Minecraft.getInstance().player.posZ, 0.9)))){ //The ride is over bro
+							(closeTo(x+0.5, Minecraft.getInstance().player.getPosX(), 0.9) /*&& closeTo(y+2.75+ride.animation[0][ride.progress-1], Minecraft.getInstance().player.getPosY(), 1.0)*/ && closeTo(z-3.0, Minecraft.getInstance().player.getPosZ(), 2.9)) || 
+							(closeTo(x-3.0, Minecraft.getInstance().player.getPosX(), 2.9) /*&& closeTo(y+2.75+ride.animation[0][ride.progress-1], Minecraft.getInstance().player.getPosY(), 1.0)*/ && closeTo(z-6.5, Minecraft.getInstance().player.getPosZ(), 0.9)) || 
+							(closeTo(x-6.5, Minecraft.getInstance().player.getPosX(), 0.9) /*&& closeTo(y+2.75+ride.animation[0][ride.progress-1], Minecraft.getInstance().player.getPosY(), 1.0)*/ && closeTo(z-3.0, Minecraft.getInstance().player.getPosZ(), 2.9)) || 
+							(closeTo(x-3.0, Minecraft.getInstance().player.getPosX(), 2.9) /*&& closeTo(y+2.75+ride.animation[0][ride.progress-1], Minecraft.getInstance().player.getPosY(), 1.0)*/ && closeTo(z-0.5, Minecraft.getInstance().player.getPosZ(), 0.9)))){ //The ride is over bro
 						Minecraft.getInstance().player.sendChatMessage("Thanks for your visit. We hope to see you again soon!");
 						ride=null;
 						IMSM.eventHandler.isRiding=null;
 						IMSM.eventHandler.ySync=null;
 					}else if(ride.progress>=0 && ride.progress<ride.animation[0].length-1){ // The ride itself
 						ride.progress++;
-						setAllPlayersToPosition(Minecraft.getInstance().player.posX,y+2.5+ride.animation[0][ride.progress],Minecraft.getInstance().player.posZ);
+						setAllPlayersToPosition(Minecraft.getInstance().player.getPosX(),y+2.5+ride.animation[0][ride.progress],Minecraft.getInstance().player.getPosZ());
 						IMSM.eventHandler.ySync.setY(y+2.5+ride.animation[0][ride.progress]);
 						//setAllPlayersToPosition(y+1+ride.animation[0][ride.progress],ride.animation[1][ride.progress]-ride.animation[1][ride.progress-1]);
 					}
@@ -327,7 +327,7 @@ public class LiveStructure {
 	}
 	*/
 	private int distanceToPlayer(double x1, double y1, double z1) {
-		return (int) Math.sqrt(Math.pow(Minecraft.getInstance().player.posX-x1,2)+Math.pow(Minecraft.getInstance().player.posY-y1,2)+Math.pow(Minecraft.getInstance().player.posZ-z1,2));
+		return (int) Math.sqrt(Math.pow(Minecraft.getInstance().player.getPosX()-x1,2)+Math.pow(Minecraft.getInstance().player.getPosY()-y1,2)+Math.pow(Minecraft.getInstance().player.getPosZ()-z1,2));
 	}
 
 	private boolean checkWithinBounds(ServerPlayerEntity player, int sizex, int sizey, int sizez){

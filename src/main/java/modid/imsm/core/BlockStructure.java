@@ -18,6 +18,7 @@ import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.world.World;
 
 public class BlockStructure extends Block {
@@ -43,7 +44,7 @@ public class BlockStructure extends Block {
 	}
 	
 	@Override
-	public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+	public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
 		/*if(IMSM.worlds[0]==null || IMSM.worlds[1]==null){
 		if (worldIn.isRemote) {
 		      IMSM.worlds[0] = worldIn;
@@ -52,7 +53,7 @@ public class BlockStructure extends Block {
 		    }
 		}*/
 		if(worldIn.isRemote){
-			return true;
+			return ActionResultType.SUCCESS;
 		}
 		if(player.getHeldItemMainhand()!=null && player.getHeldItemMainhand().getItem() == Items.REDSTONE){
 			
@@ -87,7 +88,7 @@ IMSM.eventHandler.serverCreators.add(new OutlineCreator(name, pos ,modifierx, mo
     	worldIn.setBlockState(newPos, new BlockState(Blocks.AIR, ImmutableMap.of()));
 
     	}
-        return true;
+        return ActionResultType.SUCCESS;
     }
 	
 	void remove(StructureCreator structure){

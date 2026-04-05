@@ -16,6 +16,7 @@ import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.world.World;
 
 public class BlockUserStructure extends Block {
@@ -37,11 +38,11 @@ public class BlockUserStructure extends Block {
 	}
 	
 	@Override
-	 public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+	 public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
 
 
 		if(worldIn.isRemote){
-			return true;
+			return ActionResultType.SUCCESS;
 		}
 		if(player.getHeldItemMainhand()!=null && player.getHeldItemMainhand().getItem() == Items.REDSTONE){
 			
@@ -74,7 +75,7 @@ public class BlockUserStructure extends Block {
     	worldIn.setBlockState(newPos, Blocks.AIR.getDefaultState());
 
     	}
-        return true;
+        return ActionResultType.SUCCESS;
     }
 	
 	void remove(StructureCreator structure){

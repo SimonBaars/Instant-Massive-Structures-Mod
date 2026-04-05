@@ -28,12 +28,12 @@ public class RideCommand{
 			for(int i = 0; i<IMSM.eventHandler.liveCreators.size(); i++){
 				SchematicStructure struct = new SchematicStructure(IMSM.eventHandler.liveCreators.get(i).structureName+".structure", true);
 				struct.readFromFile();
-				if(IMSM.eventHandler.liveCreators.get(i).structureName.equals("Live_FerrisWheel") && IMSM.eventHandler.liveCreators.get(i).closeTo(5, Minecraft.getInstance().player.posX, Minecraft.getInstance().player.posY, Minecraft.getInstance().player.posZ, struct.width, struct.height, struct.length) && IMSM.eventHandler.liveCreators.get(i).ride==null){
+				if(IMSM.eventHandler.liveCreators.get(i).structureName.equals("Live_FerrisWheel") && IMSM.eventHandler.liveCreators.get(i).closeTo(5, Minecraft.getInstance().player.getPosX(), Minecraft.getInstance().player.getPosY(), Minecraft.getInstance().player.getPosZ(), struct.width, struct.height, struct.length) && IMSM.eventHandler.liveCreators.get(i).ride==null){
 					IMSM.eventHandler.liveCreators.get(i).ride=new RideStructure(0);
 					IMSM.eventHandler.isRiding=IMSM.eventHandler.liveCreators.get(i);
 					Minecraft.getInstance().player.sendChatMessage("Please hop aboard in the bottommost cart.");
 					return;
-				} else if(IMSM.eventHandler.liveCreators.get(i).structureName.equals("Live_Fair_FreeFall") && IMSM.eventHandler.liveCreators.get(i).closeTo(5, Minecraft.getInstance().player.posX, Minecraft.getInstance().player.posY, Minecraft.getInstance().player.posZ, struct.width, struct.height, struct.length) && IMSM.eventHandler.liveCreators.get(i).ride==null){
+				} else if(IMSM.eventHandler.liveCreators.get(i).structureName.equals("Live_Fair_FreeFall") && IMSM.eventHandler.liveCreators.get(i).closeTo(5, Minecraft.getInstance().player.getPosX(), Minecraft.getInstance().player.getPosY(), Minecraft.getInstance().player.getPosZ(), struct.width, struct.height, struct.length) && IMSM.eventHandler.liveCreators.get(i).ride==null){
 					IMSM.eventHandler.liveCreators.get(i).ride=new RideStructure(1);
 					IMSM.eventHandler.isRiding=IMSM.eventHandler.liveCreators.get(i);
 					Minecraft.getInstance().player.sendChatMessage("We'll pick you up on our next ride! Please hop aboard then.");

@@ -10,6 +10,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.world.World;
 
 public class BlockRemover extends Block {
@@ -30,7 +31,7 @@ public class BlockRemover extends Block {
 	}
 	
 	@Override
-	public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+	public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
 		BlockPos pos0;
 		BlockState state0;
 				for(int x = 0; x<removeX; x++){
@@ -47,6 +48,6 @@ public class BlockRemover extends Block {
 					}
 				}
 
-		return true;
+		return ActionResultType.SUCCESS;
 	}
 }
