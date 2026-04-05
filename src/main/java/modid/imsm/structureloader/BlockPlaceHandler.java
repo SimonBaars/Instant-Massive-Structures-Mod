@@ -25,12 +25,12 @@ public class BlockPlaceHandler {
 	
 	public static void placeBlock(Block block, int posx, int posy, int posz){
 		BlockPos pos= new BlockPos(posx,posy,posz);
-		setBlock(Minecraft.getMinecraft().theWorld,pos, block.getDefaultState());
+		setBlock(Minecraft.getMinecraft().world,pos, block.getDefaultState());
 		setBlock(Minecraft.getMinecraft().getIntegratedServer().getEntityWorld(), pos, block.getDefaultState());
 	}
 	
 	public static void placeBlocks(Block block, int posx, int posy, int posz, int sizex, int sizey, int sizez){
-		World worldIn = Minecraft.getMinecraft().theWorld;
+		World worldIn = Minecraft.getMinecraft().world;
 		World serverWorld = Minecraft.getMinecraft().getIntegratedServer().getEntityWorld();
 		BlockPos pos;
 		for(int x = 0; x<sizex; x++){

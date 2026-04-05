@@ -194,13 +194,13 @@ public class SchematicStructure extends Structure
 				//System.out.println("Tile entity at "+Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(StructureUtils.getWorldPos(new BlockPos(tileEntity.getInteger("x"), tileEntity.getInteger("y"), tileEntity.getInteger("z")), this.getCenterPos(), this.harvestPos)).getBlock().tile);
 				tE=chestEntity;
 			}else {
-			tE=TileEntity.func_190200_a(Minecraft.getMinecraft().getIntegratedServer().getEntityWorld(), tileEntity);
-			}
-			
-			StructureUtils.setTileEntity(Minecraft.getMinecraft().theWorld, tE, this.getCenterPos(), harvestPos);
-			}
-		for (NBTTagCompound entity : this.entities)
-			StructureUtils.setEntity(Minecraft.getMinecraft().theWorld, EntityList.createEntityFromNBT(entity, world), this.getCenterPos(), harvestPos);
+		tE=TileEntity.create(Minecraft.getMinecraft().getIntegratedServer().getEntityWorld(), tileEntity);
+		}
+		
+		StructureUtils.setTileEntity(Minecraft.getMinecraft().world, tE, this.getCenterPos(), harvestPos);
+		}
+	for (NBTTagCompound entity : this.entities)
+		StructureUtils.setEntity(Minecraft.getMinecraft().world, EntityList.createEntityFromNBT(entity, world), this.getCenterPos(), harvestPos);
 		
 		for (NBTTagCompound tileEntity : this.tileEntities){
 			TileEntity tE;
@@ -227,9 +227,9 @@ public class SchematicStructure extends Structure
 				//System.out.println("Tile entity at "+Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getBlockState(StructureUtils.getWorldPos(new BlockPos(tileEntity.getInteger("x"), tileEntity.getInteger("y"), tileEntity.getInteger("z")), this.getCenterPos(), this.harvestPos)).getBlock().tile);
 				tE=chestEntity;
 			}else {
-		tE=TileEntity.func_190200_a(Minecraft.getMinecraft().getIntegratedServer().getEntityWorld(), tileEntity);
-		}
-			StructureUtils.setTileEntity(Minecraft.getMinecraft().getIntegratedServer().getEntityWorld(), tE, this.getCenterPos(), harvestPos);
+	tE=TileEntity.create(Minecraft.getMinecraft().getIntegratedServer().getEntityWorld(), tileEntity);
+	}
+		StructureUtils.setTileEntity(Minecraft.getMinecraft().getIntegratedServer().getEntityWorld(), tE, this.getCenterPos(), harvestPos);
 			//TODO: THE ABOVE LINE SHOULD NOT BE COMMENTED!!
 		}
 		for (NBTTagCompound entity : this.entities)
