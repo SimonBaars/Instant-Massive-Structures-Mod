@@ -75,140 +75,140 @@ public class IMSM {
 	public static modid.imsm.core.EventHandler eventHandler;
 	
 	public static CreativeTabs Structures = new CreativeTabs("Structures"){
-		public Item getTabIconItem() {
-			return Item.getItemFromBlock(IMSM.BlockMegaHouse);
+		public ItemStack getTabIconItem() {
+			return new ItemStack(IMSM.BlockMegaHouse);
 		}		
 	};
 	
 	public static CreativeTabs Decoration = new CreativeTabs("Decoration"){
-		public Item getTabIconItem() {
-			return Item.getItemFromBlock(IMSM.DecorationParkSouth);
+		public ItemStack getTabIconItem() {
+			return new ItemStack(IMSM.DecorationParkSouth);
 		}		
 	};
 	
 	public static CreativeTabs Food = new CreativeTabs("Food"){
-		public Item getTabIconItem() {
-			return Item.getItemFromBlock(IMSM.FoodFarmSouth);
+		public ItemStack getTabIconItem() {
+			return new ItemStack(IMSM.FoodFarmSouth);
 		}		
 	};
 	
 	public static CreativeTabs IndustryHigh_Density = new CreativeTabs("IndustryHigh_Density"){
-		public Item getTabIconItem() {
-			return Item.getItemFromBlock(IMSM.IndustryHigh_DensityBlueEast);
+		public ItemStack getTabIconItem() {
+			return new ItemStack(IMSM.IndustryHigh_DensityBlueEast);
 		}		
 	};
 	
 	public static CreativeTabs IndustryMedium_Density = new CreativeTabs("IndustryMedium_Density"){
-		public Item getTabIconItem() {
-			return Item.getItemFromBlock(IMSM.IndustryMedium_DensityBrickWest);
+		public ItemStack getTabIconItem() {
+			return new ItemStack(IMSM.IndustryMedium_DensityBrickWest);
 		}		
 	};
 	
 	public static CreativeTabs IndustryLow_Density = new CreativeTabs("IndustryLow_Density"){
-		public Item getTabIconItem() {
-			return Item.getItemFromBlock(IMSM.IndustryLow_DensityGreenNorth);
+		public ItemStack getTabIconItem() {
+			return new ItemStack(IMSM.IndustryLow_DensityGreenNorth);
 		}		
 	};
 	
 	public static CreativeTabs Office = new CreativeTabs("Office"){
-		public Item getTabIconItem() {
-			return Item.getItemFromBlock(IMSM.OfficeHigh_DensityBrickEastWest);
+		public ItemStack getTabIconItem() {
+			return new ItemStack(IMSM.OfficeHigh_DensityBrickEastWest);
 		}		
 	};
 	
 	public static CreativeTabs Public = new CreativeTabs("Public"){
-		public Item getTabIconItem() {
-			return Item.getItemFromBlock(IMSM.PublicFireServiceBigEast);
+		public ItemStack getTabIconItem() {
+			return new ItemStack(IMSM.PublicFireServiceBigEast);
 		}		
 	};
 	
 	public static CreativeTabs ResidentalEnormous_Density = new CreativeTabs("ResidentalEnormous_Density"){
-		public Item getTabIconItem() {
-			return Item.getItemFromBlock(IMSM.ResidentalEnormous_DensityBlockNorthEastSouthWest);
+		public ItemStack getTabIconItem() {
+			return new ItemStack(IMSM.ResidentalEnormous_DensityBlockNorthEastSouthWest);
 		}		
 	};
 	
 	public static CreativeTabs ResidentalHigh_Density = new CreativeTabs("ResidentalHigh_Density"){
-		public Item getTabIconItem() {
-			return Item.getItemFromBlock(IMSM.ResidentalHigh_DensityBrickEastWest);
+		public ItemStack getTabIconItem() {
+			return new ItemStack(IMSM.ResidentalHigh_DensityBrickEastWest);
 		}		
 	};
 	
 	public static CreativeTabs ResidentalMedium_Density = new CreativeTabs("ResidentalMedium_Density"){
-		public Item getTabIconItem() {
-			return Item.getItemFromBlock(IMSM.ResidentalMedium_DensityOrangeGreenEast);
+		public ItemStack getTabIconItem() {
+			return new ItemStack(IMSM.ResidentalMedium_DensityOrangeGreenEast);
 		}		
 	};
 	
 	public static CreativeTabs ResidentalLow_Density = new CreativeTabs("ResidentalLow_Density"){
-		public Item getTabIconItem() {
-			return Item.getItemFromBlock(IMSM.ResidentalLow_DensityGreenEast2);
+		public ItemStack getTabIconItem() {
+			return new ItemStack(IMSM.ResidentalLow_DensityGreenEast2);
 		}		
 	};
 	
 	public static CreativeTabs Shopping = new CreativeTabs("Shopping"){
-		public Item getTabIconItem() {
-			return Item.getItemFromBlock(IMSM.ShoppingMedium_DensityQuartzEast);
+		public ItemStack getTabIconItem() {
+			return new ItemStack(IMSM.ShoppingMedium_DensityQuartzEast);
 		}		
 	};
 	
 	/*public static CreativeTabs TransportAirport = new CreativeTabs("TransportAirport"){
-		public Item getTabIconItem() {
-			return Item.getItemFromBlock(IMSM.TransportAirportRunway_EastWestBuilding_South);
+		public ItemStack getTabIconItem() {
+			return new ItemStack(IMSM.TransportAirportRunway_EastWestBuilding_South);
 		}		
 	};*/
 	
 	public static CreativeTabs TransportHarbour = new CreativeTabs("TransportHarbour"){
-		public Item getTabIconItem() {
-			return Item.getItemFromBlock(IMSM.TransportHarbourSide2CornerWest);
+		public ItemStack getTabIconItem() {
+			return new ItemStack(IMSM.TransportHarbourSide2CornerWest);
 		}		
 	};
 	
 	public static CreativeTabs TransportPublic = new CreativeTabs("TransportPublic"){
-		public Item getTabIconItem() {
-			return Item.getItemFromBlock(IMSM.TransportPublicHightramLSouthWest);
+		public ItemStack getTabIconItem() {
+			return new ItemStack(IMSM.TransportPublicHightramLSouthWest);
 		}		
 	};
 	
 	public static CreativeTabs TransportRoads = new CreativeTabs("TransportRoads"){
-		public Item getTabIconItem() {
-			return Item.getItemFromBlock(IMSM.TransportRoadTNorthSouthWest);
+		public ItemStack getTabIconItem() {
+			return new ItemStack(IMSM.TransportRoadTNorthSouthWest);
 		}		
 	};
 	
 	public static CreativeTabs TransportWater = new CreativeTabs("TransportWater"){
-		public Item getTabIconItem() {
-			return Item.getItemFromBlock(IMSM.TransportWater2CornerWest);
+		public ItemStack getTabIconItem() {
+			return new ItemStack(IMSM.TransportWater2CornerWest);
 		}		
 	};
 	
 	public static CreativeTabs Utility = new CreativeTabs("Utility"){
-		public Item getTabIconItem() {
-			return Item.getItemFromBlock(IMSM.UtilityPower_NuclearEast);
+		public ItemStack getTabIconItem() {
+			return new ItemStack(IMSM.UtilityPower_NuclearEast);
 		}		
 	};
 	
 	public static CreativeTabs Remover = new CreativeTabs("Remover"){
-		public Item getTabIconItem() {
-			return Item.getItemFromBlock(IMSM.RemoverLast);
+		public ItemStack getTabIconItem() {
+			return new ItemStack(IMSM.RemoverLast);
 		}		
 	};
 	
 	public static CreativeTabs Other = new CreativeTabs("Other"){
-		public Item getTabIconItem() {
-			return Item.getItemFromBlock(IMSM.BlockStadium);
+		public ItemStack getTabIconItem() {
+			return new ItemStack(IMSM.BlockStadium);
 		}		
 	};
 	
 	public static CreativeTabs LiveStructures = new CreativeTabs("LiveStructures"){
-		public Item getTabIconItem() {
-			return Item.getItemFromBlock(IMSM.Live_Power_Windmill_East);
+		public ItemStack getTabIconItem() {
+			return new ItemStack(IMSM.Live_Power_Windmill_East);
 		}		
 	};
 	
 	public static CreativeTabs User = new CreativeTabs("User"){
-		public Item getTabIconItem() {
-			return Item.getItemFromBlock(IMSM.BlockUnlimited);
+		public ItemStack getTabIconItem() {
+			return new ItemStack(IMSM.BlockUnlimited);
 		}		
 	};
 	
@@ -3569,7 +3569,7 @@ public class IMSM {
 		GameRegistry.register(BlockAirplane.setRegistryName("BlockAirplane"));
 		GameRegistry.register(new ItemBlock(BlockAirplane).setRegistryName(BlockAirplane.getRegistryName()));
 		//GameRegistry.register(BlockApplepie.setRegistryName("BlockApplepie"));
-		GameRegistry.register(new ItemBlock(BlockApplepie).setRegistryName(BlockApplepie.getRegistryName()));
+		//GameRegistry.register(new ItemBlock(BlockApplepie).setRegistryName(BlockApplepie.getRegistryName()));
 		GameRegistry.register(BlockArena1.setRegistryName("BlockArena1"));
 		GameRegistry.register(new ItemBlock(BlockArena1).setRegistryName(BlockArena1.getRegistryName()));
 		GameRegistry.register(BlockArena2.setRegistryName("BlockArena2"));
@@ -3581,15 +3581,15 @@ public class IMSM {
 		GameRegistry.register(BlockBunker.setRegistryName("BlockBunker"));
 		GameRegistry.register(new ItemBlock(BlockBunker).setRegistryName(BlockBunker.getRegistryName()));
 		//GameRegistry.register(BlockCactus2.setRegistryName("BlockCactus2"));
-		GameRegistry.register(new ItemBlock(BlockCactus2).setRegistryName(BlockCactus2.getRegistryName()));
+		//GameRegistry.register(new ItemBlock(BlockCactus2).setRegistryName(BlockCactus2.getRegistryName()));
 		//GameRegistry.register(BlockCake2.setRegistryName("BlockCake2"));
-		GameRegistry.register(new ItemBlock(BlockCake2).setRegistryName(BlockCake2.getRegistryName()));
+		//GameRegistry.register(new ItemBlock(BlockCake2).setRegistryName(BlockCake2.getRegistryName()));
 		GameRegistry.register(BlockCastleTower.setRegistryName("BlockCastleTower"));
 		GameRegistry.register(new ItemBlock(BlockCastleTower).setRegistryName(BlockCastleTower.getRegistryName()));
 		//GameRegistry.register(BlockCave.setRegistryName("BlockCave"));
-		GameRegistry.register(new ItemBlock(BlockCave).setRegistryName(BlockCave.getRegistryName()));
+		//GameRegistry.register(new ItemBlock(BlockCave).setRegistryName(BlockCave.getRegistryName()));
 		//GameRegistry.register(BlockColumn.setRegistryName("BlockColumn"));
-		GameRegistry.register(new ItemBlock(BlockColumn).setRegistryName(BlockColumn.getRegistryName()));
+		//GameRegistry.register(new ItemBlock(BlockColumn).setRegistryName(BlockColumn.getRegistryName()));
 		GameRegistry.register(BlockCosyHouse.setRegistryName("BlockCosyHouse"));
 		GameRegistry.register(new ItemBlock(BlockCosyHouse).setRegistryName(BlockCosyHouse.getRegistryName()));
 		GameRegistry.register(BlockDungeon.setRegistryName("BlockDungeon"));
@@ -3605,15 +3605,15 @@ public class IMSM {
 		GameRegistry.register(BlockFarm.setRegistryName("BlockFarm"));
 		GameRegistry.register(new ItemBlock(BlockFarm).setRegistryName(BlockFarm.getRegistryName()));
 		//GameRegistry.register(BlockFloatingSphere.setRegistryName("BlockFloatingSphere"));
-		GameRegistry.register(new ItemBlock(BlockFloatingSphere).setRegistryName(BlockFloatingSphere.getRegistryName()));
+		//GameRegistry.register(new ItemBlock(BlockFloatingSphere).setRegistryName(BlockFloatingSphere.getRegistryName()));
 		GameRegistry.register(BlockGiantTree.setRegistryName("BlockGiantTree"));
 		GameRegistry.register(new ItemBlock(BlockGiantTree).setRegistryName(BlockGiantTree.getRegistryName()));
 		//GameRegistry.register(BlockGlassHouse.setRegistryName("BlockGlassHouse"));
-		GameRegistry.register(new ItemBlock(BlockGlassHouse).setRegistryName(BlockGlassHouse.getRegistryName()));
+		//GameRegistry.register(new ItemBlock(BlockGlassHouse).setRegistryName(BlockGlassHouse.getRegistryName()));
 		GameRegistry.register(BlockHountedHouse.setRegistryName("BlockHountedHouse"));
 		GameRegistry.register(new ItemBlock(BlockHountedHouse).setRegistryName(BlockHountedHouse.getRegistryName()));
 		//GameRegistry.register(BlockHouse2.setRegistryName("BlockHouse2"));
-		GameRegistry.register(new ItemBlock(BlockHouse2).setRegistryName(BlockHouse2.getRegistryName()));
+		//GameRegistry.register(new ItemBlock(BlockHouse2).setRegistryName(BlockHouse2.getRegistryName()));
 		GameRegistry.register(BlockHouse.setRegistryName("BlockHouse"));
 		GameRegistry.register(new ItemBlock(BlockHouse).setRegistryName(BlockHouse.getRegistryName()));
 		GameRegistry.register(BlockHouseTrap1.setRegistryName("BlockHouseTrap1"));
@@ -3621,7 +3621,7 @@ public class IMSM {
 		GameRegistry.register(BlockHouseTrap2.setRegistryName("BlockHouseTrap2"));
 		GameRegistry.register(new ItemBlock(BlockHouseTrap2).setRegistryName(BlockHouseTrap2.getRegistryName()));
 		//GameRegistry.register(BlockLeaves2.setRegistryName("BlockLeaves2"));
-		GameRegistry.register(new ItemBlock(BlockLeaves2).setRegistryName(BlockLeaves2.getRegistryName()));
+		//GameRegistry.register(new ItemBlock(BlockLeaves2).setRegistryName(BlockLeaves2.getRegistryName()));
 		GameRegistry.register(BlockLighthouse.setRegistryName("BlockLighthouse"));
 		GameRegistry.register(new ItemBlock(BlockLighthouse).setRegistryName(BlockLighthouse.getRegistryName()));
 		GameRegistry.register(BlockMegaHouse2.setRegistryName("BlockMegaHouse2"));
@@ -3631,11 +3631,11 @@ public class IMSM {
 		GameRegistry.register(BlockMegaTower.setRegistryName("BlockMegaTower"));
 		GameRegistry.register(new ItemBlock(BlockMegaTower).setRegistryName(BlockMegaTower.getRegistryName()));
 		//GameRegistry.register(BlockPenIron.setRegistryName("BlockPenIron"));
-		GameRegistry.register(new ItemBlock(BlockPenIron).setRegistryName(BlockPenIron.getRegistryName()));
+		//GameRegistry.register(new ItemBlock(BlockPenIron).setRegistryName(BlockPenIron.getRegistryName()));
 		//GameRegistry.register(BlockPenNether.setRegistryName("BlockPenNether"));
-		GameRegistry.register(new ItemBlock(BlockPenNether).setRegistryName(BlockPenNether.getRegistryName()));
+		//GameRegistry.register(new ItemBlock(BlockPenNether).setRegistryName(BlockPenNether.getRegistryName()));
 		//GameRegistry.register(BlockPenWood.setRegistryName("BlockPenWood"));
-		GameRegistry.register(new ItemBlock(BlockPenWood).setRegistryName(BlockPenWood.getRegistryName()));
+		//GameRegistry.register(new ItemBlock(BlockPenWood).setRegistryName(BlockPenWood.getRegistryName()));
 		GameRegistry.register(BlockPlane.setRegistryName("BlockPlane"));
 		GameRegistry.register(new ItemBlock(BlockPlane).setRegistryName(BlockPlane.getRegistryName()));
 		GameRegistry.register(BlockPrison2.setRegistryName("BlockPrison2"));
@@ -3649,21 +3649,21 @@ public class IMSM {
 		GameRegistry.register(BlockRollercoaster.setRegistryName("BlockRollercoaster"));
 		GameRegistry.register(new ItemBlock(BlockRollercoaster).setRegistryName(BlockRollercoaster.getRegistryName()));
 		//GameRegistry.register(BlockShelter.setRegistryName("BlockShelter"));
-		GameRegistry.register(new ItemBlock(BlockShelter).setRegistryName(BlockShelter.getRegistryName()));
+		//GameRegistry.register(new ItemBlock(BlockShelter).setRegistryName(BlockShelter.getRegistryName()));
 		//GameRegistry.register(BlockSkyscraper2.setRegistryName("BlockSkyscraper2"));
-		GameRegistry.register(new ItemBlock(BlockSkyscraper2).setRegistryName(BlockSkyscraper2.getRegistryName()));
+		//GameRegistry.register(new ItemBlock(BlockSkyscraper2).setRegistryName(BlockSkyscraper2.getRegistryName()));
 		GameRegistry.register(BlockSkyscraper.setRegistryName("BlockSkyscraper"));
 		GameRegistry.register(new ItemBlock(BlockSkyscraper).setRegistryName(BlockSkyscraper.getRegistryName()));
 		//GameRegistry.register(BlockStadium2.setRegistryName("BlockStadium2"));
-		GameRegistry.register(new ItemBlock(BlockStadium2).setRegistryName(BlockStadium2.getRegistryName()));
+		//GameRegistry.register(new ItemBlock(BlockStadium2).setRegistryName(BlockStadium2.getRegistryName()));
 		GameRegistry.register(BlockStadium.setRegistryName("BlockStadium"));
 		GameRegistry.register(new ItemBlock(BlockStadium).setRegistryName(BlockStadium.getRegistryName()));
 		//GameRegistry.register(BlockStandardBrickHouse.setRegistryName("BlockStandardBrickHouse"));
-		GameRegistry.register(new ItemBlock(BlockStandardBrickHouse).setRegistryName(BlockStandardBrickHouse.getRegistryName()));
+		//GameRegistry.register(new ItemBlock(BlockStandardBrickHouse).setRegistryName(BlockStandardBrickHouse.getRegistryName()));
 		GameRegistry.register(BlockStoreHouse.setRegistryName("BlockStoreHouse"));
 		GameRegistry.register(new ItemBlock(BlockStoreHouse).setRegistryName(BlockStoreHouse.getRegistryName()));
 		//GameRegistry.register(BlockStreet.setRegistryName("BlockStreet"));
-		GameRegistry.register(new ItemBlock(BlockStreet).setRegistryName(BlockStreet.getRegistryName()));
+		//GameRegistry.register(new ItemBlock(BlockStreet).setRegistryName(BlockStreet.getRegistryName()));
 		GameRegistry.register(BlockTorch2.setRegistryName("BlockTorch2"));
 		GameRegistry.register(new ItemBlock(BlockTorch2).setRegistryName(BlockTorch2.getRegistryName()));
 		GameRegistry.register(BlockTower.setRegistryName("BlockTower"));
@@ -3671,31 +3671,31 @@ public class IMSM {
 		GameRegistry.register(BlockWaterSlide.setRegistryName("BlockWaterSlide"));
 		GameRegistry.register(new ItemBlock(BlockWaterSlide).setRegistryName(BlockWaterSlide.getRegistryName()));
 		//GameRegistry.register(Remover16256.setRegistryName("Remover16256"));
-		GameRegistry.register(new ItemBlock(Remover16256).setRegistryName(Remover16256.getRegistryName()));
+		//GameRegistry.register(new ItemBlock(Remover16256).setRegistryName(Remover16256.getRegistryName()));
 		//GameRegistry.register(Remover1632.setRegistryName("Remover1632"));
-		GameRegistry.register(new ItemBlock(Remover1632).setRegistryName(Remover1632.getRegistryName()));
+		//GameRegistry.register(new ItemBlock(Remover1632).setRegistryName(Remover1632.getRegistryName()));
 		//GameRegistry.register(Remover168.setRegistryName("Remover168"));
-		GameRegistry.register(new ItemBlock(Remover168).setRegistryName(Remover168.getRegistryName()));
+		//GameRegistry.register(new ItemBlock(Remover168).setRegistryName(Remover168.getRegistryName()));
 		GameRegistry.register(Remover16.setRegistryName("Remover16"));
 		GameRegistry.register(new ItemBlock(Remover16).setRegistryName(Remover16.getRegistryName()));
 		//GameRegistry.register(Remover3216.setRegistryName("Remover3216"));
-		GameRegistry.register(new ItemBlock(Remover3216).setRegistryName(Remover3216.getRegistryName()));
+		//GameRegistry.register(new ItemBlock(Remover3216).setRegistryName(Remover3216.getRegistryName()));
 		//GameRegistry.register(Remover32256.setRegistryName("Remover32256"));
-		GameRegistry.register(new ItemBlock(Remover32256).setRegistryName(Remover32256.getRegistryName()));
+		//GameRegistry.register(new ItemBlock(Remover32256).setRegistryName(Remover32256.getRegistryName()));
 		//GameRegistry.register(Remover328.setRegistryName("Remover328"));
-		GameRegistry.register(new ItemBlock(Remover328).setRegistryName(Remover328.getRegistryName()));
+		//GameRegistry.register(new ItemBlock(Remover328).setRegistryName(Remover328.getRegistryName()));
 		GameRegistry.register(Remover32.setRegistryName("Remover32"));
 		GameRegistry.register(new ItemBlock(Remover32).setRegistryName(Remover32.getRegistryName()));
 		//GameRegistry.register(Remover64256.setRegistryName("Remover64256"));
-		GameRegistry.register(new ItemBlock(Remover64256).setRegistryName(Remover64256.getRegistryName()));
+		//GameRegistry.register(new ItemBlock(Remover64256).setRegistryName(Remover64256.getRegistryName()));
 		GameRegistry.register(Remover64.setRegistryName("Remover64"));
 		GameRegistry.register(new ItemBlock(Remover64).setRegistryName(Remover64.getRegistryName()));
 		//GameRegistry.register(Remover816.setRegistryName("Remover816"));
-		GameRegistry.register(new ItemBlock(Remover816).setRegistryName(Remover816.getRegistryName()));
+		//GameRegistry.register(new ItemBlock(Remover816).setRegistryName(Remover816.getRegistryName()));
 		//GameRegistry.register(Remover8256.setRegistryName("Remover8256"));
-		GameRegistry.register(new ItemBlock(Remover8256).setRegistryName(Remover8256.getRegistryName()));
+		//GameRegistry.register(new ItemBlock(Remover8256).setRegistryName(Remover8256.getRegistryName()));
 		//GameRegistry.register(Remover832.setRegistryName("Remover832"));
-		GameRegistry.register(new ItemBlock(Remover832).setRegistryName(Remover832.getRegistryName()));
+		//GameRegistry.register(new ItemBlock(Remover832).setRegistryName(Remover832.getRegistryName()));
 		GameRegistry.register(Remover8.setRegistryName("Remover8"));
 		GameRegistry.register(new ItemBlock(Remover8).setRegistryName(Remover8.getRegistryName()));
 		GameRegistry.register(RemoverLast.setRegistryName("RemoverLast"));
@@ -3734,7 +3734,7 @@ public class IMSM {
 		GameRegistry.register(BlockCheckerboard.setRegistryName("BlockCheckerboard"));
 		GameRegistry.register(new ItemBlock(BlockCheckerboard).setRegistryName(BlockCheckerboard.getRegistryName()));
 		//GameRegistry.register(BlockAtlantis.setRegistryName("BlockAtlantis"));
-		GameRegistry.register(new ItemBlock(BlockAtlantis).setRegistryName(BlockAtlantis.getRegistryName()));
+		//GameRegistry.register(new ItemBlock(BlockAtlantis).setRegistryName(BlockAtlantis.getRegistryName()));
 		GameRegistry.register(BlockBigWorld.setRegistryName("BlockBigWorld"));
 		GameRegistry.register(new ItemBlock(BlockBigWorld).setRegistryName(BlockBigWorld.getRegistryName()));
 

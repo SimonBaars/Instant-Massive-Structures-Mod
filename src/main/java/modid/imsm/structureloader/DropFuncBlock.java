@@ -25,7 +25,7 @@ public class DropFuncBlock
 		//Chunk chunkClient = Minecraft.getMinecraft().theWorld.getChunkFromBlockCoords(pos);
 		ExtendedBlockStorage storageArray = chunk.getBlockStorageArray()[pos.getY() >> 4];
 		//System.out.println(pos.getX()+", "+pos.getY()+", "+pos.getZ());
-		if (storageArray == null) storageArray = chunk.getBlockStorageArray()[pos.getY() >> 4] = new ExtendedBlockStorage(pos.getY() >> 4 << 4, !world.provider.getHasNoSky());
+		if (storageArray == null) storageArray = chunk.getBlockStorageArray()[pos.getY() >> 4] = new ExtendedBlockStorage(pos.getY() >> 4 << 4, world.provider.hasSkyLight());
 		
 		if (storageArray.get(pos.getX() & 15, pos.getY() & 15, pos.getZ() & 15).getBlock() != state.getBlock() || state.getBlock() instanceof BlockColored)
 		{
@@ -67,7 +67,7 @@ world.checkLight(pos);
 			}
 			}*/
 				//world.setBlockState(pos, oldState)
-				chunk.setChunkModified();
+				chunk.markDirty();
 			//chunkClient.setChunkModified();
 			world.markBlockRangeForRenderUpdate(pos,pos);//TODO: Stil a hack
 			//Minecraft.getMinecraft().theWorld.markBlockRangeForRenderUpdate(pos,pos);//TODO: Stil a hack
@@ -104,7 +104,7 @@ world.checkLight(pos);
 		{
 			Chunk chunk = world.getChunkFromBlockCoords(pos);
 			ExtendedBlockStorage storageArray = chunk.getBlockStorageArray()[pos.getY() >> 4];
-			if (storageArray == null) storageArray = chunk.getBlockStorageArray()[pos.getY() >> 4] = new ExtendedBlockStorage(pos.getY() >> 4 << 4, !world.provider.getHasNoSky());
+			if (storageArray == null) storageArray = chunk.getBlockStorageArray()[pos.getY() >> 4] = new ExtendedBlockStorage(pos.getY() >> 4 << 4, world.provider.hasSkyLight());
 
 			world.removeTileEntity(pos);
 			BlockPos chunkPos = new BlockPos(pos.getX() & 15, pos.getY(), pos.getZ() & 15);

@@ -1,6 +1,7 @@
 package modid.imsm.worldgeneration;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import modid.imsm.core.IMSM;
@@ -24,13 +25,13 @@ public static int numBlocksUndoable = 0;
   }
 
   @Override
-  public String getCommandName()
+  public String getName()
   {
     return "undo";
   }
 
   @Override
-  public String getCommandUsage(ICommandSender icommandsender)
+  public String getUsage(ICommandSender icommandsender)
   {
     return "undo";
   }
@@ -41,7 +42,7 @@ public static int numBlocksUndoable = 0;
   }
 
   @Override
-  public List getCommandAliases()
+  public List getAliases()
   {
     return this.aliases;
   }
@@ -63,9 +64,9 @@ public static int numBlocksUndoable = 0;
 		 }
   }
 @Override
-  public List getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+  public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
   {
-    return null;
+    return Collections.emptyList();
   }
 
   @Override

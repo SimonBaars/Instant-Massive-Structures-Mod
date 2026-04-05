@@ -99,7 +99,7 @@ public class BigWorldCreator extends CreatorBlocks implements ICreatorBlock {
 		try{
 			Chunk chunk = worldIn[k].getChunkFromBlockCoords(pos);
 			ExtendedBlockStorage storageArray = chunk.getBlockStorageArray()[pos.getY() >> 4];
-			if (storageArray == null) storageArray = chunk.getBlockStorageArray()[pos.getY() >> 4] = new ExtendedBlockStorage(pos.getY() >> 4 << 4, !worldIn[k].provider.getHasNoSky());
+			if (storageArray == null) storageArray = chunk.getBlockStorageArray()[pos.getY() >> 4] = new ExtendedBlockStorage(pos.getY() >> 4 << 4, worldIn[k].provider.hasSkyLight());
 
 			if (storageArray.get(pos.getX() & 15, pos.getY() & 15, pos.getZ() & 15).getBlock() != state.getBlock())
 			{
