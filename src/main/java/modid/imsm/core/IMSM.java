@@ -38,6 +38,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -1145,7 +1146,8 @@ public class IMSM {
 
 
 	public void reg(Block block) {
-	    Minecraft.getInstance().getItemRenderer().getItemModelMesher().register(Item.getItemFromBlock(block), new ModelResourceLocation(modid + ":" + block.getNameTextComponent().getUnformattedComponentText().substring(5), "inventory"));
+	    ResourceLocation registryName = java.util.Objects.requireNonNull(block.getRegistryName(), "Block must be registered before model registration");
+	    Minecraft.getInstance().getItemRenderer().getItemModelMesher().register(Item.getItemFromBlock(block), new ModelResourceLocation(modid + ":" + registryName.getPath(), "inventory"));
 	}
 	
 	private static ArrayList<Block> registerUserBlocks() {
@@ -2087,8 +2089,8 @@ public class IMSM {
 
 @SubscribeEvent
 public void serverStarting(FMLServerStartingEvent event) {
-    UndoCommand.register(event.getCommandDispatcher());
-    RideCommand.register(event.getCommandDispatcher());
+    UndoCommand.register(event.getServer().getCommandManager().getDispatcher());
+    RideCommand.register(event.getServer().getCommandManager().getDispatcher());
 }
 	   
 @SubscribeEvent
@@ -3235,7 +3237,7 @@ public void registerItems(RegistryEvent.Register<Item> event) {
 	   @SubscribeEvent
 	   public void serverLoad(FMLServerStartingEvent event)
 	   {
-	     event.getCommandDispatcher().register(
+	     event.getServer().getCommandManager().getDispatcher().register(
 	       net.minecraft.command.Commands.literal("imsm")
 	         .then(net.minecraft.command.Commands.argument("structure", com.mojang.brigadier.arguments.StringArgumentType.string())
 	           .executes(ctx -> {

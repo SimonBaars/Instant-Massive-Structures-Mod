@@ -11,7 +11,7 @@ public class StructureRemover implements ICreatorBlock{
 	public boolean run() {
 		if(UndoCommand.removedPositions.size()>0 && UndoCommand.removedStates.size()>0){
 		for(int i = 0; i<100; i++){
-		Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).setBlockState(UndoCommand.removedPositions.get(UndoCommand.removedPositions.size()-1), UndoCommand.removedStates.get(UndoCommand.removedStates.size()-1));
+		modid.imsm.core.MinecraftAccess.getIntegratedWorld().setBlockState(UndoCommand.removedPositions.get(UndoCommand.removedPositions.size()-1), UndoCommand.removedStates.get(UndoCommand.removedStates.size()-1));
 		UndoCommand.removedPositions.remove(UndoCommand.removedPositions.size()-1);
 		UndoCommand.removedStates.remove(UndoCommand.removedStates.size()-1);
 		if(UndoCommand.removedPositions.size()==0 || UndoCommand.removedStates.size()==0){
@@ -33,7 +33,7 @@ public class StructureRemover implements ICreatorBlock{
 					   IBlockState state0=blk.getDefaultState();
 					   // set the block
 					   //Minecraft.getInstance().world.setBlockState(pos0, state0);
-					   Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).setBlockState(pos0, state0);
+					   modid.imsm.core.MinecraftAccess.getIntegratedWorld().setBlockState(pos0, state0);
 		z++;
 		if(z>struct.width){
 			z=0;

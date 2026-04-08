@@ -16,6 +16,8 @@ out
 # gradle
 build
 .gradle
+.toolchains
+.refs
 
 # other
 eclipse

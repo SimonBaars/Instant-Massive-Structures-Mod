@@ -60,7 +60,7 @@ public class BlockLiveStructure extends Block {
                       //liveCreators.add(new LiveStructure(array[0], Minecraft.getInstance().world, Minecraft.getInstance().getIntegratedServer().worldServerForDimension(0), Integer.parseInt(array[1]),Integer.parseInt(array[2]),Integer.parseInt(array[3]), array[4].equals("true"), Integer.parseInt(array[8]), Integer.parseInt(array[9]),  i, getAnimationFor(array[0]),array[7].equals("true")));
   	IMSM.eventHandler.liveCreators.add(new LiveStructureServer(name, pos.getX()+modifierx-spawnPosModifierX, pos.getY()+modifiery-spawnPosModifierY, pos.getZ()+modifierz-spawnPosModifierZ, doReplaceAir, amountOfSlides, waitTime, IMSM.eventHandler.liveCreators.size(), animation, doLoop));
   	IMSM.eventHandler.liveCreators.get(IMSM.eventHandler.liveCreators.size()-1).registerLiveCreator(IMSM.eventHandler.liveCreators.get(IMSM.eventHandler.liveCreators.size()-1),IMSM.eventHandler.liveCreators.size()-1);
-  	worldIn.setBlockState(newPos, new BlockState(Blocks.AIR, ImmutableMap.of()));
+  	worldIn.setBlockState(newPos, Blocks.AIR.getDefaultState());
   	if(IMSM.eventHandler.liveCreators.size()>4){
   		Minecraft.getInstance().player.sendChatMessage("You have now placed more than 5 Live Structures, which may cause some lag.");
   		Minecraft.getInstance().player.sendChatMessage("Do the command /removelive to remove all live structures");

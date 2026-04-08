@@ -36,8 +36,8 @@ public class LiveStructureRemover extends Block {
 				struct.readFromFile();
 				if(IMSM.eventHandler.liveCreators.get(i).closeTo(2, pos.getX(), pos.getY(), pos.getZ(), struct.width, struct.height, struct.length)){
 					IMSM.eventHandler.liveCreators.get(i).removeThisLiveStructure(false);
-					Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).setBlockState(pos, new BlockState(Blocks.AIR, ImmutableMap.of()));
-					Minecraft.getInstance().world.setBlockState(pos, new BlockState(Blocks.AIR, ImmutableMap.of()));
+					modid.imsm.core.MinecraftAccess.getIntegratedWorld().setBlockState(pos, Blocks.AIR.getDefaultState());
+					Minecraft.getInstance().world.setBlockState(pos, Blocks.AIR.getDefaultState());
 					Minecraft.getInstance().player.sendChatMessage("You succesfully removed a structure's movements");
 					break;
 				}

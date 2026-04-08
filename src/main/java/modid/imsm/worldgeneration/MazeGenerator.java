@@ -64,7 +64,7 @@ public class MazeGenerator extends CreatorBlocks implements ICreatorBlock {
       		  int xPos =  x+(posX*blockSize)+((int)(Math.random()*(blockSize-1)));
       		int zPos =  z+(posY*blockSize)+((int)(Math.random()*(blockSize-1)));
       		BlockPlaceHandler.placeBlock(Blocks.CHEST, xPos, y, zPos);
-      		ChestTileEntity chest = (ChestTileEntity) Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getTileEntity(new BlockPos(xPos, y, zPos));
+      		ChestTileEntity chest = (ChestTileEntity) modid.imsm.core.MinecraftAccess.getIntegratedWorld().getTileEntity(new BlockPos(xPos, y, zPos));
       		if(chest!=null){
       			generateChestContents(chest);
       		}
@@ -212,7 +212,7 @@ public class MazeGenerator extends CreatorBlocks implements ICreatorBlock {
 		this.x-=(blockSize*maze.nodeRegister[0].length)/2;
 		this.z-=(blockSize*maze.nodeRegister[1].length)/2;
 		World worldIn = Minecraft.getInstance().world;
-		World serverWorld = Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension);
+		World serverWorld = modid.imsm.core.MinecraftAccess.getIntegratedWorld();
 		BlockPos pos;
 		Block block;
 		for(int x = 0; x<blockSize*maze.nodeRegister[0].length; x++){

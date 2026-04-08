@@ -105,7 +105,7 @@ public class BlockPlacer
 		boolean blockAdded = DropFuncBlock.setBlock(this.world, blockState, blockPos, false, isLive);
 		//this.updatePos.add(blockPos);
 		//this.updateState.add(blockState);
-		this.world.markAndNotifyBlock(blockPos, (Chunk) this.world.getChunk(blockPos), this.world.getBlockState(blockPos), blockState, 3);
+		this.world.markAndNotifyBlock(blockPos, (Chunk) this.world.getChunk(blockPos), this.world.getBlockState(blockPos), blockState, 3, 512);
 		return blockAdded;
 	}
 

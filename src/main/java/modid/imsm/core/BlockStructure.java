@@ -85,7 +85,7 @@ IMSM.eventHandler.serverCreators.add(new OutlineCreator(name, pos ,modifierx, mo
     	}*/
     	BlockPos newPos = new BlockPos(pos.getX(), pos.getY(), pos.getZ());
     	IMSM.eventHandler.creators.add(new StructureCreatorClient(name, pos.getX()+modifierx, pos.getY()+modifiery, pos.getZ()+modifierz, doReplaceAir,getSize(IMSM.eventHandler.creators.size())));
-    	worldIn.setBlockState(newPos, new BlockState(Blocks.AIR, ImmutableMap.of()));
+    	worldIn.setBlockState(newPos, Blocks.AIR.getDefaultState());
 
     	}
         return ActionResultType.SUCCESS;
@@ -105,7 +105,7 @@ IMSM.eventHandler.serverCreators.add(new OutlineCreator(name, pos ,modifierx, mo
 					   BlockState state0=blk.getDefaultState();
 					   // set the block
 					   Minecraft.getInstance().world.setBlockState(pos0, state0);
-					   Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).setBlockState(pos0, state0);
+					   modid.imsm.core.MinecraftAccess.getIntegratedWorld().setBlockState(pos0, state0);
 				}
 			}
 		}

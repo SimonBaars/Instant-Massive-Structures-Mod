@@ -47,7 +47,7 @@ public class BlockAtlantis extends Block
   	BlockPos newPos = new BlockPos(pos.getX(), pos.getY(), pos.getZ());
   	//AtlantisThread loadThread = new AtlantisThread(pos.getX(), pos.getY(), pos.getZ(), nCheckers, worldIn,serverWorld);
   	IMSM.eventHandler.creators.add(new AtlantisCreator(pos.getX(), pos.getY(), pos.getZ(), nCheckers, worldIn,serverWorld));
-  	worldIn.setBlockState(newPos, new BlockState(Blocks.AIR, ImmutableMap.of()));
+  	worldIn.setBlockState(newPos, Blocks.AIR.getDefaultState());
   }
   	}
       return ActionResultType.SUCCESS;

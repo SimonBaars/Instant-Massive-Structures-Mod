@@ -24,7 +24,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.datafix.fixes.ItemIntIDToString;
 import net.minecraft.util.datafix.fixes.ItemStackDataFlattening;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -50,6 +51,11 @@ public class SchematicStructure extends Structure
 		UndoCommand.removedPositions.clear();
 		UndoCommand.removedStates.clear();
 	}
+
+	private BlockState getTranslatedBlockState(CompoundNBT tileEntity) {
+		BlockPos translatedPos = StructureUtils.getWorldPos(new BlockPos(tileEntity.getInt("x"), tileEntity.getInt("y"), tileEntity.getInt("z")), this.getCenterPos(), this.harvestPos);
+		return world.getBlockState(translatedPos);
+	}
 	
 
 	// Blocks stored [y][z][x]
@@ -61,7 +67,7 @@ public class SchematicStructure extends Structure
 	private int blocksAdded;
 	 World world; int posX,  posY,  posZ;
 	BlockPlacer blockPlacer;
-	Vec3d harvestPos;
+	Vector3d harvestPos;
 
 
 	@Override
@@ -79,7 +85,7 @@ public class SchematicStructure extends Structure
 		blocksAdded=0;
 		posX-=length/2-1;
 		posZ-=width/2-1;
-		Vec3d harvestPos = new Vec3d(posX + 0.5, posY, posZ + 0.5);
+		Vector3d harvestPos = new Vector3d(posX + 0.5, posY, posZ + 0.5);
 		BlockPlacer blockPlacer = new BlockPlacer(world,isLive);
 		this.blockPlacer=blockPlacer;
 		this.harvestPos=harvestPos;
@@ -121,7 +127,7 @@ public class SchematicStructure extends Structure
 		this.posZ-=width/2-1;
 		
 		
-	this.harvestPos = new Vec3d(this.posX + 0.5, this.posY, this.posZ + 0.5);
+	this.harvestPos = new Vector3d(this.posX + 0.5, this.posY, this.posZ + 0.5);
 
 		this.blockPlacer = new BlockPlacer(world,isLive);
 
@@ -141,7 +147,7 @@ public class SchematicStructure extends Structure
 						BlockPos position = new BlockPos(daddy.k, daddy.i,daddy.j);
 						if(IMSM.eventHandler.serverCreators.get(IMSM.eventHandler.serverCreators.size()-1) == daddy){
 							BlockPos translatedPosition = StructureUtils.getWorldPos(position, this.getCenterPos(), harvestPos);
-							UndoCommand.removedStates.add(Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getBlockState(translatedPosition));
+							UndoCommand.removedStates.add(modid.imsm.core.MinecraftAccess.getIntegratedWorld().getBlockState(translatedPosition));
 						UndoCommand.removedPositions.add(translatedPosition);
 						}
 						//System.out.prinln(daddy.i+", "+daddy.j+", "+daddy.k+", "+height+", "+width+", "+length);
@@ -176,8 +182,8 @@ public class SchematicStructure extends Structure
 			//System.out.println(tileEntity.getString("id"));
 			if(tileEntity.getString("id").equals("Sign")){
 			 SignTileEntity signEntity = new SignTileEntity();
-			 for(int i = 0; i<signEntity.signText.length; i++){
-				 signEntity.signText[i].appendText(tileEntity.getString("Text" + (i + 1)));
+			 for(int i = 0; i < 4; i++){
+				 signEntity.setText(i, new StringTextComponent(tileEntity.getString("Text" + (i + 1))));
 			 }
 			 signEntity.setPos(new BlockPos(tileEntity.getInt("x"), tileEntity.getInt("y"), tileEntity.getInt("z")));
 			 tE = signEntity;
@@ -194,23 +200,27 @@ public class SchematicStructure extends Structure
 					//System.out.println(new ItemStack(item,chestItemList.getCompound(i).getByte("Count")).toString()+" at "+chestItemList.getCompound(i).getByte("Slot"));
 				}
 				chestEntity.setPos(new BlockPos(tileEntity.getInt("x"), tileEntity.getInt("y"), tileEntity.getInt("z")));
-				//System.out.println("Tile entity at "+Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getBlockState(StructureUtils.getWorldPos(new BlockPos(tileEntity.getInt("x"), tileEntity.getInt("y"), tileEntity.getInt("z")), this.getCenterPos(), this.harvestPos)).getBlock().tile);
+				//System.out.println("Tile entity at "+modid.imsm.core.MinecraftAccess.getIntegratedWorld().getBlockState(StructureUtils.getWorldPos(new BlockPos(tileEntity.getInt("x"), tileEntity.getInt("y"), tileEntity.getInt("z")), this.getCenterPos(), this.harvestPos)).getBlock().tile);
 				tE=chestEntity;
 			}else {
-			tE=TileEntity.create(tileEntity);
+			tE = TileEntity.readTileEntity(getTranslatedBlockState(tileEntity), tileEntity);
 			}
 			
 			StructureUtils.setTileEntity(Minecraft.getInstance().world, tE, this.getCenterPos(), harvestPos);
 			}
-		for (CompoundNBT entity : this.entities)
-			StructureUtils.setEntity(Minecraft.getInstance().world, EntityType.func_220335_a(entity, world, e->e), this.getCenterPos(), harvestPos);
+		for (CompoundNBT entity : this.entities) {
+			net.minecraft.entity.Entity loaded = EntityType.loadEntityAndExecute(entity, world, e -> e);
+			if (loaded != null) {
+				StructureUtils.setEntity(Minecraft.getInstance().world, loaded, this.getCenterPos(), harvestPos);
+			}
+		}
 		
 		for (CompoundNBT tileEntity : this.tileEntities){
 			TileEntity tE;
 		if(tileEntity.getString("id").equals("Sign")){
 		 SignTileEntity signEntity = new SignTileEntity();
-		 for(int i = 0; i<signEntity.signText.length; i++){
-			 signEntity.signText[i].appendText(tileEntity.getString("Text" + (i + 1)));
+		 for(int i = 0; i < 4; i++){
+			 signEntity.setText(i, new StringTextComponent(tileEntity.getString("Text" + (i + 1))));
 		 }
 		 signEntity.setPos(new BlockPos(tileEntity.getInt("x"), tileEntity.getInt("y"), tileEntity.getInt("z")));
 		 tE = signEntity;
@@ -227,15 +237,19 @@ public class SchematicStructure extends Structure
 					//System.out.println(new ItemStack(item,chestItemList.getCompound(i).getByte("Count")).toString()+" at "+chestItemList.getCompound(i).getByte("Slot"));
 				}
 				chestEntity.setPos(new BlockPos(tileEntity.getInt("x"), tileEntity.getInt("y"), tileEntity.getInt("z")));
-				//System.out.println("Tile entity at "+Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getBlockState(StructureUtils.getWorldPos(new BlockPos(tileEntity.getInt("x"), tileEntity.getInt("y"), tileEntity.getInt("z")), this.getCenterPos(), this.harvestPos)).getBlock().tile);
+				//System.out.println("Tile entity at "+modid.imsm.core.MinecraftAccess.getIntegratedWorld().getBlockState(StructureUtils.getWorldPos(new BlockPos(tileEntity.getInt("x"), tileEntity.getInt("y"), tileEntity.getInt("z")), this.getCenterPos(), this.harvestPos)).getBlock().tile);
 				tE=chestEntity;
 			}else {
-		tE=TileEntity.create(tileEntity);
+		tE = TileEntity.readTileEntity(getTranslatedBlockState(tileEntity), tileEntity);
 		}	
-			StructureUtils.setTileEntity(Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension), tE, this.getCenterPos(), harvestPos);
+			StructureUtils.setTileEntity(modid.imsm.core.MinecraftAccess.getIntegratedWorld(), tE, this.getCenterPos(), harvestPos);
 		}
-		for (CompoundNBT entity : this.entities)
-			StructureUtils.setEntity(Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension), EntityType.func_220335_a(entity, world, e->e), this.getCenterPos(), harvestPos);
+		for (CompoundNBT entity : this.entities) {
+			net.minecraft.entity.Entity loaded = EntityType.loadEntityAndExecute(entity, world, e -> e);
+			if (loaded != null) {
+				StructureUtils.setEntity(modid.imsm.core.MinecraftAccess.getIntegratedWorld(), loaded, this.getCenterPos(), harvestPos);
+			}
+		}
 		
 		blockPlacer.processSpecialBlocks();
 		
@@ -264,7 +278,7 @@ public class SchematicStructure extends Structure
 				
 				
 				if(IMSM.eventHandler.serverCreators.get(IMSM.eventHandler.serverCreators.size()-1) == creator){
-					UndoCommand.removedStates.add(Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getBlockState(pos0));
+					UndoCommand.removedStates.add(modid.imsm.core.MinecraftAccess.getIntegratedWorld().getBlockState(pos0));
 					UndoCommand.removedPositions.add(pos0);
 				}
 				
@@ -272,13 +286,13 @@ public class SchematicStructure extends Structure
 			   // Make a position.
 			   
 			   
-			   DropFuncBlock.setBlock(Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension), blk.getDefaultState(), pos0, true, true);
+			   DropFuncBlock.setBlock(modid.imsm.core.MinecraftAccess.getIntegratedWorld(), blk.getDefaultState(), pos0, true, true);
 			   
 			   // Get the default state(basically metadata 0)
 			   //BlockState state0=blk.getDefaultState();
 			   // set the block
 			   //Minecraft.getInstance().world.setBlockState(pos0, state0);
-			   //Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).setBlockState(pos0, state0);
+			   //modid.imsm.core.MinecraftAccess.getIntegratedWorld().setBlockState(pos0, state0);
 
 			//worldIn.spawnEntityInWorld(new EntitySnowball(worldIn, x+i,y+j,z+k)); 
 			}}} }
@@ -294,7 +308,7 @@ public class SchematicStructure extends Structure
 		for(int i=0; i<width; i++){ for(int j = 0; j<height; j++){ for(int k = 0; k<length; k++){ 
 			if(i==0||j==0||k==0){
 			if(i==modifierx&&j==modifiery&&k==modifierz) continue;
-			//if(Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getBlockState(pos))
+			//if(modid.imsm.core.MinecraftAccess.getIntegratedWorld().getBlockState(pos))
 			Block blk = Blocks.AIR;
 			   // Make a position.
 			   BlockPos pos0 = new BlockPos(x-i+modifierx,y+j+modifiery,z-k+modifierz);
@@ -303,7 +317,7 @@ public class SchematicStructure extends Structure
 			   // set the block
 			   //worldIn.setBlockState(pos0, state0);
 			   
-			   DropFuncBlock.setBlock(Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension), blk.getDefaultState(), pos0, true, true);
+			   DropFuncBlock.setBlock(modid.imsm.core.MinecraftAccess.getIntegratedWorld(), blk.getDefaultState(), pos0, true, true);
 
 			//worldIn.spawnEntityInWorld(new EntitySnowball(worldIn, x+i,y+j,z+k)); 
 			}}} }

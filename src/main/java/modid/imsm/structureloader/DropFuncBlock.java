@@ -21,7 +21,7 @@ public class DropFuncBlock
 
         if (update && world instanceof World)
             ((World) world).markAndNotifyBlock(pos, ((World) world).getChunkAt(pos),
-                world.getBlockState(pos), state, 3);
+                world.getBlockState(pos), state, 3, 512);
 
         if (tileEntity != null && state.getBlock().hasTileEntity(state)) {
             setTileEntity(world, state, pos, tileEntity);
@@ -33,7 +33,7 @@ public class DropFuncBlock
 
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity != null) {
-            tileEntity.handleUpdateTag(tileEntityData);
+            tileEntity.handleUpdateTag(state, tileEntityData);
             if (world instanceof World)
                 ((World) world).setTileEntity(pos, tileEntity);
         }
