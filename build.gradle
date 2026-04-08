@@ -1,17 +1,23 @@
-plugins {
-    id 'eclipse'
-    id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+buildscript {
+    repositories {
+        maven { url = 'https://maven.minecraftforge.net' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+    }
 }
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
 
 version = '1.0'
 group = 'com.yourname.modid' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'modid'
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = JavaVersion.VERSION_1_8
+java.toolchain.languageVersion = JavaLanguageVersion.of(16)
 
 minecraft {
-    mappings channel: 'snapshot', version: '20210309-1.16.5'
-    copyIdeResources = true
+    mappings channel: 'official', version: '1.17.1'
 
     runs {
         configureEach {
@@ -44,7 +50,7 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.5-36.2.42'
+    minecraft 'net.minecraftforge:forge:1.17.1-37.1.1'
 }
 
 tasks.named('processResources', ProcessResources).configure {
