@@ -3,26 +3,34 @@ package modid.imsm.userstructures;
 import modid.imsm.core.ForgeEventHandler;
 import modid.imsm.core.IMSM;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.world.World;
 
 public class BlockUnlimited extends Block
 {
   public BlockUnlimited(int i)
     {
-        super(Material.ROCK);
+	  super(Block.Properties.create(Material.ROCK));
     }
   
+  public Block setCreativeTab(ItemGroup g) {
+		//Item.BLOCK_TO_ITEM.get(this).getCreativeTabs().add(g);
+		return this;
+	}
+  
   @Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
-  {
+  public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+
 	  if(!worldIn.isRemote){
 		  if(IMSM.pmcParser != null && IMSM.pmcParser.isAlive()){
 			  IMSM.pmcParser.stopThread();
@@ -42,7 +50,7 @@ public class BlockUnlimited extends Block
 		  IMSM.dialoge = 11;
 		  ForgeEventHandler.searchingPage=1;
 	  }
-	  worldIn.setBlockToAir(pos);
-	  return true;
+	  worldIn.setBlockState(pos, Blocks.AIR.getDefaultState());
+	  return ActionResultType.SUCCESS;
   }
 }

@@ -3,11 +3,10 @@ package modid.imsm.worldgeneration;
 import modid.imsm.core.CreatorBlocks;
 import modid.imsm.core.ICreatorBlock;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.EnumSkyBlock;
 
 public class CheckerboardCreator extends CreatorBlocks implements ICreatorBlock {
 	int i,j,k;
@@ -17,7 +16,7 @@ public class CheckerboardCreator extends CreatorBlocks implements ICreatorBlock 
 	boolean color;
 	
     public CheckerboardCreator(int x, int y, int z, int nCheckers){
-    	this.world= Minecraft.getMinecraft().getIntegratedServer().getEntityWorld();
+    	this.world= Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension);
     	this.x=x;
     	this.y=y;
     	this.z=z;
@@ -75,9 +74,9 @@ public class CheckerboardCreator extends CreatorBlocks implements ICreatorBlock 
 		for(int i = 0; i<checkerSize; i++){
 			for(int j = 0; j<checkerSize; j++){
 				for(int k = 0; k<2; k++){
-					Block blk= Blocks.WOOL;
+					Block blk= Blocks.WHITE_WOOL;
 					if(color){
-						blk=Blocks.COAL_BLOCK;
+						blk=Blocks.BLACK_WOOL;
 					}
 				createBlock(blk,i,j,k);
 				}
@@ -89,10 +88,10 @@ public class CheckerboardCreator extends CreatorBlocks implements ICreatorBlock 
 		// Make a position.
 		   BlockPos pos0 = new BlockPos(x+i, y , z+j);
 		   // Get the default state(basically metadata 0)
-		   IBlockState state0=blk.getDefaultState();
+		   BlockState state0=blk.getDefaultState();
 		   // set the block
 		   world.setBlockState(pos0, state0);
 		   
-		   world.checkLightFor(EnumSkyBlock.SKY, pos0);
+		   //world.checkLightFor(EnumLightType.SKY, pos0);
 	}
 }
