@@ -22,10 +22,10 @@ import java.util.Scanner;
 import modid.imsm.core.IMSM;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.LanguageMap;
+import net.minecraft.util.text.LanguageMap;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class PMCParser extends Thread {
@@ -479,12 +479,12 @@ while ((bytesRead = inputStream.read(buffer)) != -1) {
 	}
 	
 	private void addBlock(final String realFileName) {
-		Block block = new BlockUserStructure(realFileName).setHardness(1.0F).setUnlocalizedName(realFileName).setCreativeTab(IMSM.User);
+		Block block = new BlockUserStructure(realFileName).setCreativeTab(IMSM.User);
 		  IMSM.userBlocks.add(block);
-		  GameRegistry.registerBlock(block, realFileName);
+		 // GameRegistry.registerBlock(block, realFileName); TODO
 		 // GameRegistry.registerWithItem(block);
-		  Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(block), 0, new ModelResourceLocation(IMSM.modid + ":" + realFileName, "inventory"));
-		  /*Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(block),  new ItemMeshDefinition() {
+		// TODO  Minecraft.getInstance().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(block), 0, new ModelResourceLocation(IMSM.modid + ":" + realFileName, "inventory"));
+		  /*Minecraft.getInstance().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(block),  new ItemMeshDefinition() {
 			  
 			    @Override
 			    public ModelResourceLocation getModelLocation(ItemStack stack) {
@@ -494,7 +494,7 @@ while ((bytesRead = inputStream.read(buffer)) != -1) {
 			});*/
 		  try {
 				InputStream languageFile = new FileInputStream(new File("structures/last.lang"));
-				LanguageMap.inject(languageFile);
+				// TODO LanguageMap.inject(languageFile);
 				languageFile.close();
 			} catch (Exception e2) {
 				e2.printStackTrace();

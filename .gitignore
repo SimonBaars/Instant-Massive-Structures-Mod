@@ -16,7 +16,12 @@ out
 # gradle
 build
 .gradle
+.toolchains
+.refs
 
 # other
 eclipse
 run
+
+# Files from Forge MDK
+forge*changelog.txt

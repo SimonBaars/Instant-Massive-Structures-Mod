@@ -5,7 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 public class Structure
@@ -24,7 +24,7 @@ public class Structure
 	public Float centerX;
 	public Float centerY;
 	public Float centerZ;
-	protected Vec3d centerPos;
+	protected Vector3d centerPos;
 
 	public Structure(String fileName) 
 	{
@@ -63,7 +63,7 @@ public class Structure
 
 	}
 
-	public Vec3d getCenterPos()
+	public Vector3d getCenterPos()
 	{
 		return this.centerPos;
 	}
@@ -75,7 +75,7 @@ public class Structure
 		if (this.centerX == null) this.centerX = defaultCenterX + 0.5F;
 		if (this.centerY == null) this.centerY = 0.0F;
 		if (this.centerZ == null) this.centerZ = defaultCenterZ + 0.5F;
-		this.centerPos = new Vec3d(this.centerX, this.centerY, this.centerZ);
+		this.centerPos = new Vector3d(this.centerX, this.centerY, this.centerZ);
 		//System.out.println("SIZE STRUCTURE: "+width+", "+height+", "+length);
 	}
 }
