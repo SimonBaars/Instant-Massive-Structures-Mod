@@ -1,17 +1,21 @@
 package modid.imsm.worldgeneration;
 
+import com.google.common.collect.ImmutableMap;
+
 import modid.imsm.core.IMSM;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemRedstone;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.Items;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.world.World;
 
 public class BlockCloud extends Block
@@ -23,20 +27,24 @@ public class BlockCloud extends Block
 
   public BlockCloud(int i)
     {
-        super(Material.ROCK);
+	  super(Block.Properties.create(Material.ROCK));
         this.name="BlockCloud";
     }
   
+  public Block setCreativeTab(ItemGroup g) {
+		//Item.BLOCK_TO_ITEM.get(this).getCreativeTabs().add(g);
+		return this;
+	}
+  
   @Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
-  {
-		if(playerIn.getHeldItemMainhand()!=null && playerIn.getHeldItemMainhand().getItem() instanceof ItemRedstone){
+  public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+		if(player.getHeldItemMainhand()!=null && player.getHeldItemMainhand().getItem() ==  Items.REDSTONE){
 			if(worldIn.isRemote){
 			nCheckers*=2;
 			if(nCheckers>2000){
 				nCheckers=1;
 			}
-			Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("This block will now create "+nCheckers+" rows of checkers"));
+			Minecraft.getInstance().player.sendChatMessage("This block will now create "+nCheckers+" rows of checkers");
 			
 			}
   	} else {
@@ -46,10 +54,10 @@ public class BlockCloud extends Block
   	//AtlantisThread loadThread = new AtlantisThread(pos.getX(), pos.getY(), pos.getZ(), nCheckers, worldIn,serverWorld);
 	  BlockPos newPos = new BlockPos(pos.getX(), pos.getY(), pos.getZ());
 	  IMSM.eventHandler.creators.add(new CloudCreator(pos.getX(), pos.getY(), pos.getZ(), nCheckers, worldIn,serverWorld));
-  	worldIn.setBlockToAir(newPos);
+  	worldIn.setBlockState(newPos, Blocks.AIR.getDefaultState());
   }
   	}
-      return true;
+      return ActionResultType.SUCCESS;
   }
 
 public String getName()

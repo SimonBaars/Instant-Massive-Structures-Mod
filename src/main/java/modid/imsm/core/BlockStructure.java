@@ -1,22 +1,24 @@
 package modid.imsm.core;
 
+import java.util.ArrayList;
+
+import com.google.common.collect.ImmutableMap;
+
 import modid.imsm.structureloader.SchematicStructure;
 import modid.imsm.userstructures.OutlineCreator;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemBook;
-import net.minecraft.item.ItemFireball;
-import net.minecraft.item.ItemRedstone;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.item.Items;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.world.Explosion;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.world.World;
 
 public class BlockStructure extends Block {
@@ -28,7 +30,7 @@ public class BlockStructure extends Block {
 	private int modifierz;
 
 	public BlockStructure(String name, boolean doReplaceAir, int modifierx, int modifiery, int modifierz){
-		super(Material.ROCK);
+		super(Block.Properties.create(Material.ROCK).hardnessAndResistance(1.0F));
 		this.name=name;
 		this.doReplaceAir=doReplaceAir;
 		this.modifierx=modifierx;
@@ -36,9 +38,13 @@ public class BlockStructure extends Block {
 		this.modifierz=modifierz;
 	}
 	
+	public Block setCreativeTab(ItemGroup g) {
+		//Item.BLOCK_TO_ITEM.get(this).getCreativeTabs().add(g);
+		return this;
+	}
+	
 	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
-    {
+	public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
 		/*if(IMSM.worlds[0]==null || IMSM.worlds[1]==null){
 		if (worldIn.isRemote) {
 		      IMSM.worlds[0] = worldIn;
@@ -47,28 +53,28 @@ public class BlockStructure extends Block {
 		    }
 		}*/
 		if(worldIn.isRemote){
-			return true;
+			return ActionResultType.SUCCESS;
 		}
-		if(playerIn.getHeldItemMainhand()!=null && playerIn.getHeldItemMainhand().getItem() instanceof ItemRedstone){
+		if(player.getHeldItemMainhand()!=null && player.getHeldItemMainhand().getItem() == Items.REDSTONE){
 			
         	//SchematicStructure struct = new SchematicStructure(name+".structure", false);
         	//struct.readFromFile();
 IMSM.eventHandler.serverCreators.add(new OutlineCreator(name, pos ,modifierx, modifiery, modifierz));
         	hasOutline=true;
-    	} else if(playerIn.getHeldItemMainhand()!=null && playerIn.getHeldItemMainhand().getItem() instanceof ItemBook) {
+    	} else if(player.getHeldItemMainhand()!=null && player.getHeldItemMainhand().getItem() == Items.BOOK) {
     			doReplaceAir=!doReplaceAir;
     			if(doReplaceAir){
-    				Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("I will replace all existing blocks in the part I'm gonna spawn in with air now"));
+    				Minecraft.getInstance().player.sendChatMessage("I will replace all existing blocks in the part I'm gonna spawn in with air now");
     			} else {
-    				Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("I won't replace any existing blocks with air"));
+    				Minecraft.getInstance().player.sendChatMessage("I won't replace any existing blocks with air");
     			}
     	} /*else if(playerIn.getCurrentEquippedItem()!=null && playerIn.getCurrentEquippedItem().getItem() instanceof ItemAppleGold) {
     		if(worldIn.isRemote){
     			if(IMSM.spawnSpeed<10){
     			IMSM.spawnSpeed++;
-    				Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("The speed in which structures will be created has been increased to "+IMSM.spawnSpeed+" (default is 4).");
+    				Minecraft.getInstance().player.sendChatMessage("The speed in which structures will be created has been increased to "+IMSM.spawnSpeed+" (default is 4).");
     			}}
-    	}*/ else if(playerIn.getHeldItemMainhand()!=null && playerIn.getHeldItemMainhand().getItem() instanceof ItemFireball) {
+    	}*/ else if(player.getHeldItemMainhand()!=null && player.getHeldItemMainhand().getItem() == Items.FIRE_CHARGE) {
     			remove(new StructureCreatorServer(name, pos.getX()+modifierx, pos.getY()+modifiery, pos.getZ()+modifierz, doReplaceAir,getSize(IMSM.eventHandler.creators.size())));
     	} else {
     	/*if(hasOutline){
@@ -79,10 +85,10 @@ IMSM.eventHandler.serverCreators.add(new OutlineCreator(name, pos ,modifierx, mo
     	}*/
     	BlockPos newPos = new BlockPos(pos.getX(), pos.getY(), pos.getZ());
     	IMSM.eventHandler.creators.add(new StructureCreatorClient(name, pos.getX()+modifierx, pos.getY()+modifiery, pos.getZ()+modifierz, doReplaceAir,getSize(IMSM.eventHandler.creators.size())));
-    	worldIn.setBlockToAir(newPos);
+    	worldIn.setBlockState(newPos, Blocks.AIR.getDefaultState());
 
     	}
-        return true;
+        return ActionResultType.SUCCESS;
     }
 	
 	void remove(StructureCreator structure){
@@ -96,17 +102,17 @@ IMSM.eventHandler.serverCreators.add(new OutlineCreator(name, pos ,modifierx, mo
 					   // Make a position.
 					   BlockPos pos0 = new BlockPos(structure.x-x, structure.y+y ,structure.z-z);
 					   // Get the default state(basically metadata 0)
-					   IBlockState state0=blk.getDefaultState();
+					   BlockState state0=blk.getDefaultState();
 					   // set the block
-					   Minecraft.getMinecraft().theWorld.setBlockState(pos0, state0);
-					   Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().setBlockState(pos0, state0);
+					   Minecraft.getInstance().world.setBlockState(pos0, state0);
+					   modid.imsm.core.MinecraftAccess.getIntegratedWorld().setBlockState(pos0, state0);
 				}
 			}
 		}
-		Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("The last placed structure has been removed."));
+		Minecraft.getInstance().player.sendChatMessage("The last placed structure has been removed.");
 		//IMSM.lastPlaced=null;
 	}else {
-		Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("You didn't place a structure to undo."));
+		Minecraft.getInstance().player.sendChatMessage("You didn't place a structure to undo.");
 	}
 	}
 
@@ -117,21 +123,21 @@ IMSM.eventHandler.serverCreators.add(new OutlineCreator(name, pos ,modifierx, mo
   }
 	
 	@Override
-    public void onBlockDestroyedByPlayer(World worldIn, BlockPos pos, IBlockState state) {
+    public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player)   {
     	if(hasOutline && !worldIn.isRemote){
-    		if(Minecraft.getMinecraft().theWorld!=null){
+    		if(Minecraft.getInstance().world!=null){
     	SchematicStructure struct = new SchematicStructure(name+".structure", false);
     	struct.readFromFile();
     	//for(int i = 0; i<IMSM.worlds.length; i++){
     	struct.removeOutline(pos.getX(),modifierx, pos.getY(),modifiery, pos.getZ(),modifierz);
-    	//struct.removeOutline(pos.getX(),modifierx, pos.getY(),modifiery, pos.getZ(),modifierz, Minecraft.getMinecraft().theWorld);
+    	//struct.removeOutline(pos.getX(),modifierx, pos.getY(),modifiery, pos.getZ(),modifierz, Minecraft.getInstance().world);
     	//}
     	hasOutline=false;
     		}
     	}
     }
     
-    @Override
+    /*@Override
     public void onBlockDestroyedByExplosion(World worldIn, BlockPos pos, Explosion explosionIn) {
     	if(hasOutline && !worldIn.isRemote){
     	SchematicStructure struct = new SchematicStructure(name+".structure", false);
@@ -139,7 +145,7 @@ IMSM.eventHandler.serverCreators.add(new OutlineCreator(name, pos ,modifierx, mo
     	struct.removeOutline(pos.getX(),modifierx, pos.getY(),modifiery, pos.getZ(),modifierz);
     	hasOutline=false;
     	}
-    }
+    }*/
     
     private int getSize(int size) {
   	  int totalsize=0;

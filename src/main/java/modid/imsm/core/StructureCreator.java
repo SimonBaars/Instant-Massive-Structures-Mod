@@ -8,7 +8,6 @@ import java.io.UnsupportedEncodingException;
 import modid.imsm.structureloader.SchematicStructure;
 import modid.imsm.userstructures.StructureCreatorUser;
 import modid.imsm.userstructures.StructureCreatorUserServer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.World;
 
 public class StructureCreator extends CreatorBlocks implements ICreatorBlock {
@@ -82,8 +81,9 @@ public class StructureCreator extends CreatorBlocks implements ICreatorBlock {
 		if(!world.isRemote){
 		PrintWriter writer;
 		try {
-			(new File("saves/"+Minecraft.getMinecraft().getIntegratedServer().getFolderName()+"/Structures")).mkdirs();
-			writer = new PrintWriter("saves/"+Minecraft.getMinecraft().getIntegratedServer().getFolderName()+"/Structures/"+at+".txt", "UTF-8");
+			File structuresDir = MinecraftAccess.getSaveSubdir("Structures");
+			structuresDir.mkdirs();
+			writer = new PrintWriter(MinecraftAccess.getSaveFile("Structures", at + ".txt"), "UTF-8");
 		
 			writer.println(structureName);
 			writer.println(doReplaceAir);
@@ -114,10 +114,10 @@ public class StructureCreator extends CreatorBlocks implements ICreatorBlock {
 				((StructureCreator)IMSM.eventHandler.creators.get(i)).id--;
 			}}
 		}
-		new File("saves/"+Minecraft.getMinecraft().getIntegratedServer().getFolderName()+"/Structures/"+id+".txt").delete();
+		MinecraftAccess.getSaveFile("Structures", id + ".txt").delete();
 		System.out.println("Removed "+id);
 		for(int i = id+1; i<getSize(IMSM.eventHandler.liveCreators.size()); i++){
-			new File("saves/"+Minecraft.getMinecraft().getIntegratedServer().getFolderName()+"/Structures/"+i+".txt").renameTo(new File("saves/"+Minecraft.getMinecraft().getIntegratedServer().getFolderName()+"/Structures/"+(i-1)+".txt"));
+			MinecraftAccess.getSaveFile("Structures", i + ".txt").renameTo(MinecraftAccess.getSaveFile("Structures", (i - 1) + ".txt"));
 			System.out.println("Removed "+i+" then added "+(i-1));
 		}
 		}

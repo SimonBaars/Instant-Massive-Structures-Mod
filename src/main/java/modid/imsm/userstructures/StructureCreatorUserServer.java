@@ -7,7 +7,7 @@ import net.minecraft.client.Minecraft;
 public class StructureCreatorUserServer extends StructureCreator{
 
 	public StructureCreatorUserServer(String name, int i, int j, int k, boolean doReplaceAir, int id) {
-		super(name, Minecraft.getMinecraft().getIntegratedServer().getEntityWorld(), i,j,k, doReplaceAir, id);
+		super(name, modid.imsm.core.MinecraftAccess.getIntegratedWorld(), i,j,k, doReplaceAir, id);
 	}
 	
 	@Override
