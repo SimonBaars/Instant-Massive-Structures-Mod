@@ -4,12 +4,16 @@
 
 package modid.imsm.structures;
 
+import javax.annotation.Nullable;
+
 import modid.imsm.worldgeneration.UndoCommand;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -18,16 +22,18 @@ public class RemoverLast extends Block
 {
 	public RemoverLast(int i)
     {
-		super(Material.ROCK);
+		super(Block.Properties.create(Material.ROCK));
 		//remove(IMSM.lastPlaced);
     }
 	
+	public Block setCreativeTab(ItemGroup g) {
+		//Item.BLOCK_TO_ITEM.get(this).getCreativeTabs().add(g);
+		return this;
+	}
+	
 	@Override
-	public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
-    {
-		
+	public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
 		UndoCommand.runCommand();
-		return this.getStateFromMeta(meta);
     }
 	
 
@@ -44,15 +50,15 @@ public class RemoverLast extends Block
 					   // Get the default state(basically metadata 0)
 					   IBlockState state0=blk.getDefaultState();
 					   // set the block
-					   Minecraft.getMinecraft().theWorld.setBlockState(pos0, state0);
-					   Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().setBlockState(pos0, state0);
+					   Minecraft.getInstance().world.setBlockState(pos0, state0);
+					   Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).setBlockState(pos0, state0);
 				}
 			}
 		}
-		Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("The last placed structure has been removed."));
+		Minecraft.getInstance().player.sendChatMessage("The last placed structure has been removed."));
 		IMSM.lastPlaced=null;
 	}else {
-		Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("You didn't place a structure to undo."));
+		Minecraft.getInstance().player.sendChatMessage("You didn't place a structure to undo."));
 	}
 	}*/
 

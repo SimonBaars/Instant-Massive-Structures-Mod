@@ -1,16 +1,19 @@
 package modid.imsm.worldgeneration;
 
+import com.google.common.collect.ImmutableMap;
+
 import modid.imsm.core.IMSM;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemRedstone;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Items;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.world.World;
 
 public class BlockAtlantis extends Block
@@ -22,20 +25,18 @@ public class BlockAtlantis extends Block
 
   public BlockAtlantis(int i)
     {
-        super(Material.ROCK);
+	  super(Block.Properties.create(Material.ROCK));
         this.name="BlockAtlantis";
     }
   
-  @Override
-  public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
-  {
-		if(!playerIn.getHeldItemMainhand().isEmpty() && playerIn.getHeldItemMainhand().getItem() instanceof ItemRedstone){
+  public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+		if(player.getHeldItemMainhand()!=null && player.getHeldItemMainhand().getItem() == Items.REDSTONE){
 			if(worldIn.isRemote){
 			nCheckers*=2;
 			if(nCheckers>20000){
 				nCheckers=1;
 			}
-			Minecraft.getMinecraft().player.sendMessage(new TextComponentString("This block will now edit "+nCheckers+" rows of landscape"));
+			Minecraft.getInstance().player.sendChatMessage("This block will now edit "+nCheckers+" rows of landscape");
 			
 			}
   	} else {
@@ -46,10 +47,10 @@ public class BlockAtlantis extends Block
   	BlockPos newPos = new BlockPos(pos.getX(), pos.getY(), pos.getZ());
   	//AtlantisThread loadThread = new AtlantisThread(pos.getX(), pos.getY(), pos.getZ(), nCheckers, worldIn,serverWorld);
   	IMSM.eventHandler.creators.add(new AtlantisCreator(pos.getX(), pos.getY(), pos.getZ(), nCheckers, worldIn,serverWorld));
-  	worldIn.setBlockToAir(newPos);
+  	worldIn.setBlockState(newPos, new BlockState(Blocks.AIR, ImmutableMap.of()));
   }
   	}
-      return true;
+      return ActionResultType.SUCCESS;
   }
 
 public String getName()

@@ -7,19 +7,18 @@ import modid.imsm.core.StructureCreator;
 import modid.imsm.core.StructureCreatorClient;
 import modid.imsm.structureloader.BlockPlaceHandler;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.scoreboard.IScoreCriteria;
-import net.minecraft.scoreboard.IScoreCriteria.EnumRenderType;
+import net.minecraft.item.Items;
 import net.minecraft.scoreboard.Score;
+import net.minecraft.scoreboard.ScoreCriteria;
+import net.minecraft.scoreboard.ScoreCriteria.RenderType;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.Scoreboard;
-import net.minecraft.tileentity.TileEntityChest;
+import net.minecraft.tileentity.ChestTileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 public class MazeGenerator extends CreatorBlocks implements ICreatorBlock { 
@@ -49,7 +48,7 @@ public class MazeGenerator extends CreatorBlocks implements ICreatorBlock {
 	
 	public void startGeneration(){
 		//System.out.println("Running Start Generation");
-		//Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("A huge random maze will now be generated at your location!"));
+		//Minecraft.getInstance().player.sendChatMessage("A huge random maze will now be generated at your location!"));
 		IMSM.eventHandler.delayedPrints.add("A huge random maze will now be generated at your location!");
 		maze.initCollisions(true);
 		init();
@@ -65,7 +64,7 @@ public class MazeGenerator extends CreatorBlocks implements ICreatorBlock {
       		  int xPos =  x+(posX*blockSize)+((int)(Math.random()*(blockSize-1)));
       		int zPos =  z+(posY*blockSize)+((int)(Math.random()*(blockSize-1)));
       		BlockPlaceHandler.placeBlock(Blocks.CHEST, xPos, y, zPos);
-      		TileEntityChest chest = (TileEntityChest) Minecraft.getMinecraft().getIntegratedServer().getEntityWorld().getTileEntity(new BlockPos(xPos, y, zPos));
+      		ChestTileEntity chest = (ChestTileEntity) Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension).getTileEntity(new BlockPos(xPos, y, zPos));
       		if(chest!=null){
       			generateChestContents(chest);
       		}
@@ -104,7 +103,7 @@ public class MazeGenerator extends CreatorBlocks implements ICreatorBlock {
 	  	}
 
 
-	private void generateChestContents(TileEntityChest chest) {
+	private void generateChestContents(ChestTileEntity chest) {
 		// TODO Auto-generated method stub
 		for(int i = 0; i<27; i++){
 			if(Math.random()<0.2){
@@ -153,17 +152,17 @@ public class MazeGenerator extends CreatorBlocks implements ICreatorBlock {
 		case 34: return Items.PORKCHOP;
 		case 35: return Items.COOKED_PORKCHOP;
 		case 36: return Items.GOLDEN_APPLE;
-		case 37: return Items.REEDS;
+		case 37: return Items.GREEN_BED;
 		case 38: return Items.SADDLE;
 		case 39: return Items.SNOWBALL;
 		case 40: return Items.PAPER;
 		case 41: return Items.COMPASS;
 		case 42: return Items.FISHING_ROD;
 		case 43: return Items.CLOCK;
-		case 44: return Items.FISH;
-		case 45: return Items.COOKED_FISH;
-		case 46: return Items.CAKE;
-		case 47: return Items.BED;
+		case 44: return Items.PUFFERFISH;
+		case 45: return Items.TROPICAL_FISH;
+		case 46: return Items.TROPICAL_FISH_SPAWN_EGG;
+		case 47: return Items.BLACK_BED;
 		case 48: return Items.COOKIE;
 		case 49: return Items.MAP;
 		case 50: return Items.BEEF;
@@ -178,7 +177,7 @@ public class MazeGenerator extends CreatorBlocks implements ICreatorBlock {
 		case 59: return Items.BAKED_POTATO;
 		case 60: return Items.POISONOUS_POTATO;
 		case 61: return Items.GOLDEN_CARROT;
-		case 62: return Items.SKULL;
+		case 62: return Items.BEETROOT_SEEDS;
 		case 63: return Items.PUMPKIN_PIE;
 		case 64: return Items.RABBIT_STEW;
 		case 65: return Items.RABBIT;
@@ -203,8 +202,7 @@ public class MazeGenerator extends CreatorBlocks implements ICreatorBlock {
 
 	private void init(){
 		//Init scoreboard
-		scoreBoard = Minecraft.getMinecraft().world.getScoreboard().addScoreObjective("Score", IScoreCriteria.DUMMY);
-		scoreBoard.setRenderType(EnumRenderType.INTEGER);
+		scoreBoard = Minecraft.getInstance().world.getScoreboard().addObjective("Score", ScoreCriteria.DUMMY, null ,RenderType.INTEGER);
 		scoreBoard.getScoreboard().setObjectiveInDisplaySlot(Scoreboard.getObjectiveDisplaySlotNumber("sidebar"), scoreBoard);
 		displayProgress = scoreBoard.getScoreboard().getOrCreateScore("Maze Building Progress (%)", scoreBoard);
 		displayProgress.setScorePoints(0);
@@ -213,8 +211,8 @@ public class MazeGenerator extends CreatorBlocks implements ICreatorBlock {
 		this.size = maze.nodeRegister[0].length/2;
 		this.x-=(blockSize*maze.nodeRegister[0].length)/2;
 		this.z-=(blockSize*maze.nodeRegister[1].length)/2;
-		World worldIn = Minecraft.getMinecraft().world;
-		World serverWorld = Minecraft.getMinecraft().getIntegratedServer().getEntityWorld();
+		World worldIn = Minecraft.getInstance().world;
+		World serverWorld = Minecraft.getInstance().getIntegratedServer().getWorld(Minecraft.getInstance().player.dimension);
 		BlockPos pos;
 		Block block;
 		for(int x = 0; x<blockSize*maze.nodeRegister[0].length; x++){
@@ -228,7 +226,7 @@ public class MazeGenerator extends CreatorBlocks implements ICreatorBlock {
 							BlockPlaceHandler.setBlock(serverWorld, new BlockPos(this.x+i+x,this.y+y,this.z+j+z), Blocks.tallgrass.getDefaultState());
 						}*/
 					} else {
-						block = Blocks.STONEBRICK;
+						block = Blocks.STONE_BRICKS;
 					}
 					
 					BlockPlaceHandler.setBlock(worldIn,pos, block.getDefaultState());
@@ -303,7 +301,7 @@ public boolean run() {
 				i=0;
 				if(j>=maze.nodeRegister[0].length){
 					scoreBoard.getScoreboard().removeObjective(scoreBoard);
-					Minecraft.getMinecraft().player.sendMessage(new TextComponentString("A random maze has been generated!"));
+					Minecraft.getInstance().player.sendChatMessage("A random maze has been generated!");
 					return true;
 				}
 			}
@@ -312,7 +310,7 @@ public boolean run() {
 	displayProgress.setScorePoints((int)(generated/(float)(maze.nodeRegister.length*maze.nodeRegister[0].length)*100.00));
 				if(generated>maze.nodeRegister.length*maze.nodeRegister[0].length){
 					scoreBoard.getScoreboard().removeObjective(scoreBoard);
-					Minecraft.getMinecraft().player.sendMessage(new TextComponentString("A random maze has been generated!"));
+					Minecraft.getInstance().player.sendChatMessage("A random maze has been generated!");
 					return true;
 				}
 				

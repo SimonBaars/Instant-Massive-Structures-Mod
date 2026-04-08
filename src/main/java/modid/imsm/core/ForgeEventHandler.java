@@ -5,12 +5,12 @@ import modid.imsm.userstructures.PMCParserDelayedStarter;
 import modid.imsm.userstructures.PMCParserIntent;
 import modid.imsm.worldgeneration.MazeGenerator;
 import modid.imsm.worldgeneration.MazeRunner;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.init.Blocks;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class ForgeEventHandler {
 	public static int searchingPage = 1;
@@ -74,7 +74,7 @@ public class ForgeEventHandler {
 					if(inputNumber<1 || inputNumber >2){
 						IMSM.eventHandler.delayedPrints.add("Please enter 1 or 2.");
 					} else {
-						IMSM.eventHandler.serverCreators.add(new MazeGenerator((int)Minecraft.getMinecraft().player.posX,(int) Minecraft.getMinecraft().player.posY,(int) Minecraft.getMinecraft().player.posZ));
+						IMSM.eventHandler.serverCreators.add(new MazeGenerator((int)Minecraft.getInstance().player.getPosX(),(int) Minecraft.getInstance().player.getPosY(),(int) Minecraft.getInstance().player.getPosZ()));
 						if(inputNumber==1){
 							getMazeGenerator().startGeneration();
 							IMSM.dialoge=0;
