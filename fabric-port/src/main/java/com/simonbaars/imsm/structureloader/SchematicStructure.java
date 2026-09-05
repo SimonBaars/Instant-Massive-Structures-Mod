@@ -142,7 +142,7 @@ public class SchematicStructure {
 			"birch_fence", "jungle_fence", "dark_oak_fence", "acacia_fence", "spruce_door",
 			"birch_door", "jungle_door", "acacia_door", "dark_oak_door", "end_rod",
 			"chorus_plant", "chorus_flower", "purpur_block", "purpur_pillar", "purpur_stairs",
-			"purpur_slab", "end_stone_bricks", "beetroots", "grass_path", "end_gateway",
+			"purpur_slab", "end_stone_bricks", "beetroots", "dirt_path", "end_gateway",
 			"repeating_command_block", "chain_command_block", "frosted_ice", "magma_block",
 			"nether_wart_block", "red_nether_bricks", "bone_block", "structure_void",
 			"observer", "white_shulker_box", "orange_shulker_box"
@@ -151,7 +151,9 @@ public class SchematicStructure {
 		if (legacyId >= 0 && legacyId < legacyMappings.length) {
 			String blockName = legacyMappings[legacyId];
 			Identifier targetId = Identifier.fromNamespaceAndPath("minecraft", blockName);
-			return BuiltInRegistries.BLOCK.get(targetId).orElse(null).value();
+			return BuiltInRegistries.BLOCK.get(targetId)
+				.map(h -> h.value())
+				.orElse(null);
 		}
 
 		return null;
