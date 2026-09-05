@@ -12,7 +12,7 @@
 
 - [ ] Mod loads without errors
 - [ ] "Instant Massive Structures" creative tab appears
-- [ ] All 5 structure blocks appear in creative tab with correct names
+- [ ] All 952 structure blocks appear in creative tab with correct names
 
 ## Structure Placement Testing
 

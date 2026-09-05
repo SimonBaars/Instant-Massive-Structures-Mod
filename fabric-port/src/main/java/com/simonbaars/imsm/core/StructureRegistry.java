@@ -4,7 +4,9 @@ import com.simonbaars.imsm.InstantMassiveStructures;
 import com.simonbaars.imsm.blocks.StructureBlock;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -978,23 +980,29 @@ public class StructureRegistry {
 
 	private static void registerStructureBlock(String id, String structureName, 
 		int modX, int modY, int modZ) {
-		Block block = new StructureBlock(
-			BlockBehaviour.Properties.of().strength(0.5f),
-			structureName,
-			modX, modY, modZ
-		);
 		Identifier identifier = Identifier.fromNamespaceAndPath(InstantMassiveStructures.MOD_ID, id);
-		Registry.register(BuiltInRegistries.BLOCK, identifier, block);
+		ResourceKey<Block> blockKey = ResourceKey.create(Registries.BLOCK, identifier);
+		ResourceKey<Item> itemKey = ResourceKey.create(Registries.ITEM, identifier);
+
+		// MC 26.2 requires setId on Properties before Block/Item construction.
+		BlockBehaviour.Properties blockProps = BlockBehaviour.Properties.of()
+			.strength(0.5f)
+			.setId(blockKey);
+
+		Block block = new StructureBlock(blockProps, structureName, modX, modY, modZ);
+		Registry.register(BuiltInRegistries.BLOCK, blockKey, block);
 		STRUCTURE_BLOCKS.add(block);
+
+		Item.Properties itemProps = new Item.Properties()
+			.useBlockDescriptionPrefix()
+			.setId(itemKey);
+		Item item = new BlockItem(block, itemProps);
+		Registry.register(BuiltInRegistries.ITEM, itemKey, item);
+		STRUCTURE_ITEMS.add(item);
 	}
 
 	public static void registerItems() {
-		for (Block block : STRUCTURE_BLOCKS) {
-			Identifier id = BuiltInRegistries.BLOCK.getKey(block);
-			Item item = new BlockItem(block, new Item.Properties());
-			Registry.register(BuiltInRegistries.ITEM, id, item);
-			STRUCTURE_ITEMS.add(item);
-		}
+		// BlockItems are registered together with blocks in registerStructureBlock.
 		InstantMassiveStructures.LOGGER.info("Registered {} structure items", STRUCTURE_ITEMS.size());
 	}
 
