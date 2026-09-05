@@ -2,9 +2,9 @@
 
 ## Pre-Testing Setup
 
-- [ ] Install Minecraft 1.21.11
+- [ ] Install Minecraft 26.2
 - [ ] Install Fabric Loader 0.19.5+
-- [ ] Install Fabric API 0.141.6+1.21.11
+- [ ] Install Fabric API 0.159.0+26.2
 - [ ] Place mod JAR in mods folder
 - [ ] Launch game successfully
 
