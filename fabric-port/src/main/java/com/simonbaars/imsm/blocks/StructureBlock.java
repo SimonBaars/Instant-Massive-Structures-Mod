@@ -64,7 +64,7 @@ public class StructureBlock extends Block {
 			if (LiveStructureTicker.isFerrisWheel(structureName)) {
 				LiveStructureTicker.startFerrisWheel(serverWorld, spawnPos);
 				player.sendSystemMessage(Component.literal(
-					"Live Ferris Wheel started (cycling frames every 10 ticks)!"));
+					"Live Ferris Wheel started (cycling frames every 40 ticks)!"));
 				InstantMassiveStructures.LOGGER.info("Player {} started live Ferris Wheel at {}",
 					player.getName().getString(), spawnPos);
 			} else {

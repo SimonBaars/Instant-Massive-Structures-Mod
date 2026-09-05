@@ -13,7 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Minimal live-structure animation: cycles Ferris Wheel schematic frames in place.
  */
 public final class LiveStructureTicker {
-	private static final int TICKS_PER_FRAME = 10;
+	private static final int TICKS_PER_FRAME = 40;
 	private static final String[] FERRIS_FRAMES = {
 		"Live_FerrisWheel",
 		"Live_FerrisWheel0",
