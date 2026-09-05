@@ -8,6 +8,7 @@ import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.io.DataInputStream;
@@ -154,5 +155,32 @@ public class SchematicStructure {
 		}
 
 		return null;
+	}
+
+	public int getLength() {
+		return length;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	/** Clear the same centered bounding box that {@link #process} would occupy. */
+	public static void clearBounds(ServerLevel world, int posX, int posY, int posZ,
+			int length, int height, int width) {
+		posX -= length / 2 - 1;
+		posZ -= width / 2 - 1;
+		for (int y = 0; y < height; y++) {
+			for (int z = 0; z < width; z++) {
+				for (int x = 0; x < length; x++) {
+					BlockPos pos = new BlockPos(posX + x, posY + y, posZ + z);
+					world.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+				}
+			}
+		}
 	}
 }

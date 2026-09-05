@@ -1,6 +1,7 @@
 package com.simonbaars.imsm.blocks;
 
 import com.simonbaars.imsm.InstantMassiveStructures;
+import com.simonbaars.imsm.core.LiveStructureTicker;
 import com.simonbaars.imsm.structureloader.SchematicStructure;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -58,18 +59,23 @@ public class StructureBlock extends Block {
 		BlockPos spawnPos = pos.offset(modX, modY, modZ);
 		
 		try {
-			SchematicStructure structure = new SchematicStructure(structureName);
-			structure.readFromFile();
-			structure.process(serverWorld, spawnPos.getX(), spawnPos.getY(), spawnPos.getZ());
-			
 			world.removeBlock(pos, false);
-			
-			player.sendSystemMessage(Component.literal("Structure '" + structureName + 
-				"' spawned successfully!"));
-			
-			InstantMassiveStructures.LOGGER.info("Player {} spawned structure {} at {}", 
-				player.getName().getString(), structureName, spawnPos);
-			
+
+			if (LiveStructureTicker.isFerrisWheel(structureName)) {
+				LiveStructureTicker.startFerrisWheel(serverWorld, spawnPos);
+				player.sendSystemMessage(Component.literal(
+					"Live Ferris Wheel started (cycling frames every 10 ticks)!"));
+				InstantMassiveStructures.LOGGER.info("Player {} started live Ferris Wheel at {}",
+					player.getName().getString(), spawnPos);
+			} else {
+				SchematicStructure structure = new SchematicStructure(structureName);
+				structure.readFromFile();
+				structure.process(serverWorld, spawnPos.getX(), spawnPos.getY(), spawnPos.getZ());
+				player.sendSystemMessage(Component.literal("Structure '" + structureName +
+					"' spawned successfully!"));
+				InstantMassiveStructures.LOGGER.info("Player {} spawned structure {} at {}",
+					player.getName().getString(), structureName, spawnPos);
+			}
 		} catch (Exception e) {
 			InstantMassiveStructures.LOGGER.error("Failed to spawn structure {}", 
 				structureName, e);
