@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "imsm:block/structure_block"
+      "model": "imsm:block/transport_harbour_side1_corner_north_east"
     }
   }
 }

@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "imsm:block/structure_block"
+      "model": "imsm:block/transport_public_hightram_l_north_west"
     }
   }
 }

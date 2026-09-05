@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "imsm:block/structure_block"
+      "model": "imsm:block/block_enchantment_room"
     }
   }
 }

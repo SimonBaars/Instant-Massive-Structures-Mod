@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "imsm:block/transport_harbour_side3_corner_north_east__north_west__south_east"
+  }
+}

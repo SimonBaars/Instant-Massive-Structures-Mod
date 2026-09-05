@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "imsm:block/transport_public_connector_hightram__tram_hightram__east_tram__west"
+  }
+}

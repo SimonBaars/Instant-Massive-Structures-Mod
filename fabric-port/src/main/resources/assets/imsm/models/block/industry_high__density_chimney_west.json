@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "imsm:block/industry_high__density_chimney_west"
+  }
+}

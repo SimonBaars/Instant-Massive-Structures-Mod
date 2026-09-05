@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "imsm:block/decoration_soccer_stadium_north_south"
+  }
+}

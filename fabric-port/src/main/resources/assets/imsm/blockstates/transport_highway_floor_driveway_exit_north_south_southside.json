@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "imsm:block/structure_block"
+      "model": "imsm:block/transport_highway_floor_driveway_exit_north_south_southside"
     }
   }
 }

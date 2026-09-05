@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "imsm:block/transport_connector_bridge__avenue_bridge__south_avenue__north"
+  }
+}

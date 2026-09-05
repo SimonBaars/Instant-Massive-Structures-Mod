@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "imsm:block/structure_block"
+      "model": "imsm:block/transport_connector_bridge__road_bridge__east_road__west"
     }
   }
 }

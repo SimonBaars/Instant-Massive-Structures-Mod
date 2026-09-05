@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "imsm:block/structure_block"
+      "model": "imsm:block/industry_low__density_parabolic_antenna_north"
     }
   }
 }

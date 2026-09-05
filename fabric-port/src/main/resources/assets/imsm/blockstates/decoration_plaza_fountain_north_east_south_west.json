@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "imsm:block/structure_block"
+      "model": "imsm:block/decoration_plaza_fountain_north_east_south_west"
     }
   }
 }

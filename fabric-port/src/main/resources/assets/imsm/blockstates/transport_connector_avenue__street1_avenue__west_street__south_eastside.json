@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "imsm:block/structure_block"
+      "model": "imsm:block/transport_connector_avenue__street1_avenue__west_street__south_eastside"
     }
   }
 }
