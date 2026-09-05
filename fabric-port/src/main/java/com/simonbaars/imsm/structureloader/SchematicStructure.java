@@ -5,7 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -37,9 +37,9 @@ public class SchematicStructure {
 			nbt = NbtIo.read(dataStream);
 		}
 
-		this.length = nbt.getShort("Width").orElse((short) 0);
-		this.width = nbt.getShort("Length").orElse((short) 0);
-		this.height = nbt.getShort("Height").orElse((short) 0);
+		this.length = nbt.getShort("Width").orElse((short)0);
+		this.width = nbt.getShort("Length").orElse((short)0);
+		this.height = nbt.getShort("Height").orElse((short)0);
 
 		this.blocks = new Block[height][width][length];
 		this.blockData = new int[height][width][length];
@@ -149,14 +149,8 @@ public class SchematicStructure {
 
 		if (legacyId >= 0 && legacyId < legacyMappings.length) {
 			String blockName = legacyMappings[legacyId];
-			String targetId = "minecraft:" + blockName;
-			
-			for (Block b : BuiltInRegistries.BLOCK) {
-				String id = BuiltInRegistries.BLOCK.getKey(b).toString();
-				if (id.equals(targetId)) {
-					return b;
-				}
-			}
+			Identifier targetId = Identifier.fromNamespaceAndPath("minecraft", blockName);
+			return BuiltInRegistries.BLOCK.get(targetId).orElse(null).value();
 		}
 
 		return null;

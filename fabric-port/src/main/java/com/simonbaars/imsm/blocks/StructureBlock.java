@@ -40,17 +40,17 @@ public class StructureBlock extends Block {
 		ItemStack heldItem = player.getMainHandItem();
 		
 		if (heldItem.is(Items.REDSTONE)) {
-			player.displayClientMessage(Component.literal("Structure outline preview not yet implemented"), false);
+			player.sendSystemMessage(Component.literal("Structure outline preview not yet implemented"));
 			return InteractionResult.SUCCESS;
 		}
 		
 		if (heldItem.is(Items.BOOK)) {
-			player.displayClientMessage(Component.literal("Air replacement mode toggle not yet implemented"), false);
+			player.sendSystemMessage(Component.literal("Air replacement mode toggle not yet implemented"));
 			return InteractionResult.SUCCESS;
 		}
 
 		if (heldItem.is(Items.FIRE_CHARGE)) {
-			player.displayClientMessage(Component.literal("Structure removal not yet implemented"), false);
+			player.sendSystemMessage(Component.literal("Structure removal not yet implemented"));
 			return InteractionResult.SUCCESS;
 		}
 
@@ -64,8 +64,8 @@ public class StructureBlock extends Block {
 			
 			world.removeBlock(pos, false);
 			
-			player.displayClientMessage(Component.literal("Structure '" + structureName + 
-				"' spawned successfully!"), false);
+			player.sendSystemMessage(Component.literal("Structure '" + structureName + 
+				"' spawned successfully!"));
 			
 			InstantMassiveStructures.LOGGER.info("Player {} spawned structure {} at {}", 
 				player.getName().getString(), structureName, spawnPos);
@@ -73,8 +73,8 @@ public class StructureBlock extends Block {
 		} catch (Exception e) {
 			InstantMassiveStructures.LOGGER.error("Failed to spawn structure {}", 
 				structureName, e);
-			player.displayClientMessage(Component.literal("Error spawning structure: " + 
-				e.getMessage()), false);
+			player.sendSystemMessage(Component.literal("Error spawning structure: " + 
+				e.getMessage()));
 		}
 
 		return InteractionResult.SUCCESS;

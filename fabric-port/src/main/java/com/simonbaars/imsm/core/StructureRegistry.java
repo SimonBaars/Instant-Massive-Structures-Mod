@@ -4,6 +4,7 @@ import com.simonbaars.imsm.InstantMassiveStructures;
 import com.simonbaars.imsm.blocks.StructureBlock;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -31,14 +32,14 @@ public class StructureRegistry {
 			structureName,
 			modX, modY, modZ
 		);
-		String fullId = InstantMassiveStructures.MOD_ID + ":" + id;
-		Registry.register(BuiltInRegistries.BLOCK, fullId, block);
+		Identifier identifier = Identifier.fromNamespaceAndPath(InstantMassiveStructures.MOD_ID, id);
+		Registry.register(BuiltInRegistries.BLOCK, identifier, block);
 		STRUCTURE_BLOCKS.add(block);
 	}
 
 	public static void registerItems() {
 		for (Block block : STRUCTURE_BLOCKS) {
-			String id = BuiltInRegistries.BLOCK.getKey(block).toString();
+			Identifier id = BuiltInRegistries.BLOCK.getKey(block);
 			Item item = new BlockItem(block, new Item.Properties());
 			Registry.register(BuiltInRegistries.ITEM, id, item);
 			STRUCTURE_ITEMS.add(item);
