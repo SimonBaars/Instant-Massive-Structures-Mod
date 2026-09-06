@@ -63,9 +63,15 @@ public final class BoatBusPlaytestShot {
 				}
 				if (removed && ticks == 240) {
 					if (stage == 1) {
+						// /removelive leaves last-frame blocks; clear corridor before bus
+						conn.sendCommand("fill " + (PAD_X - 40) + " " + (PAD_Y - 5) + " " + (PAD_Z - 30)
+							+ " " + (PAD_X + 40) + " " + (PAD_Y + 25) + " " + (PAD_Z + 80) + " minecraft:air");
+						conn.sendCommand("fill " + (PAD_X - 40) + " " + (PAD_Y - 5) + " " + (PAD_Z - 30)
+							+ " " + (PAD_X + 40) + " " + (PAD_Y - 4) + " " + (PAD_Z + 80) + " minecraft:smooth_stone");
 						stage = 2;
 						ticks = 0;
 						started = shotMid = removed = false;
+						InstantMassiveStructures.LOGGER.info("BoatBusPlaytestShot: pad re-cleared for bus");
 					} else {
 						InstantMassiveStructures.LOGGER.info("BoatBusPlaytestShot: quitting");
 						done = true;

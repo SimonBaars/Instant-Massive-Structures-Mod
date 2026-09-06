@@ -91,19 +91,19 @@ public final class Bus2PlaytestShot {
 			}
 
 			// One-shot: board 40 + 16*6 = 136t after start → complete ~t236; capture then removelive
-			if (started && !shotDone && ticks == 250) {
+			if (started && !shotDone && ticks == 300) {
 				Screenshot.grab(client, false);
 				shotDone = true;
 				InstantMassiveStructures.LOGGER.info("Bus2PlaytestShot: screenshot voyage-end window");
 			}
 
-			if (shotDone && !removed && ticks == 260) {
+			if (shotDone && !removed && ticks == 310) {
 				conn.sendCommand("removelive");
 				removed = true;
 				InstantMassiveStructures.LOGGER.info("Bus2PlaytestShot: /removelive");
 			}
 
-			if (removed && ticks == 280) {
+			if (removed && ticks == 330) {
 				InstantMassiveStructures.LOGGER.info("Bus2PlaytestShot: quitting");
 				done = true;
 				client.stop();
