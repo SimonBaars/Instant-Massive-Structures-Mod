@@ -790,8 +790,10 @@ public final class LiveStructureTicker {
 		}
 
 		/**
-		 * Legacy LiveStructure obstacle probe: 5 columns on the horizontal lead edge at mid height.
-		 * Non-air → {@code scheduleExplosion} equivalent (power 25, fire) + remove this live.
+		 * Obstacle probe on the horizontal lead face, one block outside the placed AABB.
+		 * Port schematics are centered on origin ({@link SchematicStructure#process}); legacy
+		 * {@code z+1}/{@code x+1} probes assumed StructureUtils asymmetric placement and self-hit
+		 * solid craft (Bus2 early explode). Non-air → explode power 25 + remove (legacy scheduleExplosion).
 		 */
 		boolean hitObstacleAndExplode(PathStep step) {
 			if (step == null || (step.dx() == 0 && step.dz() == 0)) {
@@ -803,27 +805,36 @@ public final class LiveStructureTicker {
 			int x = origin.getX();
 			int y = origin.getY();
 			int z = origin.getZ();
+			// Same offsets as SchematicStructure.process / clearBounds
+			int minX = x - (lastLength / 2) + 1;
+			int minZ = z - (lastWidth / 2) + 1;
+			int maxX = minX + lastLength - 1;
+			int maxZ = minZ + lastWidth - 1;
 			int midY = y + (lastHeight / 2);
 			for (int i = -2; i <= 2; i++) {
 				int checkx;
 				int checkz;
 				if (step.dx() != 0) {
 					if (step.dx() > 0) {
-						checkx = x + 1;
-						checkz = z - (lastLength / 2) + i;
+						checkx = maxX + 1;
+						checkz = minZ + (lastWidth / 2) + i;
 					} else {
-						checkx = x - lastWidth - 1;
-						checkz = z - (lastLength / 2) + i;
+						checkx = minX - 1;
+						checkz = minZ + (lastWidth / 2) + i;
 					}
 				} else if (step.dz() > 0) {
-					checkx = x - (lastLength / 2) + i + 1;
-					checkz = z + 1;
+					checkx = minX + (lastLength / 2) + i;
+					checkz = maxZ + 1;
 				} else {
-					checkx = x - (lastLength / 2) + i;
-					checkz = z - lastWidth - 1;
+					checkx = minX + (lastLength / 2) + i;
+					checkz = minZ - 1;
 				}
 				BlockPos check = new BlockPos(checkx, midY, checkz);
-				if (!world.getBlockState(check).isAir()) {
+				var state = world.getBlockState(check);
+				if (!state.isAir()) {
+					InstantMassiveStructures.LOGGER.info(
+						"{} hit obstacle {} at {} (AABB {}..{},{}..{}); exploding (r=25) and removing",
+						baseName, state.getBlock(), check, minX, maxX, minZ, maxZ);
 					double ex = x - (lastLength / 2.0);
 					double ey = y + (lastHeight / 2.0);
 					double ez = z - (lastWidth / 2.0);
@@ -831,9 +842,6 @@ public final class LiveStructureTicker {
 					clearRide();
 					ACTIVE.remove(this);
 					LiveStructurePersistence.saveAll(ACTIVE);
-					InstantMassiveStructures.LOGGER.info(
-						"{} hit obstacle {} at {}; exploded (r=25) and removed",
-						baseName, world.getBlockState(check).getBlock(), check);
 					return true;
 				}
 			}
