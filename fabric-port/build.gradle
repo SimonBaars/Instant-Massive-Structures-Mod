@@ -39,6 +39,14 @@ loom {
 				vmArg '-Dimsm.ferrisrideshot=1'
 				programArgs '--quickPlaySingleplayer', 'imsplay'
 			}
+			if (project.hasProperty('planeshot')) {
+				vmArg '-Dimsm.planeshot=1'
+				programArgs '--quickPlaySingleplayer', 'imsplay'
+			}
+			if (project.hasProperty('persistencesmoke')) {
+				vmArg '-Dimsm.persistencesmoke=1'
+				programArgs '--quickPlaySingleplayer', 'imsplay'
+			}
 		}
 	}
 }

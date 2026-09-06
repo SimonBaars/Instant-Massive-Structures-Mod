@@ -208,15 +208,15 @@ public class StructureRegistry {
 		registerStructureBlock("live_boat1", "LiveBoat1", 0, 0, 0);
 		registerStructureBlock("live_boat2", "LiveBoat2", 0, 0, 0);
 		registerStructureBlock("live_boat3", "LiveBoat3", 0, 0, 0);
-		registerStructureBlock("live_flying_ship1", "LiveFlyingShip1", 0, 0, 0);
+		registerStructureBlock("live_flying_ship1", "LiveFlyingShip1", 15, -10, 24);
 		registerStructureBlock("live_flying_ship10", "LiveFlyingShip10", 0, 0, 0);
 		registerStructureBlock("live_flying_ship11", "LiveFlyingShip11", 0, 0, 0);
 		registerStructureBlock("live_flying_ship12", "LiveFlyingShip12", 0, 0, 0);
-		registerStructureBlock("live_flying_ship2", "LiveFlyingShip2", 0, 0, 0);
+		registerStructureBlock("live_flying_ship2", "LiveFlyingShip2", 22, -8, 16);
 		registerStructureBlock("live_flying_ship20", "LiveFlyingShip20", 0, 0, 0);
 		registerStructureBlock("live_flying_ship21", "LiveFlyingShip21", 0, 0, 0);
 		registerStructureBlock("live_flying_ship22", "LiveFlyingShip22", 0, 0, 0);
-		registerStructureBlock("live_plane", "LivePlane", 0, 0, 0);
+		registerStructureBlock("live_plane", "LivePlane", 26, 0, 19);
 		registerStructureBlock("live_plane0", "LivePlane0", 0, 0, 0);
 		registerStructureBlock("live__bus", "Live_Bus", 0, 0, 0);
 		registerStructureBlock("live__bus0", "Live_Bus0", 0, 0, 0);

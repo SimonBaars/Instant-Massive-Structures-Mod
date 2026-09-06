@@ -17,18 +17,18 @@ import java.util.Locale;
 
 /**
  * Playtest helpers: {@code /imsm live <type> [distance]} starts a wired live at the player.
- * Path movers (boat/bus/airplane/flyingheli) accept optional distance.
- * Aviation: total fly distance (level = distance − 60; default 76).
- * {@code /ride} toggles FreeFall Y-curve ride when near an active FreeFall.
+ * Path movers accept optional distance. Aviation: total fly distance (level = distance − 60).
+ * {@code /ride} toggles FreeFall/Ferris rides. {@code /removelive} stops all active lives.
  */
 public final class ImmsCommands {
 	private static final SuggestionProvider<CommandSourceStack> LIVE_SUGGESTIONS = (ctx, builder) ->
 		SharedSuggestionProvider.suggest(Arrays.asList(
 			"ferris", "mill", "watermill", "windmill", "helicopter", "cinema", "freefall",
-			"boat", "bus", "airplane", "flyingheli",
+			"boat", "bus", "airplane", "flyingheli", "plane", "balloon", "ship1", "ship2",
 			"Live_FerrisWheel", "Live_Mill", "Live_WaterMill",
 			"Live_Power_Windmill_East", "Live_Helicopter", "Live_Cinema", "Live_Fair_FreeFall",
-			"LiveBoat", "Live_Bus", "LiveAirplane", "Live_Flying_Helicopter"
+			"LiveBoat", "Live_Bus", "LiveAirplane", "Live_Flying_Helicopter",
+			"LivePlane", "LiveAirBalloon", "LiveFlyingShip1", "LiveFlyingShip2"
 		), builder);
 
 	private ImmsCommands() {}
@@ -55,7 +55,9 @@ public final class ImmsCommands {
 					.executes(ctx -> {
 						ServerPlayer player = ctx.getSource().getPlayerOrException();
 						return LiveStructureTicker.toggleRide(player) ? 1 : 0;
-					})));
+					}))
+				.then(Commands.literal("removelive")
+					.executes(ctx -> removelive(ctx.getSource()))));
 
 			dispatcher.register(Commands.literal("ride")
 				.executes(ctx -> {
@@ -72,11 +74,39 @@ public final class ImmsCommands {
 					ServerPlayer player = ctx.getSource().getPlayerOrException();
 					return LiveStructureTicker.toggleRide(player) ? 1 : 0;
 				}));
+
+			// Legacy /removelive (+ aliases)
+			dispatcher.register(Commands.literal("removelive")
+				.executes(ctx -> removelive(ctx.getSource())));
+			dispatcher.register(Commands.literal("removelivestructures")
+				.executes(ctx -> removelive(ctx.getSource())));
+			dispatcher.register(Commands.literal("liveremove")
+				.executes(ctx -> removelive(ctx.getSource())));
+			dispatcher.register(Commands.literal("livestructuresremove")
+				.executes(ctx -> removelive(ctx.getSource())));
 		});
+	}
+
+	private static int removelive(CommandSourceStack source) {
+		int n = LiveStructureTicker.removeAllLives(source.getServer());
+		source.sendSuccess(() -> Component.literal("Removed " + n + " Live Structures."), true);
+		return n;
 	}
 
 	private static String formatStep(LiveStructureTicker.PathStep s) {
 		return "{" + s.dx() + "," + s.dy() + "," + s.dz() + "}";
+	}
+
+	/** Legacy BlockLiveStructure spawn modifiers for path craft. */
+	private static BlockPos originFor(ServerPlayer player, String baseName) {
+		BlockPos p = player.blockPosition();
+		return switch (baseName) {
+			case "LiveBoat" -> p.offset(0, -2, 0);
+			case "LivePlane" -> p.offset(26, 0, 19);
+			case "LiveFlyingShip1" -> p.offset(15, -10, 24);
+			case "LiveFlyingShip2" -> p.offset(22, -8, 16);
+			default -> p;
+		};
 	}
 
 	private static int startLive(CommandSourceStack source, ServerPlayer player, String type, int distance) {
@@ -91,23 +121,26 @@ public final class ImmsCommands {
 			case "freefall", "free_fall", "fair", "live_fair_freefall", "live_fair_free_fall" -> "Live_Fair_FreeFall";
 			case "boat", "liveboat", "live_boat" -> "LiveBoat";
 			case "bus", "live_bus", "live__bus" -> "Live_Bus";
-			case "airplane", "plane", "liveairplane", "live_airplane" -> "LiveAirplane";
+			case "airplane", "liveairplane", "live_airplane" -> "LiveAirplane";
 			case "flyingheli", "flying_heli", "flyheli", "live_flying_helicopter",
 				"live__flying__helicopter" -> "Live_Flying_Helicopter";
+			case "plane", "liveplane", "live_plane" -> "LivePlane";
+			case "balloon", "airballoon", "liveairballoon", "live_air_balloon" -> "LiveAirBalloon";
+			case "ship1", "flyingship", "flyingship1", "liveflyingship", "liveflyingship1",
+				"live_flying_ship1" -> "LiveFlyingShip1";
+			case "ship2", "flyingship2", "liveflyingship2", "live_flying_ship2" -> "LiveFlyingShip2";
 			default -> type;
 		};
 		LiveStructureTicker.LiveDef def = LiveStructureTicker.findDefinition(base);
 		if (def == null) {
 			source.sendFailure(Component.literal(
 				"Unknown live type '" + type
-					+ "'. Try: ferris, mill, watermill, windmill, helicopter, cinema, freefall, boat, bus, airplane, flyingheli"));
+					+ "'. Try: ferris, mill, watermill, windmill, helicopter, cinema, freefall, "
+					+ "boat, bus, airplane, flyingheli, plane, balloon, ship1, ship2"));
 			return 0;
 		}
 		ServerLevel level = player.level();
-		// Legacy LiveBoat modifiery=-2
-		BlockPos origin = "LiveBoat".equals(def.baseName())
-			? player.blockPosition().offset(0, -2, 0)
-			: player.blockPosition();
+		BlockPos origin = originFor(player, def.baseName());
 		try {
 			int dist = distance > 0
 				? distance

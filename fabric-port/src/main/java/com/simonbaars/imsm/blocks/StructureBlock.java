@@ -84,7 +84,7 @@ public class StructureBlock extends Block {
 							"Live '" + started + "' aviation path: climb "
 								+ pm.climbCount() + " → level " + pm.levelStepsForDistance(d)
 								+ " → descend " + pm.descendCount()
-								+ " (default fly " + d + ", short loop). Use /imsm live airplane|flyingheli <n>."));
+								+ " (default fly " + d + ", short loop). Use /imsm live airplane|plane|balloon|ship1|ship2|flyingheli <n>."));
 					} else {
 						player.sendSystemMessage(Component.literal(
 							"Live '" + started + "' path: " + pm.defaultDistance()

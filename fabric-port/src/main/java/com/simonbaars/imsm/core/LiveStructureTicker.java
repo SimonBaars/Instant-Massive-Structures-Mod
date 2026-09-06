@@ -21,11 +21,11 @@ import java.util.concurrent.ThreadLocalRandom;
  * <ul>
  *   <li>Stationary frame cyclers (Ferris, Mill, Water Mill, Windmill, Helicopter, Cinema, FreeFall)</li>
  *   <li>FreeFall {@code /ride} Y-curve; Ferris {@code /ride} 2D cart path (legacy RideStructure #0)</li>
- *   <li>Path movers: LiveBoat/Live_Bus (+Z cruise); LiveAirplane / Live_Flying_Helicopter
- *       (climb → level → descend aviation path)</li>
+ *   <li>Path movers: LiveBoat/Live_Bus (+Z cruise); LiveAirplane / Live_Flying_Helicopter /
+ *       LivePlane / LiveAirBalloon / LiveFlyingShip1/2 (climb → level → descend aviation path)</li>
+ *   <li>{@code /removelive} clears active lives; world-folder {@code LiveStructures/} persistence</li>
  * </ul>
  * Chat-typed distance dialog N/A — replaced by {@code /imsm live <type> [distance]}.
- * Remaining aviation craft (LivePlane / ships / balloon) still open if desired later.
  */
 public final class LiveStructureTicker {
 	/**
@@ -116,19 +116,14 @@ public final class LiveStructureTicker {
 			if (structureName.equals(baseName)) {
 				return true;
 			}
-			if (!structureName.startsWith(baseName)) {
-				return false;
-			}
-			String suffix = structureName.substring(baseName.length());
-			if (suffix.isEmpty()) {
-				return true;
-			}
-			for (int i = 0; i < suffix.length(); i++) {
-				if (!Character.isDigit(suffix.charAt(i))) {
-					return false;
+			// Exact frame names only — digit-suffix prefix would collide
+			// (LiveFlyingShip1 vs LiveFlyingShip20, Live_Bus vs Live_Bus2).
+			for (String frame : frames) {
+				if (frame.equals(structureName)) {
+					return true;
 				}
 			}
-			return true;
+			return false;
 		}
 
 		public boolean hasVariableWaits() {
@@ -210,6 +205,38 @@ public final class LiveStructureTicker {
 	);
 
 	/**
+	 * Legacy LivePlane: climb 30×{−1,+1,0} @100ms → level (d−60)×{−1,0,0} → descend 31×{−1,−1,0}.
+	 * 100ms ≈ 2 ticks; default fly 76 → 16 level; short loop for playtest.
+	 */
+	private static final PathMotion PLANE_PATH = PathMotion.aviation(
+		2, 40, 76, true,
+		new PathStep(-1, 1, 0), 30,
+		new PathStep(-1, 0, 0),
+		new PathStep(-1, -1, 0), 31
+	);
+
+	/**
+	 * Legacy LiveAirBalloon / LiveFlyingShip1: climb 30×{0,+1,−1} @500ms → level (d−60)×{0,0,−1} →
+	 * descend 31×{0,−1,−1}. 500ms ≈ 10 ticks.
+	 */
+	private static final PathMotion BALLOON_SHIP1_PATH = PathMotion.aviation(
+		10, 40, 76, true,
+		new PathStep(0, 1, -1), 30,
+		new PathStep(0, 0, -1),
+		new PathStep(0, -1, -1), 31
+	);
+
+	/**
+	 * Legacy LiveFlyingShip2: climb 30×{+1,+1,0} @500ms → level (d−60)×{+1,0,0} → descend 31×{+1,−1,0}.
+	 */
+	private static final PathMotion FLYING_SHIP2_PATH = PathMotion.aviation(
+		10, 40, 76, true,
+		new PathStep(1, 1, 0), 30,
+		new PathStep(1, 0, 0),
+		new PathStep(1, -1, 0), 31
+	);
+
+	/**
 	 * Stationary frame-cyclers + path movers from legacy BlockLiveStructure / EventHandler.getAnimationFor.
 	 */
 	private static final LiveDef[] DEFINITIONS = {
@@ -252,6 +279,18 @@ public final class LiveStructureTicker {
 		new LiveDef("Live_Flying_Helicopter", FLYING_HELI_PATH,
 			"Live_Flying_Helicopter0", "Live_Flying_Helicopter1",
 			"Live_Flying_Helicopter2", "Live_Flying_Helicopter3"),
+		// Legacy LivePlane: nslides=1 @100ms, aviation −X
+		new LiveDef("LivePlane", PLANE_PATH,
+			"LivePlane0"),
+		// Legacy LiveAirBalloon: nslides=1 @500ms, aviation −Z (same path as FlyingShip1)
+		new LiveDef("LiveAirBalloon", BALLOON_SHIP1_PATH,
+			"LiveAirBalloon0"),
+		// Legacy LiveFlyingShip → structure LiveFlyingShip1, nslides=3 @500ms, aviation −Z
+		new LiveDef("LiveFlyingShip1", BALLOON_SHIP1_PATH,
+			"LiveFlyingShip10", "LiveFlyingShip11", "LiveFlyingShip12"),
+		// Legacy LiveFlyingShip2: nslides=3 @500ms, aviation +X
+		new LiveDef("LiveFlyingShip2", FLYING_SHIP2_PATH,
+			"LiveFlyingShip20", "LiveFlyingShip21", "LiveFlyingShip22"),
 	};
 
 	private static final Map<String, LiveDef> BY_BASE = new LinkedHashMap<>();
@@ -271,6 +310,7 @@ public final class LiveStructureTicker {
 			return;
 		}
 		registered = true;
+		LiveStructurePersistence.init();
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
 			if (ACTIVE.isEmpty()) {
 				return;
@@ -283,10 +323,12 @@ public final class LiveStructureTicker {
 				inst.ticksSinceFrame = 0;
 				try {
 					inst.advanceFrame();
+					LiveStructurePersistence.saveInstance(inst);
 				} catch (Exception e) {
 					InstantMassiveStructures.LOGGER.error("Live structure animation failed for {}",
-						inst.frames[inst.frameIndex], e);
+						inst.frames[Math.max(0, Math.min(inst.frameIndex, inst.frames.length - 1))], e);
 					ACTIVE.remove(inst);
+					LiveStructurePersistence.saveAll(ACTIVE);
 				}
 			}
 		});
@@ -336,6 +378,7 @@ public final class LiveStructureTicker {
 			inst.placeCurrentFrame(true);
 			inst.applyWaitAfterCurrentFrame();
 			ACTIVE.add(inst);
+			LiveStructurePersistence.saveAll(ACTIVE);
 			if (def.isPathMover()) {
 				PathMotion pm = def.path();
 				InstantMassiveStructures.LOGGER.info(
@@ -361,6 +404,49 @@ public final class LiveStructureTicker {
 	@Deprecated
 	public static void startFerrisWheel(ServerLevel world, BlockPos origin) {
 		startLive(world, origin, BY_BASE.get("Live_FerrisWheel"));
+	}
+
+	/**
+	 * Legacy {@code /removelive}: stop all active live structures (leave last frame blocks in place).
+	 * @return number removed
+	 */
+	public static int removeAllLives() {
+		return removeAllLives(null);
+	}
+
+	public static int removeAllLives(net.minecraft.server.MinecraftServer server) {
+		int n = ACTIVE.size();
+		net.minecraft.server.MinecraftServer srv = server;
+		for (LiveInstance inst : ACTIVE) {
+			inst.clearRide();
+			if (srv == null && inst.world != null) {
+				srv = inst.world.getServer();
+			}
+		}
+		ACTIVE.clear();
+		if (srv != null) {
+			LiveStructurePersistence.clearAllFiles(srv);
+		} else {
+			LiveStructurePersistence.rewriteIndex(ACTIVE);
+		}
+		InstantMassiveStructures.LOGGER.info("Removed {} live structures (/removelive)", n);
+		return n;
+	}
+
+	public static int activeCount() {
+		return ACTIVE.size();
+	}
+
+	static List<LiveInstance> activeSnapshot() {
+		return List.copyOf(ACTIVE);
+	}
+
+	/** Restore a live from disk after world load (does not re-place first frame). */
+	static void resumeFromSave(LiveInstance inst) {
+		ACTIVE.add(inst);
+		InstantMassiveStructures.LOGGER.info(
+			"Resumed {} live at {} phase={} stepsLeft={} frame={}",
+			inst.baseName, inst.origin, inst.pathPhase, inst.stepsRemaining, inst.frameIndex);
 	}
 
 	/**
@@ -437,7 +523,7 @@ public final class LiveStructureTicker {
 		return "{" + s.dx() + "," + s.dy() + "," + s.dz() + "}";
 	}
 
-	private static final class LiveInstance {
+	static final class LiveInstance {
 		final ServerLevel world;
 		/** Stationary: fixed origin. Path: reset point for loops. */
 		final BlockPos startOrigin;
@@ -492,6 +578,28 @@ public final class LiveStructureTicker {
 			this.stepsDone = 0;
 		}
 
+		/** Rebuild from {@code LiveStructures/N.txt} after world reload. */
+		static LiveInstance restore(ServerLevel world, BlockPos startOrigin, BlockPos origin,
+			LiveDef def, int distance, int pathPhase, int stepsDone, int stepsRemaining,
+			int frameIndex, int levelSteps, int ticksUntilNext,
+			int lastLength, int lastHeight, int lastWidth) {
+			LiveInstance inst = new LiveInstance(world, startOrigin, def, distance);
+			inst.origin = origin.immutable();
+			inst.pathPhase = pathPhase;
+			inst.stepsDone = stepsDone;
+			inst.stepsRemaining = stepsRemaining;
+			inst.frameIndex = Math.max(0, Math.min(frameIndex, def.frames().length - 1));
+			inst.levelSteps = levelSteps;
+			inst.ticksUntilNext = Math.max(1, ticksUntilNext);
+			inst.ticksSinceFrame = 0;
+			inst.lastLength = lastLength;
+			inst.lastHeight = lastHeight;
+			inst.lastWidth = lastWidth;
+			inst.flyDistance = Math.max(1, distance > 0 ? distance : (def.isPathMover()
+				? def.path().defaultDistance() : 0));
+			return inst;
+		}
+
 		void advanceFrame() throws Exception {
 			if (path != null) {
 				advancePath();
@@ -511,6 +619,7 @@ public final class LiveStructureTicker {
 			}
 			if (pathPhase == 4) {
 				ACTIVE.remove(this);
+				LiveStructurePersistence.saveAll(ACTIVE);
 				return;
 			}
 
