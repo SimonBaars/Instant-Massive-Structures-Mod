@@ -74,6 +74,14 @@ public class SchematicStructure {
 	}
 
 	public void process(ServerLevel world, int posX, int posY, int posZ) {
+		process(world, posX, posY, posZ, true);
+	}
+
+	/**
+	 * @param replaceAir when false (legacy Book toggle / overlay): skip schematic AIR so
+	 *                   existing world blocks are not cleared. Non-air still places.
+	 */
+	public void process(ServerLevel world, int posX, int posY, int posZ, boolean replaceAir) {
 		posX -= length / 2 - 1;
 		posZ -= width / 2 - 1;
 
@@ -84,6 +92,7 @@ public class SchematicStructure {
 				for (int x = 0; x < length; x++) {
 					Block block = blocks[y][z][x];
 					if (block == null) continue;
+					if (!replaceAir && block == Blocks.AIR) continue;
 
 					BlockPos pos = new BlockPos(posX + x, posY + y, posZ + z);
 					
@@ -99,8 +108,43 @@ public class SchematicStructure {
 			}
 		}
 
-		InstantMassiveStructures.LOGGER.info("Placed {} blocks for structure {}", 
-			blocksPlaced, fileName);
+		InstantMassiveStructures.LOGGER.info("Placed {} blocks for structure {} (replaceAir={})", 
+			blocksPlaced, fileName, replaceAir);
+	}
+
+	/**
+	 * Legacy redstone outline: glass on the AABB shell faces (i==0||j==0||k==0).
+	 * Returns positions written so fire-charge / re-click can clear them.
+	 */
+	public java.util.List<BlockPos> showOutline(ServerLevel world, int posX, int posY, int posZ,
+			int modX, int modY, int modZ) {
+		java.util.ArrayList<BlockPos> written = new java.util.ArrayList<>();
+		// Legacy: BlockPos(x-i+modifierx, y+j+modifiery, z-k+modifierz) for shell voxels
+		int baseX = posX + modX;
+		int baseY = posY + modY;
+		int baseZ = posZ + modZ;
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				for (int k = 0; k < length; k++) {
+					if (!(i == 0 || j == 0 || k == 0)) continue;
+					if (i == modX && j == modY && k == modZ) continue;
+					BlockPos pos0 = new BlockPos(baseX - i, baseY + j, baseZ - k);
+					world.setBlock(pos0, Blocks.GLASS.defaultBlockState(), Block.UPDATE_ALL);
+					written.add(pos0);
+				}
+			}
+		}
+		InstantMassiveStructures.LOGGER.info("Outline {} glass blocks for {}", written.size(), fileName);
+		return written;
+	}
+
+	public void removeOutline(ServerLevel world, java.util.List<BlockPos> positions) {
+		if (positions == null) return;
+		for (BlockPos pos : positions) {
+			if (world.getBlockState(pos).is(Blocks.GLASS)) {
+				world.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+			}
+		}
 	}
 
 	private Block getBlockFromLegacyId(int legacyId) {
