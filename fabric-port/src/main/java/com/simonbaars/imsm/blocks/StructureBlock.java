@@ -6,6 +6,7 @@ import com.simonbaars.imsm.structureloader.SchematicStructure;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -21,7 +22,7 @@ public class StructureBlock extends Block {
 	private final int modY;
 	private final int modZ;
 
-	public StructureBlock(Properties settings, String structureName, 
+	public StructureBlock(Properties settings, String structureName,
 		int modX, int modY, int modZ) {
 		super(settings);
 		this.structureName = structureName;
@@ -33,18 +34,25 @@ public class StructureBlock extends Block {
 	@Override
 	protected InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos,
 		Player player, BlockHitResult hit) {
-		
+		return trySpawn(world, pos, player, ItemStack.EMPTY);
+	}
+
+	@Override
+	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos,
+		Player player, InteractionHand hand, BlockHitResult hit) {
+		return trySpawn(world, pos, player, stack);
+	}
+
+	private InteractionResult trySpawn(Level world, BlockPos pos, Player player, ItemStack heldItem) {
 		if (world.isClientSide()) {
 			return InteractionResult.SUCCESS;
 		}
 
-		ItemStack heldItem = player.getMainHandItem();
-		
 		if (heldItem.is(Items.REDSTONE)) {
 			player.sendSystemMessage(Component.literal("Structure outline preview not yet implemented"));
 			return InteractionResult.SUCCESS;
 		}
-		
+
 		if (heldItem.is(Items.BOOK)) {
 			player.sendSystemMessage(Component.literal("Air replacement mode toggle not yet implemented"));
 			return InteractionResult.SUCCESS;
@@ -57,16 +65,18 @@ public class StructureBlock extends Block {
 
 		ServerLevel serverWorld = (ServerLevel) world;
 		BlockPos spawnPos = pos.offset(modX, modY, modZ);
-		
+
 		try {
 			world.removeBlock(pos, false);
 
-			if (LiveStructureTicker.isFerrisWheel(structureName)) {
-				LiveStructureTicker.startFerrisWheel(serverWorld, spawnPos);
+			LiveStructureTicker.LiveDef liveDef = LiveStructureTicker.findDefinition(structureName);
+			if (liveDef != null) {
+				String started = LiveStructureTicker.startLive(serverWorld, spawnPos, liveDef);
 				player.sendSystemMessage(Component.literal(
-					"Live Ferris Wheel started (cycling frames every 40 ticks)!"));
-				InstantMassiveStructures.LOGGER.info("Player {} started live Ferris Wheel at {}",
-					player.getName().getString(), spawnPos);
+					"Live '" + started + "' started (cycling " + liveDef.frames().length
+						+ " frames every " + liveDef.ticksPerFrame() + " ticks)!"));
+				InstantMassiveStructures.LOGGER.info("Player {} started live {} at {}",
+					player.getName().getString(), started, spawnPos);
 			} else {
 				SchematicStructure structure = new SchematicStructure(structureName);
 				structure.readFromFile();
@@ -77,9 +87,9 @@ public class StructureBlock extends Block {
 					player.getName().getString(), structureName, spawnPos);
 			}
 		} catch (Exception e) {
-			InstantMassiveStructures.LOGGER.error("Failed to spawn structure {}", 
+			InstantMassiveStructures.LOGGER.error("Failed to spawn structure {}",
 				structureName, e);
-			player.sendSystemMessage(Component.literal("Error spawning structure: " + 
+			player.sendSystemMessage(Component.literal("Error spawning structure: " +
 				e.getMessage()));
 		}
 

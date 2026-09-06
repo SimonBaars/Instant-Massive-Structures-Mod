@@ -1,39 +1,53 @@
 # IMS Playtest Results
 
-Date: 2026-09-05 evening / 2026-09-06 early AM (PT)
+Date: 2026-09-05 evening / 2026-09-06 ~1:35 AM PT
 World: `imsplay` (Creative)
-Client: Fabric Loom `runClient` on DISPLAY=:4 (`-Pimsplay` quickPlay); left running; did not kill other clients on :1/:2/:3.
+Client: Fabric Loom `runClient` on DISPLAY=:5 (`-Pimsplay` quickPlay).
 
 ## Results
 
-- **Creative tab population: PASS** — Root cause was registering the creative tab **without** a `displayItems` callback, so the IMS tab existed but listed zero entries. Fixed by using vanilla `CreativeModeTab.builder(...).displayItems(...)` and accepting all 952 `StructureRegistry` BlockItems. Startup log: `creative tab has 952 items`. In-game tab title shows **Instant Massive Structures**; grid is filled with structure icons and has a scrollbar. Screenshot: `playtest-shots/06-creative-tab-populated.webp` (also `.png`). Tooltip example: `playtest-shots/06b-creative-tab-tooltip.png`. Search for `air_balloon` also returns IMS items: `06c-search-air-balloon.png`.
+- **Creative tab population: PASS** — 952 items + lang (prior).
+- **Textures: PASS** — Prior pass.
+- **Live Ferris Wheel: PASS** — Prior; still wired (4 frames / 40 ticks).
+- **Live Mill: PASS** — Wired; `/imsm live mill` started at (400,96,-150); log shows continuous `Live_Mill0..5` frame swaps every 15 ticks. Screenshots: `19-*`, `23-*`, `27-*`.
+- **Live Water Mill: PASS** — Wired; cycling `Live_WaterMill0..2`. Screenshots: `20-*`, `24-*`, `29-*` (wheel visible).
+- **Live Power Windmill East: PASS** — Wired; cycling `Live_Power_Windmill_East0..2` (1×32×32 slab). Screenshots: `21-*`, `25-*`, `28-*`.
+- **Live Helicopter: PASS** — Wired; cycling `Live_Helicopter0..3` every 10 ticks. Screenshots: `22-*`, `26-*`, `30-*`.
 
-- **Lang / display names: improved** — Generated `en_us.json` entries for all 952 block IDs (plus item keys). Pre-fix tooltips showed raw keys like `block.imsm.block_mega_tower`; after resource reload pretty names should apply. A few curated overrides kept (Wooden House, Live Ferris Wheel, etc.).
+Helper: `/imsm live <ferris|mill|watermill|windmill|helicopter>` starts a wired cycler at the player. Block right-click also starts any matching live item (`useWithoutItem` + `useItemOn`).
 
-- **Textures: PASS** — Prior pass; hotbar and tab icons show real textures (not purple/black).
+## Screenshots (this pass)
 
-- **Live Ferris Wheel animation: PASS** — Prior pass (`LiveStructureTicker`, 40-tick interval).
-
-## Screenshots
-
-- `playtest-shots/01-creative-tab.webp` (prior; empty/unverified)
-- `playtest-shots/02-structure-placed.webp` (prior)
-- `playtest-shots/03-textures-fixed.webp`
-- `playtest-shots/04-ferris-wheel.webp`
-- `playtest-shots/05-ferris-midframe.webp`
-- `playtest-shots/06-creative-tab-populated.webp` (**populated IMS tab**)
-- `playtest-shots/06b-creative-tab-tooltip.png`
-- `playtest-shots/06c-search-air-balloon.png`
+- `playtest-shots/18-mill-started.png`
+- `playtest-shots/19-mill-animating.png` / `19b-mill-midframe.png`
+- `playtest-shots/20-watermill.png` / `20b-watermill-mid.png`
+- `playtest-shots/21-windmill.png` / `21b-windmill-mid.png`
+- `playtest-shots/22-helicopter.png`
+- `playtest-shots/23-mill-view.png` … `30-heli-close.png`
 
 ## Remaining gaps (honest)
 
-- Other **live** structures beyond Ferris Wheel only lightly exercised.
-- Auto-generated lang names are utilitarian (`block_mega_tower` → `Block Mega Tower`); not hand-tuned lore names.
-- Large schematics still stress llvmpipe / integrated server (“Can't keep up”).
-- Special held-item interactions (Redstone / Book / Fire Charge messages) not re-checked this pass.
+### Live structures **not** ticker-wired (need movement paths / dialog / ride)
+
+| Legacy entry | Why not simple frame-cycle |
+|--------------|----------------------------|
+| LiveAirplane / LivePlane / LiveAirBalloon | Path animation + distance chat dialog |
+| LiveFlyingShip1 / LiveFlyingShip2 | Path animation + distance dialog |
+| Live_Flying_Helicopter | Path animation + distance dialog |
+| LiveBoat / Live_Bus / Live_Bus2 | Path animation + distance dialog |
+| Live_Cinema | 43 slides; could cycle in place but heavy; not wired |
+| Live_Fair_FreeFall | 21 slides + custom waitTimes + `/ride` |
+| Ride / `/removelive` / live persistence | Legacy EventHandler liveCreators save/load not ported |
+
+### Other
+
+- Auto-generated lang names remain utilitarian.
+- Large schematics stress llvmpipe (“Can't keep up”) when multiple lives animate at once.
+- Special held-item interactions (Redstone / Book / Fire Charge) still stub messages.
+- Clear+replace frame cycling flickers; mill/windmill are thin slabs so camera angle matters.
 
 ## Commits (local only)
 
-- Fix creative tab `displayItems` population (952 items)
-- Generate full `en_us.json` block/item names
+- Generalize LiveStructureTicker for mill/watermill/windmill/helicopter (+ ferris)
+- StructureBlock `useItemOn` + `/imsm live` playtest command
 - Playtest docs + PORT_STATUS update

@@ -77,3 +77,14 @@
 - List any bugs found during testing
 - Note any structures that don't spawn correctly
 - Document any performance issues
+
+
+## Live structures (frame ticker)
+
+- [x] Live Ferris Wheel cycles frames
+- [x] Live Mill cycles frames (`/imsm live mill`)
+- [x] Live Water Mill cycles frames
+- [x] Live Power Windmill East cycles frames
+- [x] Live Helicopter cycles frames
+- [ ] Aviation / boat / bus path animation + distance dialog
+- [ ] Live Cinema / Fair FreeFall / ride system

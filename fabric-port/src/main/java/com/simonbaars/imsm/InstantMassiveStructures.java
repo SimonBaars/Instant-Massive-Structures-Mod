@@ -1,5 +1,6 @@
 package com.simonbaars.imsm;
 
+import com.simonbaars.imsm.core.ImmsCommands;
 import com.simonbaars.imsm.core.LiveStructureTicker;
 import com.simonbaars.imsm.core.StructureRegistry;
 import net.fabricmc.api.ModInitializer;
@@ -31,6 +32,7 @@ public class InstantMassiveStructures implements ModInitializer {
 		StructureRegistry.registerBlocks();
 		StructureRegistry.registerItems();
 		LiveStructureTicker.init();
+		ImmsCommands.register();
 
 		Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, STRUCTURES_TAB,
 			CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
