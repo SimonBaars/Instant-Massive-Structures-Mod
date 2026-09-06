@@ -203,7 +203,7 @@ public class StructureRegistry {
 		registerStructureBlock("live_air_balloon0", "LiveAirBalloon0", 0, 0, 0);
 		registerStructureBlock("live_airplane", "LiveAirplane", 0, 0, 0);
 		registerStructureBlock("live_airplane0", "LiveAirplane0", 0, 0, 0);
-		registerStructureBlock("live_boat", "LiveBoat", 0, 0, 0);
+		registerStructureBlock("live_boat", "LiveBoat", 0, -2, 0);
 		registerStructureBlock("live_boat0", "LiveBoat0", 0, 0, 0);
 		registerStructureBlock("live_boat1", "LiveBoat1", 0, 0, 0);
 		registerStructureBlock("live_boat2", "LiveBoat2", 0, 0, 0);

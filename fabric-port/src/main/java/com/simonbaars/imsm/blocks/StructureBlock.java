@@ -72,13 +72,23 @@ public class StructureBlock extends Block {
 			LiveStructureTicker.LiveDef liveDef = LiveStructureTicker.findDefinition(structureName);
 			if (liveDef != null) {
 				String started = LiveStructureTicker.startLive(serverWorld, spawnPos, liveDef);
-				String timing = liveDef.hasVariableWaits()
-					? liveDef.frames().length + " frames, variable waits"
-					: liveDef.frames().length + " frames every " + liveDef.ticksPerFrame() + " ticks";
-				player.sendSystemMessage(Component.literal(
-					"Live '" + started + "' started (cycling " + timing + ")!"));
-				if ("Live_Fair_FreeFall".equals(started) || "Live_FerrisWheel".equals(started)) {
-					player.sendSystemMessage(Component.literal("Use /ride to ride this structure!"));
+				if (liveDef.isPathMover()) {
+					player.sendSystemMessage(Component.literal(
+						"Thanks for choosing SimJoo's "
+							+ ("LiveBoat".equals(started) ? "Maritime" : "Bus Depot")
+							+ " Solutions."));
+					player.sendSystemMessage(Component.literal(
+						"Live '" + started + "' path: " + liveDef.path().defaultDistance()
+							+ " blocks +Z (short loop). Use /imsm live boat <n> for custom distance."));
+				} else {
+					String timing = liveDef.hasVariableWaits()
+						? liveDef.frames().length + " frames, variable waits"
+						: liveDef.frames().length + " frames every " + liveDef.ticksPerFrame() + " ticks";
+					player.sendSystemMessage(Component.literal(
+						"Live '" + started + "' started (cycling " + timing + ")!"));
+					if ("Live_Fair_FreeFall".equals(started) || "Live_FerrisWheel".equals(started)) {
+						player.sendSystemMessage(Component.literal("Use /ride to ride this structure!"));
+					}
 				}
 				InstantMassiveStructures.LOGGER.info("Player {} started live {} at {}",
 					player.getName().getString(), started, spawnPos);

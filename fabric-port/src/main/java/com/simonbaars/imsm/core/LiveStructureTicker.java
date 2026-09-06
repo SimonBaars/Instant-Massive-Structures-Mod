@@ -17,12 +17,32 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * Live-structure animation: cycles schematic frames for stationary rides
- * (Ferris, Mill, Water Mill, Power Windmill, Helicopter, Cinema, FreeFall).
- * FreeFall also supports a simplified {@code /ride} Y-curve teleporter.
- * Aviation/boat/bus path animation + dialog remain unwired.
+ * Live-structure animation:
+ * <ul>
+ *   <li>Stationary frame cyclers (Ferris, Mill, Water Mill, Windmill, Helicopter, Cinema, FreeFall)</li>
+ *   <li>FreeFall {@code /ride} Y-curve teleporter subset</li>
+ *   <li>Path movers: LiveBoat (+ optional Live_Bus) — legacy +Z cruise with frame cycling</li>
+ * </ul>
+ * Aviation path + chat distance dialog remain partially deferred (boat uses command/default distance).
  */
 public final class LiveStructureTicker {
+	/**
+	 * Legacy boat/bus path: phases {times, speed_ms, dx, dy, dz}.
+	 * After dialog sets times on cruise phase: board 10s, then N steps of +1 Z every 300ms.
+	 */
+	public record PathMotion(
+		int dx,
+		int dy,
+		int dz,
+		/** ~300ms legacy → 6 ticks */
+		int ticksPerStep,
+		/** Playtest boarding (~2s); legacy was 10000ms */
+		int boardingTicks,
+		int defaultDistance,
+		/** Short continuous loop for demo; legacy boat removes after one trip */
+		boolean loop
+	) {}
+
 	/** One animated live type: entry base name + frame schematic names + tick interval. */
 	public record LiveDef(
 		String baseName,
@@ -30,10 +50,20 @@ public final class LiveStructureTicker {
 		/** Optional per-frame waits: after placing frames[i], wait waitTicksAfterFrame[i] before next.
 		 *  Null → always use ticksPerFrame. Length must equal frames.length when non-null. */
 		int[] waitTicksAfterFrame,
+		/** Null = stationary frame cycler; non-null = path mover */
+		PathMotion path,
 		String... frames
 	) {
 		public LiveDef(String baseName, int ticksPerFrame, String... frames) {
-			this(baseName, ticksPerFrame, null, frames);
+			this(baseName, ticksPerFrame, null, null, frames);
+		}
+
+		public LiveDef(String baseName, int ticksPerFrame, int[] waitTicksAfterFrame, String... frames) {
+			this(baseName, ticksPerFrame, waitTicksAfterFrame, null, frames);
+		}
+
+		public LiveDef(String baseName, PathMotion path, String... frames) {
+			this(baseName, path.ticksPerStep(), null, path, frames);
 		}
 
 		public boolean matches(String structureName) {
@@ -43,7 +73,6 @@ public final class LiveStructureTicker {
 			if (structureName.equals(baseName)) {
 				return true;
 			}
-			// Match numbered frames belonging to this sequence (Live_Mill0..5, etc.)
 			if (!structureName.startsWith(baseName)) {
 				return false;
 			}
@@ -61,6 +90,10 @@ public final class LiveStructureTicker {
 
 		public boolean hasVariableWaits() {
 			return waitTicksAfterFrame != null;
+		}
+
+		public boolean isPathMover() {
+			return path != null;
 		}
 	}
 
@@ -85,27 +118,29 @@ public final class LiveStructureTicker {
 		0, 4, 11, 20, 32, 47, 65, 79, 87, 92, 87, 80, 63, 47, 30, 11, 5, 3, 1, 0
 	};
 
+	/** Shared boat/bus cruise: +Z, 6 ticks/step, short boarding, default 24-block loop. */
+	private static final PathMotion BOAT_BUS_PATH = new PathMotion(
+		0, 0, 1,
+		6,
+		40,
+		24,
+		true
+	);
+
 	/**
-	 * Stationary frame-cyclers from legacy BlockLiveStructure nslides.
-	 * Aviation/boat/bus still need movement paths — not included.
+	 * Stationary frame-cyclers + path movers from legacy BlockLiveStructure / EventHandler.getAnimationFor.
 	 */
 	private static final LiveDef[] DEFINITIONS = {
 		new LiveDef("Live_FerrisWheel", 40,
 			"Live_FerrisWheel", "Live_FerrisWheel0", "Live_FerrisWheel1", "Live_FerrisWheel2"),
-		// Legacy nslides=6 → Live_Mill0..5 (750ms ≈ 15 ticks)
 		new LiveDef("Live_Mill", 15,
 			"Live_Mill0", "Live_Mill1", "Live_Mill2", "Live_Mill3", "Live_Mill4", "Live_Mill5"),
-		// Legacy nslides=3 → Live_WaterMill0..2
 		new LiveDef("Live_WaterMill", 15,
 			"Live_WaterMill0", "Live_WaterMill1", "Live_WaterMill2"),
-		// Legacy nslides=3 → Live_Power_Windmill_East0..2
 		new LiveDef("Live_Power_Windmill_East", 15,
 			"Live_Power_Windmill_East0", "Live_Power_Windmill_East1", "Live_Power_Windmill_East2"),
-		// Legacy nslides=4 → Live_Helicopter0..3 (200ms ≈ 4 ticks; use 10 for visibility)
 		new LiveDef("Live_Helicopter", 10,
 			"Live_Helicopter0", "Live_Helicopter1", "Live_Helicopter2", "Live_Helicopter3"),
-		// Legacy nslides=43 → Live_Cinema0..42, slidespeed 300ms ≈ 6 ticks; use 20 (slower) for llvmpipe
-		// Frames are thin 1×20×30 screen slabs (~600 blocks), not the full 51×39×50 building.
 		new LiveDef("Live_Cinema", 20,
 			"Live_Cinema0", "Live_Cinema1", "Live_Cinema2", "Live_Cinema3", "Live_Cinema4", "Live_Cinema5",
 			"Live_Cinema6", "Live_Cinema7", "Live_Cinema8", "Live_Cinema9", "Live_Cinema10", "Live_Cinema11",
@@ -115,7 +150,6 @@ public final class LiveStructureTicker {
 			"Live_Cinema30", "Live_Cinema31", "Live_Cinema32", "Live_Cinema33", "Live_Cinema34", "Live_Cinema35",
 			"Live_Cinema36", "Live_Cinema37", "Live_Cinema38", "Live_Cinema39", "Live_Cinema40", "Live_Cinema41",
 			"Live_Cinema42"),
-		// Legacy nslides=21 → Live_Fair_FreeFall0..20, slidespeed 200ms + custom waitTimes; tiny schematics
 		new LiveDef("Live_Fair_FreeFall", 4, FREEFALL_WAIT_AFTER,
 			"Live_Fair_FreeFall0", "Live_Fair_FreeFall1", "Live_Fair_FreeFall2", "Live_Fair_FreeFall3",
 			"Live_Fair_FreeFall4", "Live_Fair_FreeFall5", "Live_Fair_FreeFall6", "Live_Fair_FreeFall7",
@@ -123,6 +157,12 @@ public final class LiveStructureTicker {
 			"Live_Fair_FreeFall12", "Live_Fair_FreeFall13", "Live_Fair_FreeFall14", "Live_Fair_FreeFall15",
 			"Live_Fair_FreeFall16", "Live_Fair_FreeFall17", "Live_Fair_FreeFall18", "Live_Fair_FreeFall19",
 			"Live_Fair_FreeFall20"),
+		// Legacy LiveBoat: nslides=4, path +Z for dialog distance (EventHandler boat/bus animation)
+		new LiveDef("LiveBoat", BOAT_BUS_PATH,
+			"LiveBoat0", "LiveBoat1", "LiveBoat2", "LiveBoat3"),
+		// Legacy Live_Bus: nslides=1 → Live_Bus0 only; same +Z path
+		new LiveDef("Live_Bus", BOAT_BUS_PATH,
+			"Live_Bus0"),
 	};
 
 	private static final Map<String, LiveDef> BY_BASE = new LinkedHashMap<>();
@@ -190,19 +230,34 @@ public final class LiveStructureTicker {
 	}
 
 	/**
-	 * Place the first frame at origin and start cycling.
-	 * @return display name of the live type started
+	 * Place the first frame at origin and start cycling (or path-cruising).
+	 * Path movers use {@link PathMotion#defaultDistance()}.
 	 */
 	public static String startLive(ServerLevel world, BlockPos origin, LiveDef def) {
-		LiveInstance inst = new LiveInstance(world, origin, def);
+		int distance = def.isPathMover() ? def.path().defaultDistance() : 0;
+		return startLive(world, origin, def, distance);
+	}
+
+	/**
+	 * @param distance sail/ride distance in blocks for path movers (ignored for stationary)
+	 */
+	public static String startLive(ServerLevel world, BlockPos origin, LiveDef def, int distance) {
+		LiveInstance inst = new LiveInstance(world, origin, def, distance);
 		try {
 			inst.placeCurrentFrame(true);
 			inst.applyWaitAfterCurrentFrame();
 			ACTIVE.add(inst);
-			InstantMassiveStructures.LOGGER.info(
-				"Started {} live animation at {} ({} frames, base {} ticks{})",
-				def.baseName(), origin, def.frames().length, def.ticksPerFrame(),
-				def.hasVariableWaits() ? ", variable waits" : "");
+			if (def.isPathMover()) {
+				InstantMassiveStructures.LOGGER.info(
+					"Started {} path live at {} ({} frames, distance {}, step {}t, boarding {}t, loop={})",
+					def.baseName(), origin, def.frames().length, inst.stepsTotal,
+					def.path().ticksPerStep(), def.path().boardingTicks(), def.path().loop());
+			} else {
+				InstantMassiveStructures.LOGGER.info(
+					"Started {} live animation at {} ({} frames, base {} ticks{})",
+					def.baseName(), origin, def.frames().length, def.ticksPerFrame(),
+					def.hasVariableWaits() ? ", variable waits" : "");
+			}
 			return def.baseName();
 		} catch (Exception e) {
 			InstantMassiveStructures.LOGGER.error("Failed to start {} animation", def.baseName(), e);
@@ -222,7 +277,6 @@ public final class LiveStructureTicker {
 	 * @return true if a ride was started or cancelled
 	 */
 	public static boolean toggleRide(ServerPlayer player) {
-		// Cancel if already riding
 		for (LiveInstance inst : ACTIVE) {
 			if (player.getUUID().equals(inst.riderUuid)) {
 				inst.clearRide();
@@ -252,7 +306,6 @@ public final class LiveStructureTicker {
 		}
 
 		nearest.riderUuid = player.getUUID();
-		// Legacy waits for slide==2; if already past that frame this cycle, seek mount now.
 		nearest.rideProgress = nearest.frameIndex >= 2 ? -1 : -2;
 		nearest.rideHoldX = player.getX();
 		nearest.rideHoldZ = player.getZ();
@@ -286,11 +339,14 @@ public final class LiveStructureTicker {
 
 	private static final class LiveInstance {
 		final ServerLevel world;
-		final BlockPos origin;
+		/** Stationary: fixed origin. Path: reset point for loops. */
+		final BlockPos startOrigin;
+		BlockPos origin;
 		final String baseName;
 		final String[] frames;
 		final int[] waitAfter;
 		final int defaultTicks;
+		final PathMotion path;
 		int ticksUntilNext;
 		int frameIndex;
 		int ticksSinceFrame;
@@ -298,25 +354,45 @@ public final class LiveStructureTicker {
 		int lastHeight;
 		int lastWidth;
 
+		// Path mover state
+		int pathPhase; // 0=boarding, 1=cruising, 2=done
+		int stepsRemaining;
+		int stepsTotal;
+		int stepsDone;
+
 		// FreeFall ride subset
 		UUID riderUuid;
 		int rideProgress = -3; // -3 = none; -2 = waiting for slide 2; -1 = waiting mount; >=0 riding
 		double rideHoldX;
 		double rideHoldZ;
 
-		LiveInstance(ServerLevel world, BlockPos origin, LiveDef def) {
+		LiveInstance(ServerLevel world, BlockPos origin, LiveDef def, int distance) {
 			this.world = world;
+			this.startOrigin = origin.immutable();
 			this.origin = origin.immutable();
 			this.baseName = def.baseName();
 			this.frames = def.frames();
 			this.waitAfter = def.waitTicksAfterFrame();
 			this.defaultTicks = def.ticksPerFrame();
-			this.ticksUntilNext = def.ticksPerFrame();
+			this.path = def.path();
+			this.ticksUntilNext = def.isPathMover()
+				? Math.max(1, def.path().boardingTicks())
+				: def.ticksPerFrame();
 			this.frameIndex = 0;
 			this.ticksSinceFrame = 0;
+			this.pathPhase = def.isPathMover() ? 0 : -1;
+			this.stepsTotal = def.isPathMover()
+				? Math.max(1, distance > 0 ? distance : def.path().defaultDistance())
+				: 0;
+			this.stepsRemaining = this.stepsTotal;
+			this.stepsDone = 0;
 		}
 
 		void advanceFrame() throws Exception {
+			if (path != null) {
+				advancePath();
+				return;
+			}
 			clearLastBounds();
 			frameIndex = (frameIndex + 1) % frames.length;
 			placeCurrentFrame(false);
@@ -324,14 +400,67 @@ public final class LiveStructureTicker {
 			tickRide();
 		}
 
+		void advancePath() throws Exception {
+			if (pathPhase == 0) {
+				// Boarding finished → start cruise
+				pathPhase = 1;
+				ticksUntilNext = Math.max(1, path.ticksPerStep());
+				InstantMassiveStructures.LOGGER.info(
+					"{} departing {} for {} blocks (+{} z)", baseName, origin, stepsTotal, path.dz());
+				return;
+			}
+			if (pathPhase == 2) {
+				ACTIVE.remove(this);
+				return;
+			}
+
+			// Cruising: clear, step, place next frame, carry nearby players
+			clearLastBounds();
+			origin = origin.offset(path.dx(), path.dy(), path.dz());
+			frameIndex = (frameIndex + 1) % frames.length;
+			placeCurrentFrame(false);
+			carryNearbyPlayers(path.dx(), path.dy(), path.dz());
+			stepsDone++;
+			stepsRemaining--;
+			ticksUntilNext = Math.max(1, path.ticksPerStep());
+
+			if (stepsRemaining <= 0) {
+				if (path.loop()) {
+					clearLastBounds();
+					origin = startOrigin;
+					frameIndex = 0;
+					placeCurrentFrame(false);
+					stepsRemaining = stepsTotal;
+					stepsDone = 0;
+					pathPhase = 0;
+					ticksUntilNext = Math.max(1, path.boardingTicks() / 2); // shorter reboard on loop
+					InstantMassiveStructures.LOGGER.info(
+						"{} completed short loop; returning to {} (reboard)", baseName, startOrigin);
+				} else {
+					clearLastBounds();
+					pathPhase = 2;
+					ticksUntilNext = 1;
+					InstantMassiveStructures.LOGGER.info("{} voyage complete; removing", baseName);
+				}
+			}
+		}
+
 		void applyWaitAfterCurrentFrame() {
+			if (path != null) {
+				// Boarding wait already set in ctor; cruise sets its own
+				if (pathPhase == 0) {
+					ticksUntilNext = Math.max(1, path.boardingTicks());
+				} else {
+					ticksUntilNext = Math.max(1, path.ticksPerStep());
+				}
+				return;
+			}
 			if (waitAfter == null) {
 				ticksUntilNext = defaultTicks;
 				return;
 			}
 			int w = waitAfter[frameIndex];
 			if (w < 0) {
-				// Legacy random up to 15s; keep a usable non-zero range for playtest
 				ticksUntilNext = 5 + ThreadLocalRandom.current().nextInt(196);
 			} else {
 				ticksUntilNext = Math.max(1, w);
@@ -359,6 +488,31 @@ public final class LiveStructureTicker {
 				lastLength, lastHeight, lastWidth);
 		}
 
+		/** Carry players standing on/near the moving structure by the step delta. */
+		void carryNearbyPlayers(int dx, int dy, int dz) {
+			if (dx == 0 && dy == 0 && dz == 0) {
+				return;
+			}
+			double cx = origin.getX() + 0.5;
+			double cy = origin.getY();
+			double cz = origin.getZ() + 0.5;
+			double radius = Math.max(lastLength, lastWidth) / 2.0 + 2.0;
+			for (ServerPlayer player : world.players()) {
+				if (player.level() != world) {
+					continue;
+				}
+				double dxp = player.getX() - cx;
+				double dzp = player.getZ() - cz;
+				if (dxp * dxp + dzp * dzp > radius * radius) {
+					continue;
+				}
+				if (player.getY() < cy - 2 || player.getY() > cy + lastHeight + 3) {
+					continue;
+				}
+				player.teleportTo(player.getX() + dx, player.getY() + dy, player.getZ() + dz);
+			}
+		}
+
 		void clearRide() {
 			riderUuid = null;
 			rideProgress = -3;
@@ -374,9 +528,6 @@ public final class LiveStructureTicker {
 				return;
 			}
 
-			// Legacy: when currentSlide==2, progress -2 → -1 (search for mount).
-			// If /ride was issued mid-cycle after frame 2, start seeking mount immediately
-			// instead of waiting a full 21-frame loop.
 			if (rideProgress == -2) {
 				if (frameIndex == 2 || frameIndex > 2) {
 					rideProgress = -1;
@@ -390,7 +541,6 @@ public final class LiveStructureTicker {
 			double oz = origin.getZ();
 
 			if (rideProgress == -1) {
-				// Legacy mount pads around FreeFall (approx); also accept near origin for /imsm live starts
 				if (nearMount(rider, ox, oy, oz) || rider.distanceToSqr(ox + 0.5, oy + 2.5, oz + 0.5) < 64) {
 					rideProgress = 0;
 					rideHoldX = rider.getX();
@@ -402,7 +552,6 @@ public final class LiveStructureTicker {
 				return;
 			}
 
-			// Active ride: advance Y curve; cancel if player walks far from hold XZ
 			if (Math.hypot(rider.getX() - rideHoldX, rider.getZ() - rideHoldZ) > 3.5) {
 				rider.sendSystemMessage(Component.literal(
 					"Thanks for your visit. We hope to see you again soon!"));

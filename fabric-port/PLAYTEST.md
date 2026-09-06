@@ -86,6 +86,7 @@
 - [x] Live Water Mill cycles frames
 - [x] Live Power Windmill East cycles frames
 - [x] Live Helicopter cycles frames
-- [ ] Aviation / boat / bus path animation + distance dialog
+- [x] LiveBoat / Live_Bus +Z path short loop (`/imsm live boat [n]`; chat distance dialog deferred)
+- [ ] Aviation path animation + distance dialog
 - [x] Live Cinema cycles frames (`/imsm live cinema`, 43 frames / 20 ticks)
 - [x] Fair FreeFall frame cycle (`/imsm live freefall`, 21 frames / variable waits) + `/ride` Y-curve subset (Ferris cart-path ride still open)
