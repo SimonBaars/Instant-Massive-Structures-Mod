@@ -914,7 +914,7 @@ public final class LiveStructureTicker {
 				boolean mounted = ferris
 					? nearFerrisMount(rider, ox, oy, oz)
 					: (nearFreeFallMount(rider, ox, oy, oz)
-						|| rider.distanceToSqr(ox + 0.5, oy + 2.5, oz + 0.5) < 64);
+						|| rider.distanceToSqr(ox + 0.5, oy + 2.5, oz + 0.5) < 144);
 				if (mounted) {
 					rideProgress = 0;
 					if (ferris) {
