@@ -11,8 +11,8 @@
 ## Basic Functionality
 
 - [ ] Mod loads without errors
-- [ ] "Instant Massive Structures" creative tab appears
-- [ ] All 952 structure blocks appear in creative tab with correct names
+- [x] "Instant Massive Structures" creative tab appears
+- [x] All 952 structure blocks appear in creative tab (lang names auto-generated; verify a sample of pretty names)
 
 ## Structure Placement Testing
 

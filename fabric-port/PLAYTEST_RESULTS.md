@@ -1,37 +1,39 @@
 # IMS Playtest Results
 
-Date: 2026-09-05 (PT)
+Date: 2026-09-05 evening / 2026-09-06 early AM (PT)
 World: `imsplay` (Creative)
-Client: Fabric Loom `runClient` on DISPLAY=:2 (left running)
+Client: Fabric Loom `runClient` on DISPLAY=:4 (`-Pimsplay` quickPlay); left running; did not kill other clients on :1/:2/:3.
 
 ## Results
 
-- **Textures: PASS** — Mapped legacy PNGs from `src/main/resources/assets/imsm/textures/blocks/` into `fabric-port/.../textures/block/<id>.png` for all 952 registered IDs (exact + category heuristics; only `cloud1–6` kept a non-specific fallback). Added MC 26.2 `assets/imsm/items/<id>.json` model definitions (required; without these, hotbar stayed purple/black even with block models). After reload, block atlas grew to `4096x2048` mip4 (no more 1×1 mip collapse). Hotbar shows distinct real icons (not purple/black). See `playtest-shots/03-textures-fixed.webp`.
+- **Creative tab population: PASS** — Root cause was registering the creative tab **without** a `displayItems` callback, so the IMS tab existed but listed zero entries. Fixed by using vanilla `CreativeModeTab.builder(...).displayItems(...)` and accepting all 952 `StructureRegistry` BlockItems. Startup log: `creative tab has 952 items`. In-game tab title shows **Instant Massive Structures**; grid is filled with structure icons and has a scrollbar. Screenshot: `playtest-shots/06-creative-tab-populated.webp` (also `.png`). Tooltip example: `playtest-shots/06b-creative-tab-tooltip.png`. Search for `air_balloon` also returns IMS items: `06c-search-air-balloon.png`.
 
-- **Live Ferris Wheel animation: PASS (implemented + verified in logs)** — `LiveStructureTicker` cycles `Live_FerrisWheel` → `0` → `1` → `2` → loop at the same origin after using `imsm:live__ferris_wheel`. Log excerpt from playtest:
-  - Placed `Live_FerrisWheel` (~110k blocks), started ticker
-  - Then `Live_FerrisWheel0/1/2` (~60k each) on subsequent frames
-  - Chat: `Live Ferris Wheel started (cycling frames every 40 ticks)!`
-  - Interval set to **40 ticks** (was 10) so software GL / integrated server can keep up; still heavy.
+- **Lang / display names: improved** — Generated `en_us.json` entries for all 952 block IDs (plus item keys). Pre-fix tooltips showed raw keys like `block.imsm.block_mega_tower`; after resource reload pretty names should apply. A few curated overrides kept (Wooden House, Live Ferris Wheel, etc.).
 
-- **Ferris screenshots:** `04-ferris-wheel.webp` / `05-ferris-midframe.webp` taken at the spawn site (`~220,70,-283`) with the large live schematic visible. Frame-to-frame visual delta is hard to capture cleanly under llvmpipe lag while the ticker clears/replaces tens of thousands of blocks.
+- **Textures: PASS** — Prior pass; hotbar and tab icons show real textures (not purple/black).
 
-- **Caveats / honesty:**
-  - Animation is real server-side cycling (not a fake slideshow of four static placements).
-  - Clearing + re-placing ~60k–110k blocks every interval overloads the box (server “Can't keep up”, occasional SIGTERM if another agent kills clients). Prefer 40-tick interval or further throttling for demos.
-  - Creative tab population still not fully verified this pass; items obtained via `/give`.
+- **Live Ferris Wheel animation: PASS** — Prior pass (`LiveStructureTicker`, 40-tick interval).
 
 ## Screenshots
 
-- `playtest-shots/01-creative-tab.webp` (prior)
+- `playtest-shots/01-creative-tab.webp` (prior; empty/unverified)
 - `playtest-shots/02-structure-placed.webp` (prior)
 - `playtest-shots/03-textures-fixed.webp`
 - `playtest-shots/04-ferris-wheel.webp`
 - `playtest-shots/05-ferris-midframe.webp`
+- `playtest-shots/06-creative-tab-populated.webp` (**populated IMS tab**)
+- `playtest-shots/06b-creative-tab-tooltip.png`
+- `playtest-shots/06c-search-air-balloon.png`
 
-## Commits (local only, no push)
+## Remaining gaps (honest)
 
-- Texture mapping + per-block models/blockstates
-- Live Ferris ticker + schematic `clearBounds`
-- MC 26.2 `items/` defs + safer legacy block ID lookup
-- Ferris interval 40 ticks for demo stability
+- Other **live** structures beyond Ferris Wheel only lightly exercised.
+- Auto-generated lang names are utilitarian (`block_mega_tower` → `Block Mega Tower`); not hand-tuned lore names.
+- Large schematics still stress llvmpipe / integrated server (“Can't keep up”).
+- Special held-item interactions (Redstone / Book / Fire Charge messages) not re-checked this pass.
+
+## Commits (local only)
+
+- Fix creative tab `displayItems` population (952 items)
+- Generate full `en_us.json` block/item names
+- Playtest docs + PORT_STATUS update

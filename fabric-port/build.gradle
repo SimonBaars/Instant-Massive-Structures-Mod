@@ -23,6 +23,15 @@ loom {
 			sourceSet sourceSets.client
 		}
 	}
+
+	runs {
+		client {
+			// Optional: -Pimsplay to boot straight into the imsplay creative world
+			if (project.hasProperty('imsplay')) {
+				programArgs '--quickPlaySingleplayer', 'imsplay'
+			}
+		}
+	}
 }
 
 dependencies {

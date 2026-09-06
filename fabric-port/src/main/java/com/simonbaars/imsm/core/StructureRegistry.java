@@ -1009,4 +1009,9 @@ public class StructureRegistry {
 	public static Block getFirstStructureBlock() {
 		return STRUCTURE_BLOCKS.isEmpty() ? null : STRUCTURE_BLOCKS.get(0);
 	}
+
+	/** All registered structure BlockItems for creative-tab population. */
+	public static List<Item> getStructureItems() {
+		return STRUCTURE_ITEMS;
+	}
 }
