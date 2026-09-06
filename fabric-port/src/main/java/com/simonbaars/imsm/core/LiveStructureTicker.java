@@ -323,6 +323,12 @@ public final class LiveStructureTicker {
 				return;
 			}
 			for (LiveInstance inst : ACTIVE) {
+				// Seek/continue rides every tick — Ferris frames are 40t apart; mount window
+				// was missed when only checked inside advanceFrame.
+				// Waiting for slide/mount only — in-ride teleports still advance with frames
+				if (inst.riderUuid != null && inst.rideProgress >= -2 && inst.rideProgress < 0 && inst.path == null) {
+					inst.tickRide();
+				}
 				inst.ticksSinceFrame++;
 				if (inst.ticksSinceFrame < inst.ticksUntilNext) {
 					continue;
@@ -981,7 +987,7 @@ public final class LiveStructureTicker {
 
 		/** Legacy Ferris mount: near (x-4, y+1, z-36). Softened for playtest. */
 		private static boolean nearFerrisMount(ServerPlayer p, double x, double y, double z) {
-			return p.distanceToSqr(x - 4.0, y + 1.0, z - 36.0) < 36.0;
+			return p.distanceToSqr(x - 4.0, y + 1.0, z - 36.0) < 100.0;
 		}
 
 		private static boolean nearFreeFallMount(ServerPlayer p, double x, double y, double z) {

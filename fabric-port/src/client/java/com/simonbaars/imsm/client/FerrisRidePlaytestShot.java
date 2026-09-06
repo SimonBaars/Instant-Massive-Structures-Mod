@@ -66,10 +66,21 @@ public final class FerrisRidePlaytestShot {
 
 			if (started && !rode && ticks == 120) {
 				conn.sendCommand("ride");
-				// Legacy mount near (originX-4, originY+1, originZ-36)
-				conn.sendCommand("tp @p " + (PAD_X - 4) + " " + (PAD_Y + 2) + " " + (PAD_Z - 36) + " 0 0");
+				// Origin is player block at start tp (PAD_X, PAD_Y+5, PAD_Z+5)
+				int ox = PAD_X;
+				int oy = PAD_Y + 5;
+				int oz = PAD_Z + 5;
+				conn.sendCommand("tp @p " + (ox - 4) + " " + (oy + 1) + " " + (oz - 36) + " 0 0");
 				rode = true;
-				InstantMassiveStructures.LOGGER.info("FerrisRidePlaytestShot: /ride + mount tp");
+				InstantMassiveStructures.LOGGER.info("FerrisRidePlaytestShot: /ride + mount tp at {},{},{}",
+					ox - 4, oy + 1, oz - 36);
+			}
+			// Re-seat while waiting for mount (frame gate)
+			if (rode && !shot1 && ticks == 150) {
+				int ox = PAD_X;
+				int oy = PAD_Y + 5;
+				int oz = PAD_Z + 5;
+				conn.sendCommand("tp @p " + (ox - 4) + " " + (oy + 1) + " " + (oz - 36) + " 0 0");
 			}
 
 			if (rode && !shot1 && ticks == 160) {
