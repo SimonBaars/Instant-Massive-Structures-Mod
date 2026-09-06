@@ -88,4 +88,4 @@
 - [x] Live Helicopter cycles frames
 - [ ] Aviation / boat / bus path animation + distance dialog
 - [x] Live Cinema cycles frames (`/imsm live cinema`, 43 frames / 20 ticks)
-- [ ] Fair FreeFall / ride system
+- [x] Fair FreeFall frame cycle (`/imsm live freefall`, 21 frames / variable waits) + `/ride` Y-curve subset (Ferris cart-path ride still open)

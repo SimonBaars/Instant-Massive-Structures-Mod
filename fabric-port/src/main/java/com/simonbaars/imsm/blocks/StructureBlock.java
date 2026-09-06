@@ -72,9 +72,14 @@ public class StructureBlock extends Block {
 			LiveStructureTicker.LiveDef liveDef = LiveStructureTicker.findDefinition(structureName);
 			if (liveDef != null) {
 				String started = LiveStructureTicker.startLive(serverWorld, spawnPos, liveDef);
+				String timing = liveDef.hasVariableWaits()
+					? liveDef.frames().length + " frames, variable waits"
+					: liveDef.frames().length + " frames every " + liveDef.ticksPerFrame() + " ticks";
 				player.sendSystemMessage(Component.literal(
-					"Live '" + started + "' started (cycling " + liveDef.frames().length
-						+ " frames every " + liveDef.ticksPerFrame() + " ticks)!"));
+					"Live '" + started + "' started (cycling " + timing + ")!"));
+				if ("Live_Fair_FreeFall".equals(started) || "Live_FerrisWheel".equals(started)) {
+					player.sendSystemMessage(Component.literal("Use /ride to ride this structure!"));
+				}
 				InstantMassiveStructures.LOGGER.info("Player {} started live {} at {}",
 					player.getName().getString(), started, spawnPos);
 			} else {
