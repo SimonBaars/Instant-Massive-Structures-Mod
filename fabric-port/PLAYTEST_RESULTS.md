@@ -1,6 +1,6 @@
 # IMS Playtest Results
 
-Date: 2026-09-05 evening … Plane/removelive/persistence ~7:30–7:34 PM PT (prior: airplane/Ferris ~7:20–7:25 PM PT)
+Date: 2026-09-05 evening … Balloon/ship film ~7:45–7:48 PM PT (prior: plane ~7:30–7:34 PM PT; airplane/Ferris ~7:20–7:25 PM PT)
 World: `imsplay` (Creative)
 Client: Fabric Loom `runClient` on DISPLAY=:5 (`-Pimsplay` quickPlay).
 
@@ -22,7 +22,8 @@ Client: Fabric Loom `runClient` on DISPLAY=:5 (`-Pimsplay` quickPlay).
 - **Chat distance dialog: N/A closed** — Legacy Forge `ServerChatEvent` typed distance replaced by **`/imsm live <type> [distance]`** (boat/bus/airplane/flyingheli). No chat-dialog listener ported; command/default is the intentional substitute (same pattern as LiveBoat).
 
 - **LivePlane aviation path: PASS (climb/level/descend short-loop subset)** — Legacy `getAnimationFor("LivePlane")`: board → climb 30×`{−1,+1,0}` @100ms → level (d−60)×`{−1,0,0}` → descend 31×`{−1,−1,0}`. Ported multi-phase path; **1 frame** `LivePlane0` (38×6×37, 8436 blocks), **2 ticks/step**, boarding **40t**, default fly **76**. Playtested **`-Pplaneshot`** → `/imsm live plane 68` at pad (1200,100,−50) with spawn offset +26/+19 → origin (1226,108,−31). Log: **depart climb → climb complete (1196,138,−31) → level complete → descend**; then **`/removelive` Removed 1**. Chat: "SimJoo's Aviation Solutions. fly 68 (climb 30 → level 8 → descend 31), {−1,1,0}/{−1,0,0}/{−1,−1,0}…". Screenshots: `48-plane-boarding.png` … `51-plane-descend.png` (camera often on leftover Ferris; **phases log-verified**).
-- **LiveAirBalloon / LiveFlyingShip1 / LiveFlyingShip2: WIRED (same multi-phase)** — Balloon/Ship1: −Z deltas @10 ticks (500ms); Ship2: +X deltas @10 ticks. Frames: `LiveAirBalloon0`; `LiveFlyingShip10..12`; `LiveFlyingShip20..22`. Ships ~33–35k voxels — not separately filmed this pass (llvmpipe).
+- **LiveAirBalloon aviation path: PASS (climb/level/descend subset)** — Balloon/Ship1 path: −Z deltas @10 ticks (500ms); **1 frame** `LiveAirBalloon0` (17×27×17, **7803 blocks**). Playtested **`-Pballoonshot`** → `/imsm live balloon 68` at pad (1400,100,−50). Log: **depart climb → climb complete (1400,138,−80) → level 8 → descend**; `/removelive`. Chat: "SimJoo's Aviation Solutions. fly 68 (climb 30 → level 8 → descend 31), {0,1,−1}/{0,0,−1}/{0,−1,−1}…". Screenshots: `52-balloon-boarding.png` … `55-balloon-descend.png` (camera often missed hull amid hills; **phases log-verified**).
+- **LiveFlyingShip1 path: PASS (boarding + climb subset)** — **3 frames** `LiveFlyingShip10..12` (30×27×44, **35640 blocks/step**). Playtested **`-Pshipshot`** → `/imsm live ship1 62` (level 2) at pad (1600,110,−50) with spawn offset +15/−10/+24 → origin (1615,108,−26). Log: start → place 35640 → depart climb → climb screenshot → `/removelive`. No hard OOM; llvmpipe "Can't keep up" (~2s). **Full ship multi-phase film N/A** (stopped after climb; airplane/plane/balloon stand-in for full climb/level/descend). `LiveFlyingShip2` wired (+X @10t) — not separately filmed. Screenshots: `56-ship-boarding.png`, `57-ship-climb.png`.
 - **`/removelive`: PASS** — Legacy aliases (`removelivestructures`, `liveremove`, `livestructuresremove`) + `/imsm removelive`. Stops ticker (leaves last frame blocks). Playtest cleared 1 LivePlane; emptied `LiveStructures/`.
 - **Live persistence: PASS (legacy had it — ported)** — Evidence: legacy `EventHandler.loadLiveCreators` + `LiveStructure.registerLiveCreator` write `saves/<world>/LiveStructures/N.txt`. Port: `LiveStructurePersistence` on LOAD + BEFORE_SAVE. Smoke (`-Ppersistencesmoke`): mill → quit → `LiveStructures/0.txt` contains `Live_Mill` / 400 / 96 / −150 / pathPhase −1.
 
@@ -43,6 +44,8 @@ Helper: `/imsm live <ferris|mill|watermill|windmill|helicopter|cinema|freefall|b
 - `playtest-shots/42-airplane-boarding.png` … `45-airplane-descend.png`
 - `playtest-shots/46-ferris-ride-early.png`, `47-ferris-ride-mid.png`
 - `playtest-shots/48-plane-boarding.png` … `51-plane-descend.png`
+- `playtest-shots/52-balloon-boarding.png` … `55-balloon-descend.png`
+- `playtest-shots/56-ship-boarding.png`, `57-ship-climb.png`
 
 ## Remaining gaps (honest)
 
@@ -54,7 +57,7 @@ Helper: `/imsm live <ferris|mill|watermill|windmill|helicopter|cinema|freefall|b
 | Live_Bus2 | Same path as Live_Bus if matched; dedicated `Live_Bus20` frame sequence not separate |
 | LiveAirplane | **DONE subset**: climb/level/descend aviation path + short loop; `/imsm live airplane [n]` |
 | Live_Flying_Helicopter | **Wired** same multi-phase path (−Z); not separately filmed |
-| LivePlane / LiveAirBalloon / LiveFlyingShip1/2 | **DONE subset**: aviation climb/level/descend; plane filmed; balloon/ships wired |
+| LivePlane / LiveAirBalloon / LiveFlyingShip1/2 | **DONE subset**: aviation climb/level/descend; plane + balloon filmed; ship1 boarding/climb filmed (full ship voyage N/A) |
 | Live_Fair_FreeFall | **DONE subset**: 21-frame cycle + variable waits + `/ride` Y-curve |
 | Ferris `/ride` | **DONE subset**: 2D cart Y+Z path from RideStructure #0 |
 | Chat distance dialog | **N/A closed**: replaced by `/imsm live … [distance]` |
@@ -69,7 +72,7 @@ Helper: `/imsm live <ferris|mill|watermill|windmill|helicopter|cinema|freefall|b
 - Clear+replace frame cycling flickers; mill/windmill/cinema are thin slabs so camera angle matters.
 - Cinema entry block starts screen animation only (Legacy also placed the full building via StructureCreatorClient) — full building is still placeable as static schematic if not routed through live matcher… actually Live_Cinema block matches live def, so right-click starts animation of screen frames, not the 51×39×50 building.
 - Boat/aviation path: **obstacle-explode DONE**; trail via full-bounds clear (**equiv.** to legacy removeStuff); default **legacy one-shot**; opt-in `/imsm live … loop`. Player-carry not film-verified.
-- Flying ships (~33–35k voxels/step) and balloon not separately filmed; plane camera often missed the 38×6 hull amid prior Ferris leftovers — phase transitions are log-verified.
+- Flying ship **full** multi-phase film N/A (~35k voxels/step llvmpipe lag); ship1 boarding+climb filmed; balloon climb/level/descend filmed; plane/airplane remain aviation stand-ins. Camera often missed hulls amid hills — phase transitions are log-verified.
 - Persistence mid-path resume: honors doLoop + extended fields; lean legacy reconstructs stepsRemaining (best-effort); dialog sentinel waitTime=2e9 drops on load.
 
 ## Commits (local only)

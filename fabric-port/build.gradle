@@ -43,6 +43,16 @@ loom {
 				vmArg '-Dimsm.planeshot=1'
 				programArgs '--quickPlaySingleplayer', 'imsplay'
 			}
+			if (project.hasProperty('balloonshot')) {
+				vmArg '-Dimsm.balloonshot=1'
+				vmArg '-Xmx4G'
+				programArgs '--quickPlaySingleplayer', 'imsplay'
+			}
+			if (project.hasProperty('shipshot')) {
+				vmArg '-Dimsm.shipshot=1'
+				vmArg '-Xmx6G'
+				programArgs '--quickPlaySingleplayer', 'imsplay'
+			}
 			if (project.hasProperty('persistencesmoke')) {
 				vmArg '-Dimsm.persistencesmoke=1'
 				programArgs '--quickPlaySingleplayer', 'imsplay'

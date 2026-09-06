@@ -1,6 +1,6 @@
 # Instant-Massive-Structures — Fabric 26.2 port status
 
-Updated: 2026-09-05 ~7:50 PM PT
+Updated: 2026-09-05 ~7:55 PM PT
 
 | Area | Status | Notes |
 |------|--------|-------|
@@ -17,5 +17,7 @@ Updated: 2026-09-05 ~7:50 PM PT
 | Path one-shot vs loop | Done | Default legacy one-shot (`doLoop=false`); opt-in `… loop` |
 | Held items (static) | Done | Redstone outline / Book replace-air / Fire-charge undo |
 | Held items → live | N/A | Legacy `BlockLiveStructure` ignored held items |
+| Balloon film | Done subset | `-Pballoonshot` climb/level/descend log-verified; shots 52–55 |
+| Ship film | Done subset | `-Pshipshot` ship1 boarding+climb @35,640 voxels/step; full voyage N/A (llvmpipe lag); shots 56–57 |
 
-Open / soft gaps remaining: ship/balloon film; exact legacy removeStuff geometry (N/A — superseded); rider film under OOM; Live_Bus2 dedicated frames.
+Open / soft gaps remaining: exact legacy removeStuff geometry (N/A — superseded); rider film under OOM; Live_Bus2 dedicated frames; full ship multi-phase film (N/A — airplane/plane/balloon stand-in + ship boarding/climb subset).

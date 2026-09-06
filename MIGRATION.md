@@ -52,6 +52,8 @@ export JAVA_HOME=/workspace/jdk-25
 cd fabric-port
 ./gradlew build
 ./gradlew runClient -Pplaneshot          # LivePlane aviation + /removelive
+./gradlew runClient -Pballoonshot        # LiveAirBalloon climb/level/descend
+./gradlew runClient -Pshipshot           # LiveFlyingShip1 boarding+climb subset
 ./gradlew runClient -Ppersistencesmoke   # writes LiveStructures/0.txt
 # Path short-loop opt-in: /imsm live boat 16 loop
 ```
