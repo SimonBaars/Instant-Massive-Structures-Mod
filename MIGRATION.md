@@ -24,7 +24,26 @@ Legacy `EventHandler.getAnimationFor` multi-phase arrays are mapped to `PathMoti
 | LiveFlyingShip2 | `{1,1,0}` ×30 | `{1,0,0}` | `{1,-1,0}` ×31 | 10 (~500ms) |
 | LiveBoat / Live_Bus | — | `{0,0,1}` ×d | — | 6 |
 
-Chat-typed distance dialog is **N/A** → `/imsm live <type> [distance]`.
+- Chat-typed distance dialog is **N/A** → `/imsm live <type> [distance] [loop]`.
+- Path `doLoop`: legacy constructors all pass **false** (one-shot then remove). Port default matches; append `loop` for playtest short-loop.
+- Obstacle-explode: legacy mid-height 5-column lead-edge probe → `scheduleExplosion` power 25 + remove. Ported in `LiveStructureTicker.hitObstacleAndExplode`.
+- Trail strip: legacy `removeStuff` directional slabs. Port uses **full prior AABB clear** each step (covers trail; not voxel-identical).
+
+## Held items (static `StructureBlock` only)
+
+Legacy `BlockStructure` (not live):
+
+| Item | Behavior |
+|------|----------|
+| Redstone | Glass AABB shell outline |
+| Book | Toggle replace-air / overlay (`doNotReplaceAir`) |
+| Fire charge | Undo last placed static schematic |
+
+Legacy `BlockLiveStructure` ignored held items → live start always. Port matches.
+
+## Persistence / mid-path resume
+
+Extended `LiveStructures/N.txt` stores origin, phase, stepsRemaining, frame, dims, **doLoop**. Lean legacy files reconstruct `stepsRemaining ≈ phaseLength − animationTimes` (best-effort). Dialog sentinel `waitTime=2e9` still dropped on load.
 
 ## Build / playtest
 
@@ -34,6 +53,7 @@ cd fabric-port
 ./gradlew build
 ./gradlew runClient -Pplaneshot          # LivePlane aviation + /removelive
 ./gradlew runClient -Ppersistencesmoke   # writes LiveStructures/0.txt
+# Path short-loop opt-in: /imsm live boat 16 loop
 ```
 
 See `fabric-port/PLAYTEST_RESULTS.md` and `fabric-port/PORT_STATUS.md`.

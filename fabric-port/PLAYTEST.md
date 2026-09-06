@@ -55,9 +55,9 @@
 
 ## Special Item Interactions (Should show "not yet implemented" messages)
 
-- [ ] Right-click with Redstone held
-- [ ] Right-click with Book held
-- [ ] Right-click with Fire Charge held
+- [x] Right-click with Redstone held (glass outline)
+- [x] Right-click with Book held (replace-air toggle)
+- [x] Right-click with Fire Charge held (undo last static)
 
 ## Performance
 

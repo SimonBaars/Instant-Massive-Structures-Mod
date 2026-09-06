@@ -65,12 +65,12 @@ Helper: `/imsm live <ferris|mill|watermill|windmill|helicopter|cinema|freefall|b
 
 - Auto-generated lang names remain utilitarian.
 - Large schematics / many simultaneous lives stress llvmpipe (“Can't keep up”). Cinema alone is fine at 20 ticks. Boat ~2088 blocks/step is heavier but completed loops on llvmpipe.
-- Special held-item interactions (Redstone / Book / Fire Charge) still stub messages.
+- Held items (Redstone outline / Book replace-air / Fire-charge undo) **DONE** for static StructureBlock; live blocks ignore held items (legacy).
 - Clear+replace frame cycling flickers; mill/windmill/cinema are thin slabs so camera angle matters.
 - Cinema entry block starts screen animation only (Legacy also placed the full building via StructureCreatorClient) — full building is still placeable as static schematic if not routed through live matcher… actually Live_Cinema block matches live def, so right-click starts animation of screen frames, not the 51×39×50 building.
-- Boat path: no obstacle-explode; player-carry on step is implemented but not film-verified; short **loop** is playtest convenience (legacy one-shot then remove).
+- Boat/aviation path: **obstacle-explode DONE**; trail via full-bounds clear (**equiv.** to legacy removeStuff); default **legacy one-shot**; opt-in `/imsm live … loop`. Player-carry not film-verified.
 - Flying ships (~33–35k voxels/step) and balloon not separately filmed; plane camera often missed the 38×6 hull amid prior Ferris leftovers — phase transitions are log-verified.
-- Persistence resume mid-path is best-effort (extended text format); legacy dialog sentinel waitTime=2e9 drops on load.
+- Persistence mid-path resume: honors doLoop + extended fields; lean legacy reconstructs stepsRemaining (best-effort); dialog sentinel waitTime=2e9 drops on load.
 
 ## Commits (local only)
 
@@ -81,3 +81,4 @@ Helper: `/imsm live <ferris|mill|watermill|windmill|helicopter|cinema|freefall|b
 - Wire LiveBoat / Live_Bus +Z path short-loop subset + playtest docs + PORT_STATUS
 - Wire LiveAirplane / Live_Flying_Helicopter aviation climb/level/descend + Ferris 2D `/ride` + chat-dialog N/A + docs/PORT_STATUS
 - Wire LivePlane / AirBalloon / FlyingShip1/2 + `/removelive` + LiveStructures persistence + plane playtest + docs/PORT_STATUS/MIGRATION
+- Soft-gap polish: obstacle-explode, held items, one-shot default + loop opt-in, mid-path resume
