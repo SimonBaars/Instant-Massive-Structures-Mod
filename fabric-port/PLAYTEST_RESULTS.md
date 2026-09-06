@@ -1,6 +1,6 @@
 # IMS Playtest Results
 
-Date: 2026-09-05 evening … LiveBoat ~7:10 PM PT / Aviation+Ferris ride ~7:20–7:25 PM PT
+Date: 2026-09-05 evening … Plane/removelive/persistence ~7:30–7:34 PM PT (prior: airplane/Ferris ~7:20–7:25 PM PT)
 World: `imsplay` (Creative)
 Client: Fabric Loom `runClient` on DISPLAY=:5 (`-Pimsplay` quickPlay).
 
@@ -21,7 +21,12 @@ Client: Fabric Loom `runClient` on DISPLAY=:5 (`-Pimsplay` quickPlay).
 - **Ferris `/ride` 2D cart-path: PASS (subset)** — Legacy `RideStructure(0)` Y+Z arrays (61 points) ported. `/ride` near active Ferris queues rider; mount near (origin−4, +1, −36); teleports along cart path each frame tick. Playtested **`-Pferrisrideshot`**: queued → waiting for mount → **ride started** → screenshots. Softened mount radius (36 blocks²) vs legacy exact tile. Screenshots: `46-ferris-ride-early.png`, `47-ferris-ride-mid.png`.
 - **Chat distance dialog: N/A closed** — Legacy Forge `ServerChatEvent` typed distance replaced by **`/imsm live <type> [distance]`** (boat/bus/airplane/flyingheli). No chat-dialog listener ported; command/default is the intentional substitute (same pattern as LiveBoat).
 
-Helper: `/imsm live <ferris|mill|watermill|windmill|helicopter|cinema|freefall|boat|bus|airplane|flyingheli> [distance]` starts a wired live at the player. Block right-click also starts any matching live item (`useWithoutItem` + `useItemOn`).
+- **LivePlane aviation path: PASS (climb/level/descend short-loop subset)** — Legacy `getAnimationFor("LivePlane")`: board → climb 30×`{−1,+1,0}` @100ms → level (d−60)×`{−1,0,0}` → descend 31×`{−1,−1,0}`. Ported multi-phase path; **1 frame** `LivePlane0` (38×6×37, 8436 blocks), **2 ticks/step**, boarding **40t**, default fly **76**. Playtested **`-Pplaneshot`** → `/imsm live plane 68` at pad (1200,100,−50) with spawn offset +26/+19 → origin (1226,108,−31). Log: **depart climb → climb complete (1196,138,−31) → level complete → descend**; then **`/removelive` Removed 1**. Chat: "SimJoo's Aviation Solutions. fly 68 (climb 30 → level 8 → descend 31), {−1,1,0}/{−1,0,0}/{−1,−1,0}…". Screenshots: `48-plane-boarding.png` … `51-plane-descend.png` (camera often on leftover Ferris; **phases log-verified**).
+- **LiveAirBalloon / LiveFlyingShip1 / LiveFlyingShip2: WIRED (same multi-phase)** — Balloon/Ship1: −Z deltas @10 ticks (500ms); Ship2: +X deltas @10 ticks. Frames: `LiveAirBalloon0`; `LiveFlyingShip10..12`; `LiveFlyingShip20..22`. Ships ~33–35k voxels — not separately filmed this pass (llvmpipe).
+- **`/removelive`: PASS** — Legacy aliases (`removelivestructures`, `liveremove`, `livestructuresremove`) + `/imsm removelive`. Stops ticker (leaves last frame blocks). Playtest cleared 1 LivePlane; emptied `LiveStructures/`.
+- **Live persistence: PASS (legacy had it — ported)** — Evidence: legacy `EventHandler.loadLiveCreators` + `LiveStructure.registerLiveCreator` write `saves/<world>/LiveStructures/N.txt`. Port: `LiveStructurePersistence` on LOAD + BEFORE_SAVE. Smoke (`-Ppersistencesmoke`): mill → quit → `LiveStructures/0.txt` contains `Live_Mill` / 400 / 96 / −150 / pathPhase −1.
+
+Helper: `/imsm live <ferris|mill|watermill|windmill|helicopter|cinema|freefall|boat|bus|airplane|flyingheli|plane|balloon|ship1|ship2> [distance]` starts a wired live at the player. `/removelive` stops all. Block right-click also starts any matching live item.
 
 ## Screenshots (this pass)
 
@@ -37,6 +42,7 @@ Helper: `/imsm live <ferris|mill|watermill|windmill|helicopter|cinema|freefall|b
 - `playtest-shots/39-boat-overhead.png` … `41-boat-side2.png` (camera follow attempts)
 - `playtest-shots/42-airplane-boarding.png` … `45-airplane-descend.png`
 - `playtest-shots/46-ferris-ride-early.png`, `47-ferris-ride-mid.png`
+- `playtest-shots/48-plane-boarding.png` … `51-plane-descend.png`
 
 ## Remaining gaps (honest)
 
@@ -48,11 +54,12 @@ Helper: `/imsm live <ferris|mill|watermill|windmill|helicopter|cinema|freefall|b
 | Live_Bus2 | Same path as Live_Bus if matched; dedicated `Live_Bus20` frame sequence not separate |
 | LiveAirplane | **DONE subset**: climb/level/descend aviation path + short loop; `/imsm live airplane [n]` |
 | Live_Flying_Helicopter | **Wired** same multi-phase path (−Z); not separately filmed |
-| LivePlane / LiveAirBalloon / LiveFlyingShip1/2 | Path data exists in legacy; **not** ticker-wired this pass |
+| LivePlane / LiveAirBalloon / LiveFlyingShip1/2 | **DONE subset**: aviation climb/level/descend; plane filmed; balloon/ships wired |
 | Live_Fair_FreeFall | **DONE subset**: 21-frame cycle + variable waits + `/ride` Y-curve |
 | Ferris `/ride` | **DONE subset**: 2D cart Y+Z path from RideStructure #0 |
 | Chat distance dialog | **N/A closed**: replaced by `/imsm live … [distance]` |
-| Ride / `/removelive` / live persistence | Legacy EventHandler liveCreators save/load not ported |
+| `/removelive` | **DONE**: clears ACTIVE + LiveStructures files |
+| Live persistence | **DONE subset**: `<world>/LiveStructures/N.txt` save/load (legacy format extended) |
 
 ### Other
 
@@ -62,6 +69,8 @@ Helper: `/imsm live <ferris|mill|watermill|windmill|helicopter|cinema|freefall|b
 - Clear+replace frame cycling flickers; mill/windmill/cinema are thin slabs so camera angle matters.
 - Cinema entry block starts screen animation only (Legacy also placed the full building via StructureCreatorClient) — full building is still placeable as static schematic if not routed through live matcher… actually Live_Cinema block matches live def, so right-click starts animation of screen frames, not the 51×39×50 building.
 - Boat path: no obstacle-explode; player-carry on step is implemented but not film-verified; short **loop** is playtest convenience (legacy one-shot then remove).
+- Flying ships (~33–35k voxels/step) and balloon not separately filmed; plane camera often missed the 38×6 hull amid prior Ferris leftovers — phase transitions are log-verified.
+- Persistence resume mid-path is best-effort (extended text format); legacy dialog sentinel waitTime=2e9 drops on load.
 
 ## Commits (local only)
 
@@ -71,3 +80,4 @@ Helper: `/imsm live <ferris|mill|watermill|windmill|helicopter|cinema|freefall|b
 - Wire Live_Fair_FreeFall (21 frames, variable waits) + `/ride` Y-curve subset + playtest docs + PORT_STATUS
 - Wire LiveBoat / Live_Bus +Z path short-loop subset + playtest docs + PORT_STATUS
 - Wire LiveAirplane / Live_Flying_Helicopter aviation climb/level/descend + Ferris 2D `/ride` + chat-dialog N/A + docs/PORT_STATUS
+- Wire LivePlane / AirBalloon / FlyingShip1/2 + `/removelive` + LiveStructures persistence + plane playtest + docs/PORT_STATUS/MIGRATION

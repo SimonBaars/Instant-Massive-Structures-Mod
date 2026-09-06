@@ -88,6 +88,9 @@
 - [x] Live Helicopter cycles frames
 - [x] LiveBoat / Live_Bus +Z path short loop (`/imsm live boat [n]`; chat distance dialog N/A→command)
 - [x] Aviation path subset: LiveAirplane (+ Live_Flying_Helicopter wired) climb/level/descend (`/imsm live airplane [n]`; chat dialog N/A→command)
+- [x] LivePlane / LiveAirBalloon / LiveFlyingShip1/2 aviation paths (`/imsm live plane|balloon|ship1|ship2 [n]`)
+- [x] `/removelive` (+ aliases) stops all active lives
+- [x] LiveStructures persistence (`<world>/LiveStructures/N.txt` save/load)
 - [x] Live Cinema cycles frames (`/imsm live cinema`, 43 frames / 20 ticks)
 - [x] Fair FreeFall frame cycle (`/imsm live freefall`, 21 frames / variable waits) + `/ride` Y-curve subset
 - [x] Ferris `/ride` 2D cart-path subset (legacy RideStructure #0 Y+Z arrays)
