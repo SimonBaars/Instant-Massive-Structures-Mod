@@ -30,6 +30,15 @@ loom {
 			if (project.hasProperty('imsplay')) {
 				programArgs '--quickPlaySingleplayer', 'imsplay'
 			}
+			// Optional: -Paviationshot auto-runs LiveAirplane path + screenshots then quits
+			if (project.hasProperty('aviationshot')) {
+				vmArg '-Dimsm.aviationshot=1'
+				programArgs '--quickPlaySingleplayer', 'imsplay'
+			}
+			if (project.hasProperty('ferrisrideshot')) {
+				vmArg '-Dimsm.ferrisrideshot=1'
+				programArgs '--quickPlaySingleplayer', 'imsplay'
+			}
 		}
 	}
 }

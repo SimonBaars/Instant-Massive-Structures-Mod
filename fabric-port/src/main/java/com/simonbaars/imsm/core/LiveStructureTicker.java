@@ -20,28 +20,71 @@ import java.util.concurrent.ThreadLocalRandom;
  * Live-structure animation:
  * <ul>
  *   <li>Stationary frame cyclers (Ferris, Mill, Water Mill, Windmill, Helicopter, Cinema, FreeFall)</li>
- *   <li>FreeFall {@code /ride} Y-curve teleporter subset</li>
- *   <li>Path movers: LiveBoat (+ optional Live_Bus) — legacy +Z cruise with frame cycling</li>
+ *   <li>FreeFall {@code /ride} Y-curve; Ferris {@code /ride} 2D cart path (legacy RideStructure #0)</li>
+ *   <li>Path movers: LiveBoat/Live_Bus (+Z cruise); LiveAirplane / Live_Flying_Helicopter
+ *       (climb → level → descend aviation path)</li>
  * </ul>
- * Aviation path + chat distance dialog remain partially deferred (boat uses command/default distance).
+ * Chat-typed distance dialog N/A — replaced by {@code /imsm live <type> [distance]}.
+ * Remaining aviation craft (LivePlane / ships / balloon) still open if desired later.
  */
 public final class LiveStructureTicker {
 	/**
-	 * Legacy boat/bus path: phases {times, speed_ms, dx, dy, dz}.
-	 * After dialog sets times on cruise phase: board 10s, then N steps of +1 Z every 300ms.
+	 * One path step delta (legacy animation columns dx,dy,dz).
+	 */
+	public record PathStep(int dx, int dy, int dz) {
+		public boolean isStationary() {
+			return dx == 0 && dy == 0 && dz == 0;
+		}
+	}
+
+	/**
+	 * Path mover motion.
+	 * <ul>
+	 *   <li>Boat/bus: cruise only ({@code climbCount=0}, {@code descendCount=0}).</li>
+	 *   <li>Aviation: climb → level (distance − 60) → descend. Legacy dialog required
+	 *       distance &gt; 60 and wrote {@code animation[3][0]=distance-60}.</li>
+	 * </ul>
 	 */
 	public record PathMotion(
-		int dx,
-		int dy,
-		int dz,
-		/** ~300ms legacy → 6 ticks */
 		int ticksPerStep,
 		/** Playtest boarding (~2s); legacy was 10000ms */
 		int boardingTicks,
 		int defaultDistance,
-		/** Short continuous loop for demo; legacy boat removes after one trip */
-		boolean loop
-	) {}
+		/** Short continuous loop for demo; legacy removes after one trip */
+		boolean loop,
+		/** If true, level steps = max(1, distance − 60); climb/descend are fixed */
+		boolean aviation,
+		PathStep climb,
+		int climbCount,
+		PathStep cruise,
+		PathStep descend,
+		int descendCount
+	) {
+		/** Simple boat/bus-style single-direction cruise. */
+		public PathMotion(int dx, int dy, int dz, int ticksPerStep, int boardingTicks,
+			int defaultDistance, boolean loop) {
+			this(ticksPerStep, boardingTicks, defaultDistance, loop, false,
+				new PathStep(0, 0, 0), 0,
+				new PathStep(dx, dy, dz),
+				new PathStep(0, 0, 0), 0);
+		}
+
+		public static PathMotion aviation(int ticksPerStep, int boardingTicks, int defaultDistance,
+			boolean loop, PathStep climb, int climbCount, PathStep cruise,
+			PathStep descend, int descendCount) {
+			return new PathMotion(ticksPerStep, boardingTicks, defaultDistance, loop, true,
+				climb, climbCount, cruise, descend, descendCount);
+		}
+
+		/** Legacy aviation: level steps = distance − 60 (climb 30 + descend ≈30). */
+		public int levelStepsForDistance(int distance) {
+			if (!aviation) {
+				return Math.max(1, distance > 0 ? distance : defaultDistance);
+			}
+			int d = distance > 0 ? distance : defaultDistance;
+			return Math.max(1, d - 60);
+		}
+	}
 
 	/** One animated live type: entry base name + frame schematic names + tick interval. */
 	public record LiveDef(
@@ -118,6 +161,23 @@ public final class LiveStructureTicker {
 		0, 4, 11, 20, 32, 47, 65, 79, 87, 92, 87, 80, 63, 47, 30, 11, 5, 3, 1, 0
 	};
 
+	/**
+	 * Legacy RideStructure(0) Ferris cart path: anim[0]=Y, anim[1]=Z offsets.
+	 * Rider at origin + (-4.5, 1+Y, -36+0.5−Z).
+	 */
+	private static final int[] FERRIS_RIDE_Y = {
+		0, 0, 1, 1, 2, 4, 6, 8, 12, 15, 18, 22, 25, 28, 32,
+		35, 38, 42, 45, 48, 52, 55, 58, 62, 64, 66, 68, 69, 69, 70,
+		70, 70, 69, 69, 68, 66, 64, 62, 58, 55, 52, 48, 45, 42, 38, 35,
+		32, 28, 25, 22, 18, 15, 12, 8, 6, 4, 2, 1, 1, 0, 0
+	};
+	private static final int[] FERRIS_RIDE_Z = {
+		0, -3, -7, -10, -13, -17, -20, -23, -27, -29, -31, -33, -34, -34, -35,
+		-35, -35, -34, -34, -33, -31, -29, -27, -23, -20, -17, -13, -10, -7, -3,
+		0, 3, 7, 10, 13, 17, 20, 23, 27, 29, 31, 33, 34, 34, 35, 35,
+		35, 34, 34, 33, 31, 29, 27, 23, 20, 17, 13, 10, 7, 3, 0
+	};
+
 	/** Shared boat/bus cruise: +Z, 6 ticks/step, short boarding, default 24-block loop. */
 	private static final PathMotion BOAT_BUS_PATH = new PathMotion(
 		0, 0, 1,
@@ -125,6 +185,28 @@ public final class LiveStructureTicker {
 		40,
 		24,
 		true
+	);
+
+	/**
+	 * Legacy LiveAirplane: climb 30×{0,+1,+1} @300ms → level (d−60)×{0,0,+1} → descend 31×{0,−1,+1}.
+	 * Default distance 76 → 16 level steps; short loop for playtest.
+	 */
+	private static final PathMotion AIRPLANE_PATH = PathMotion.aviation(
+		6, 40, 76, true,
+		new PathStep(0, 1, 1), 30,
+		new PathStep(0, 0, 1),
+		new PathStep(0, -1, 1), 31
+	);
+
+	/**
+	 * Legacy Live_Flying_Helicopter: climb 30×{0,+1,−1} @200ms → level (d−60)×{0,0,−1} →
+	 * descend 31×{0,−1,−1}. Default 76 → 16 level; 4 rotor frames.
+	 */
+	private static final PathMotion FLYING_HELI_PATH = PathMotion.aviation(
+		4, 40, 76, true,
+		new PathStep(0, 1, -1), 30,
+		new PathStep(0, 0, -1),
+		new PathStep(0, -1, -1), 31
 	);
 
 	/**
@@ -163,6 +245,13 @@ public final class LiveStructureTicker {
 		// Legacy Live_Bus: nslides=1 → Live_Bus0 only; same +Z path
 		new LiveDef("Live_Bus", BOAT_BUS_PATH,
 			"Live_Bus0"),
+		// Legacy LiveAirplane: nslides=1, aviation climb/level/descend +Z
+		new LiveDef("LiveAirplane", AIRPLANE_PATH,
+			"LiveAirplane0"),
+		// Legacy Live_Flying_Helicopter: nslides=4 @200ms, aviation −Z
+		new LiveDef("Live_Flying_Helicopter", FLYING_HELI_PATH,
+			"Live_Flying_Helicopter0", "Live_Flying_Helicopter1",
+			"Live_Flying_Helicopter2", "Live_Flying_Helicopter3"),
 	};
 
 	private static final Map<String, LiveDef> BY_BASE = new LinkedHashMap<>();
@@ -248,10 +337,13 @@ public final class LiveStructureTicker {
 			inst.applyWaitAfterCurrentFrame();
 			ACTIVE.add(inst);
 			if (def.isPathMover()) {
+				PathMotion pm = def.path();
 				InstantMassiveStructures.LOGGER.info(
-					"Started {} path live at {} ({} frames, distance {}, step {}t, boarding {}t, loop={})",
-					def.baseName(), origin, def.frames().length, inst.stepsTotal,
-					def.path().ticksPerStep(), def.path().boardingTicks(), def.path().loop());
+					"Started {} path live at {} ({} frames, distance {}, levelSteps {}, climb {}/{}, descend {}/{}, step {}t, boarding {}t, loop={}, aviation={})",
+					def.baseName(), origin, def.frames().length, inst.flyDistance,
+					inst.levelSteps, pm.climbCount(),
+					formatStep(pm.climb()), pm.descendCount(), formatStep(pm.descend()),
+					pm.ticksPerStep(), pm.boardingTicks(), pm.loop(), pm.aviation());
 			} else {
 				InstantMassiveStructures.LOGGER.info(
 					"Started {} live animation at {} ({} frames, base {} ticks{})",
@@ -272,8 +364,8 @@ public final class LiveStructureTicker {
 	}
 
 	/**
-	 * Toggle FreeFall (or Ferris) ride for the player. FreeFall: Y-curve teleporter synced to
-	 * frame ticks. Ferris ride path is documented but not ported (2D cart path + YSync).
+	 * Toggle FreeFall or Ferris ride for the player.
+	 * FreeFall: Y-curve teleporter. Ferris: legacy RideStructure #0 2D cart (Y+Z offsets).
 	 * @return true if a ride was started or cancelled
 	 */
 	public static boolean toggleRide(ServerPlayer player) {
@@ -293,26 +385,26 @@ public final class LiveStructureTicker {
 			return false;
 		}
 
-		if ("Live_FerrisWheel".equals(nearest.baseName)) {
-			player.sendSystemMessage(Component.literal(
-				"Ferris /ride path (2D cart + YSync) is not ported yet — FreeFall ride works."));
-			return false;
-		}
-
-		if (!"Live_Fair_FreeFall".equals(nearest.baseName)) {
+		if (!"Live_Fair_FreeFall".equals(nearest.baseName)
+			&& !"Live_FerrisWheel".equals(nearest.baseName)) {
 			player.sendSystemMessage(Component.literal(
 				"That live structure does not support /ride."));
 			return false;
 		}
 
 		nearest.riderUuid = player.getUUID();
-		nearest.rideProgress = nearest.frameIndex >= 2 ? -1 : -2;
+		if ("Live_FerrisWheel".equals(nearest.baseName)) {
+			// Legacy: wait until slide 1 before seeking mount
+			nearest.rideProgress = nearest.frameIndex >= 1 ? -1 : -2;
+		} else {
+			nearest.rideProgress = nearest.frameIndex >= 2 ? -1 : -2;
+		}
 		nearest.rideHoldX = player.getX();
 		nearest.rideHoldZ = player.getZ();
 		player.sendSystemMessage(Component.literal(
 			"We'll pick you up on our next ride! Please hop aboard then."));
-		InstantMassiveStructures.LOGGER.info("Player {} queued FreeFall ride at {}",
-			player.getName().getString(), nearest.origin);
+		InstantMassiveStructures.LOGGER.info("Player {} queued {} ride at {}",
+			player.getName().getString(), nearest.baseName, nearest.origin);
 		return true;
 	}
 
@@ -337,6 +429,14 @@ public final class LiveStructureTicker {
 		return best;
 	}
 
+
+	private static String formatStep(PathStep s) {
+		if (s == null) {
+			return "n/a";
+		}
+		return "{" + s.dx() + "," + s.dy() + "," + s.dz() + "}";
+	}
+
 	private static final class LiveInstance {
 		final ServerLevel world;
 		/** Stationary: fixed origin. Path: reset point for loops. */
@@ -354,10 +454,11 @@ public final class LiveStructureTicker {
 		int lastHeight;
 		int lastWidth;
 
-		// Path mover state
-		int pathPhase; // 0=boarding, 1=cruising, 2=done
-		int stepsRemaining;
-		int stepsTotal;
+		// Path mover state: 0=boarding, 1=climb, 2=level/cruise, 3=descend, 4=done
+		int pathPhase;
+		int stepsRemaining; // steps left in current motion phase
+		int levelSteps;
+		int flyDistance;
 		int stepsDone;
 
 		// FreeFall ride subset
@@ -381,10 +482,13 @@ public final class LiveStructureTicker {
 			this.frameIndex = 0;
 			this.ticksSinceFrame = 0;
 			this.pathPhase = def.isPathMover() ? 0 : -1;
-			this.stepsTotal = def.isPathMover()
+			this.flyDistance = def.isPathMover()
 				? Math.max(1, distance > 0 ? distance : def.path().defaultDistance())
 				: 0;
-			this.stepsRemaining = this.stepsTotal;
+			this.levelSteps = def.isPathMover()
+				? def.path().levelStepsForDistance(this.flyDistance)
+				: 0;
+			this.stepsRemaining = 0;
 			this.stepsDone = 0;
 		}
 
@@ -402,46 +506,106 @@ public final class LiveStructureTicker {
 
 		void advancePath() throws Exception {
 			if (pathPhase == 0) {
-				// Boarding finished → start cruise
-				pathPhase = 1;
-				ticksUntilNext = Math.max(1, path.ticksPerStep());
-				InstantMassiveStructures.LOGGER.info(
-					"{} departing {} for {} blocks (+{} z)", baseName, origin, stepsTotal, path.dz());
+				enterMotionPhaseAfterBoard();
 				return;
 			}
-			if (pathPhase == 2) {
+			if (pathPhase == 4) {
 				ACTIVE.remove(this);
 				return;
 			}
 
-			// Cruising: clear, step, place next frame, carry nearby players
+			PathStep step = currentMotionStep();
+			if (step == null) {
+				finishOrLoop();
+				return;
+			}
+
 			clearLastBounds();
-			origin = origin.offset(path.dx(), path.dy(), path.dz());
+			origin = origin.offset(step.dx(), step.dy(), step.dz());
 			frameIndex = (frameIndex + 1) % frames.length;
 			placeCurrentFrame(false);
-			carryNearbyPlayers(path.dx(), path.dy(), path.dz());
+			carryNearbyPlayers(step.dx(), step.dy(), step.dz());
 			stepsDone++;
 			stepsRemaining--;
 			ticksUntilNext = Math.max(1, path.ticksPerStep());
 
 			if (stepsRemaining <= 0) {
-				if (path.loop()) {
-					clearLastBounds();
-					origin = startOrigin;
-					frameIndex = 0;
-					placeCurrentFrame(false);
-					stepsRemaining = stepsTotal;
-					stepsDone = 0;
-					pathPhase = 0;
-					ticksUntilNext = Math.max(1, path.boardingTicks() / 2); // shorter reboard on loop
+				advanceMotionPhase();
+			}
+		}
+
+		private PathStep currentMotionStep() {
+			return switch (pathPhase) {
+				case 1 -> path.climb();
+				case 2 -> path.cruise();
+				case 3 -> path.descend();
+				default -> null;
+			};
+		}
+
+		/** After boarding: climb (aviation) or cruise (boat). */
+		private void enterMotionPhaseAfterBoard() {
+			if (path.aviation() && path.climbCount() > 0) {
+				pathPhase = 1;
+				stepsRemaining = path.climbCount();
+				InstantMassiveStructures.LOGGER.info(
+					"{} departing {} — climb {} steps {} then level {} (fly distance {})",
+					baseName, origin, path.climbCount(), formatStep(path.climb()),
+					levelSteps, flyDistance);
+			} else {
+				pathPhase = 2;
+				stepsRemaining = levelSteps;
+				InstantMassiveStructures.LOGGER.info(
+					"{} departing {} for {} blocks {}",
+					baseName, origin, levelSteps, formatStep(path.cruise()));
+			}
+			ticksUntilNext = Math.max(1, path.ticksPerStep());
+		}
+
+		private void advanceMotionPhase() throws Exception {
+			if (pathPhase == 1) {
+				// Climb done → level
+				pathPhase = 2;
+				stepsRemaining = levelSteps;
+				InstantMassiveStructures.LOGGER.info(
+					"{} climb complete at {}; level {} steps {}",
+					baseName, origin, levelSteps, formatStep(path.cruise()));
+				return;
+			}
+			if (pathPhase == 2) {
+				if (path.aviation() && path.descendCount() > 0) {
+					pathPhase = 3;
+					stepsRemaining = path.descendCount();
 					InstantMassiveStructures.LOGGER.info(
-						"{} completed short loop; returning to {} (reboard)", baseName, startOrigin);
-				} else {
-					clearLastBounds();
-					pathPhase = 2;
-					ticksUntilNext = 1;
-					InstantMassiveStructures.LOGGER.info("{} voyage complete; removing", baseName);
+						"{} level complete at {}; descend {} steps {}",
+						baseName, origin, path.descendCount(), formatStep(path.descend()));
+					return;
 				}
+				finishOrLoop();
+				return;
+			}
+			if (pathPhase == 3) {
+				finishOrLoop();
+			}
+		}
+
+		private void finishOrLoop() throws Exception {
+			if (path.loop()) {
+				clearLastBounds();
+				origin = startOrigin;
+				frameIndex = 0;
+				placeCurrentFrame(false);
+				stepsDone = 0;
+				pathPhase = 0;
+				stepsRemaining = 0;
+				ticksUntilNext = Math.max(1, path.boardingTicks() / 2);
+				InstantMassiveStructures.LOGGER.info(
+					"{} completed short loop; returning to {} (reboard)", baseName, startOrigin);
+			} else {
+				clearLastBounds();
+				pathPhase = 4;
+				ticksUntilNext = 1;
+				InstantMassiveStructures.LOGGER.info("{} voyage complete; removing", baseName);
 			}
 		}
 
@@ -528,10 +692,14 @@ public final class LiveStructureTicker {
 				return;
 			}
 
+			boolean ferris = "Live_FerrisWheel".equals(baseName);
+			int waitSlide = ferris ? 1 : 2;
+
 			if (rideProgress == -2) {
-				if (frameIndex == 2 || frameIndex > 2) {
+				if (frameIndex >= waitSlide) {
 					rideProgress = -1;
-					InstantMassiveStructures.LOGGER.info("FreeFall ride: waiting for mount near {}", origin);
+					InstantMassiveStructures.LOGGER.info("{} ride: waiting for mount near {}",
+						baseName, origin);
 				}
 				return;
 			}
@@ -541,14 +709,44 @@ public final class LiveStructureTicker {
 			double oz = origin.getZ();
 
 			if (rideProgress == -1) {
-				if (nearMount(rider, ox, oy, oz) || rider.distanceToSqr(ox + 0.5, oy + 2.5, oz + 0.5) < 64) {
+				boolean mounted = ferris
+					? nearFerrisMount(rider, ox, oy, oz)
+					: (nearFreeFallMount(rider, ox, oy, oz)
+						|| rider.distanceToSqr(ox + 0.5, oy + 2.5, oz + 0.5) < 64);
+				if (mounted) {
 					rideProgress = 0;
-					rideHoldX = rider.getX();
-					rideHoldZ = rider.getZ();
-					teleportRide(rider, oy);
-					InstantMassiveStructures.LOGGER.info("FreeFall ride started for {}",
-						rider.getName().getString());
+					if (ferris) {
+						teleportFerrisRide(rider, ox, oy, oz);
+					} else {
+						rideHoldX = rider.getX();
+						rideHoldZ = rider.getZ();
+						teleportFreeFallRide(rider, oy);
+					}
+					InstantMassiveStructures.LOGGER.info("{} ride started for {}",
+						baseName, rider.getName().getString());
 				}
+				return;
+			}
+
+			if (ferris) {
+				int idx = Math.min(rideProgress, FERRIS_RIDE_Y.length - 1);
+				double expectX = ox - 4.5;
+				double expectY = oy + 1.0 + FERRIS_RIDE_Y[idx];
+				double expectZ = oz - 36.0 - FERRIS_RIDE_Z[idx] + 0.5;
+				if (rider.distanceToSqr(expectX, expectY, expectZ) > 4.0) {
+					rider.sendSystemMessage(Component.literal(
+						"Thanks for your visit. We hope to see you again soon!"));
+					clearRide();
+					return;
+				}
+				if (rideProgress >= FERRIS_RIDE_Y.length - 1) {
+					rider.sendSystemMessage(Component.literal(
+						"Thanks for your visit. We hope to see you again soon!"));
+					clearRide();
+					return;
+				}
+				rideProgress++;
+				teleportFerrisRide(rider, ox, oy, oz);
 				return;
 			}
 
@@ -567,15 +765,30 @@ public final class LiveStructureTicker {
 			}
 
 			rideProgress++;
-			teleportRide(rider, oy);
+			teleportFreeFallRide(rider, oy);
 		}
 
-		private void teleportRide(ServerPlayer rider, double originY) {
+		private void teleportFreeFallRide(ServerPlayer rider, double originY) {
 			double y = originY + 2.5 + FREEFALL_RIDE_Y[Math.min(rideProgress, FREEFALL_RIDE_Y.length - 1)];
 			rider.teleportTo(rideHoldX, y, rideHoldZ);
 		}
 
-		private static boolean nearMount(ServerPlayer p, double x, double y, double z) {
+		private void teleportFerrisRide(ServerPlayer rider, double ox, double oy, double oz) {
+			int idx = Math.min(rideProgress, FERRIS_RIDE_Y.length - 1);
+			double x = ox - 4.5;
+			double y = oy + 1.0 + FERRIS_RIDE_Y[idx];
+			double z = oz - 36.0 - FERRIS_RIDE_Z[idx] + 0.5;
+			rideHoldX = x;
+			rideHoldZ = z;
+			rider.teleportTo(x, y, z);
+		}
+
+		/** Legacy Ferris mount: near (x-4, y+1, z-36). Softened for playtest. */
+		private static boolean nearFerrisMount(ServerPlayer p, double x, double y, double z) {
+			return p.distanceToSqr(x - 4.0, y + 1.0, z - 36.0) < 36.0;
+		}
+
+		private static boolean nearFreeFallMount(ServerPlayer p, double x, double y, double z) {
 			return close(p.getX(), x + 0.5, 0.9) && close(p.getY(), y + 2.75, 1.5) && close(p.getZ(), z - 3.0, 2.9)
 				|| close(p.getX(), x - 3.0, 2.9) && close(p.getY(), y + 2.75, 1.5) && close(p.getZ(), z - 6.5, 0.9)
 				|| close(p.getX(), x - 6.5, 0.9) && close(p.getY(), y + 2.75, 1.5) && close(p.getZ(), z - 3.0, 2.9)

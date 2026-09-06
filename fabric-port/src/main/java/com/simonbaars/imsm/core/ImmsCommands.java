@@ -17,17 +17,18 @@ import java.util.Locale;
 
 /**
  * Playtest helpers: {@code /imsm live <type> [distance]} starts a wired live at the player.
- * Path movers (boat/bus) accept optional sail distance (default 24).
+ * Path movers (boat/bus/airplane/flyingheli) accept optional distance.
+ * Aviation: total fly distance (level = distance − 60; default 76).
  * {@code /ride} toggles FreeFall Y-curve ride when near an active FreeFall.
  */
 public final class ImmsCommands {
 	private static final SuggestionProvider<CommandSourceStack> LIVE_SUGGESTIONS = (ctx, builder) ->
 		SharedSuggestionProvider.suggest(Arrays.asList(
 			"ferris", "mill", "watermill", "windmill", "helicopter", "cinema", "freefall",
-			"boat", "bus",
+			"boat", "bus", "airplane", "flyingheli",
 			"Live_FerrisWheel", "Live_Mill", "Live_WaterMill",
 			"Live_Power_Windmill_East", "Live_Helicopter", "Live_Cinema", "Live_Fair_FreeFall",
-			"LiveBoat", "Live_Bus"
+			"LiveBoat", "Live_Bus", "LiveAirplane", "Live_Flying_Helicopter"
 		), builder);
 
 	private ImmsCommands() {}
@@ -74,6 +75,10 @@ public final class ImmsCommands {
 		});
 	}
 
+	private static String formatStep(LiveStructureTicker.PathStep s) {
+		return "{" + s.dx() + "," + s.dy() + "," + s.dz() + "}";
+	}
+
 	private static int startLive(CommandSourceStack source, ServerPlayer player, String type, int distance) {
 		String key = type.toLowerCase(Locale.ROOT);
 		String base = switch (key) {
@@ -86,13 +91,16 @@ public final class ImmsCommands {
 			case "freefall", "free_fall", "fair", "live_fair_freefall", "live_fair_free_fall" -> "Live_Fair_FreeFall";
 			case "boat", "liveboat", "live_boat" -> "LiveBoat";
 			case "bus", "live_bus", "live__bus" -> "Live_Bus";
+			case "airplane", "plane", "liveairplane", "live_airplane" -> "LiveAirplane";
+			case "flyingheli", "flying_heli", "flyheli", "live_flying_helicopter",
+				"live__flying__helicopter" -> "Live_Flying_Helicopter";
 			default -> type;
 		};
 		LiveStructureTicker.LiveDef def = LiveStructureTicker.findDefinition(base);
 		if (def == null) {
 			source.sendFailure(Component.literal(
 				"Unknown live type '" + type
-					+ "'. Try: ferris, mill, watermill, windmill, helicopter, cinema, freefall, boat, bus"));
+					+ "'. Try: ferris, mill, watermill, windmill, helicopter, cinema, freefall, boat, bus, airplane, flyingheli"));
 			return 0;
 		}
 		ServerLevel level = player.level();
@@ -107,15 +115,23 @@ public final class ImmsCommands {
 			String started = LiveStructureTicker.startLive(level, origin, def, dist);
 			if (def.isPathMover()) {
 				int finalDist = dist;
+				LiveStructureTicker.PathMotion pm = def.path();
+				String brand = pm.aviation() ? "Aviation"
+					: ("LiveBoat".equals(started) ? "Maritime" : "Bus Depot");
+				int levelSteps = pm.levelStepsForDistance(finalDist);
+				String detail = pm.aviation()
+					? ("fly " + finalDist + " (climb " + pm.climbCount()
+						+ " → level " + levelSteps + " → descend " + pm.descendCount()
+						+ "), " + formatStep(pm.climb()) + "/" + formatStep(pm.cruise())
+						+ "/" + formatStep(pm.descend()))
+					: ("sail/ride " + finalDist + " blocks " + formatStep(pm.cruise()));
 				source.sendSuccess(() -> Component.literal(
-					"Thanks for choosing SimJoo's "
-						+ ("LiveBoat".equals(started) ? "Maritime" : "Bus Depot")
-						+ " Solutions. Sailing/riding " + finalDist
-						+ " blocks (+Z), " + def.frames().length + " frames, "
-						+ def.path().ticksPerStep() + " ticks/step, short loop on."), true);
+					"Thanks for choosing SimJoo's " + brand
+						+ " Solutions. " + detail + ", " + def.frames().length
+						+ " frames, " + pm.ticksPerStep() + " ticks/step, short loop on."), true);
 				source.sendSuccess(() -> Component.literal(
 					"Please hop aboard quickly — departing after boarding wait (~"
-						+ (def.path().boardingTicks() / 20.0) + "s)."), true);
+						+ (pm.boardingTicks() / 20.0) + "s)."), true);
 			} else {
 				String timing = def.hasVariableWaits()
 					? def.frames().length + " frames / variable waits (legacy FreeFall timings)"

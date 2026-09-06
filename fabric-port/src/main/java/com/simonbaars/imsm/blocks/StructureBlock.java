@@ -73,13 +73,23 @@ public class StructureBlock extends Block {
 			if (liveDef != null) {
 				String started = LiveStructureTicker.startLive(serverWorld, spawnPos, liveDef);
 				if (liveDef.isPathMover()) {
+					LiveStructureTicker.PathMotion pm = liveDef.path();
+					String brand = pm.aviation() ? "Aviation"
+						: ("LiveBoat".equals(started) ? "Maritime" : "Bus Depot");
 					player.sendSystemMessage(Component.literal(
-						"Thanks for choosing SimJoo's "
-							+ ("LiveBoat".equals(started) ? "Maritime" : "Bus Depot")
-							+ " Solutions."));
-					player.sendSystemMessage(Component.literal(
-						"Live '" + started + "' path: " + liveDef.path().defaultDistance()
-							+ " blocks +Z (short loop). Use /imsm live boat <n> for custom distance."));
+						"Thanks for choosing SimJoo's " + brand + " Solutions."));
+					if (pm.aviation()) {
+						int d = pm.defaultDistance();
+						player.sendSystemMessage(Component.literal(
+							"Live '" + started + "' aviation path: climb "
+								+ pm.climbCount() + " → level " + pm.levelStepsForDistance(d)
+								+ " → descend " + pm.descendCount()
+								+ " (default fly " + d + ", short loop). Use /imsm live airplane|flyingheli <n>."));
+					} else {
+						player.sendSystemMessage(Component.literal(
+							"Live '" + started + "' path: " + pm.defaultDistance()
+								+ " blocks +Z (short loop). Use /imsm live boat <n> for custom distance."));
+					}
 				} else {
 					String timing = liveDef.hasVariableWaits()
 						? liveDef.frames().length + " frames, variable waits"
