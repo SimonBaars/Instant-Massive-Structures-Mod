@@ -22,7 +22,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * <ul>
  *   <li>Stationary frame cyclers (Ferris, Mill, Water Mill, Windmill, Helicopter, Cinema, FreeFall)</li>
  *   <li>FreeFall {@code /ride} Y-curve; Ferris {@code /ride} 2D cart path (legacy RideStructure #0)</li>
- *   <li>Path movers: LiveBoat/Live_Bus (+Z cruise); LiveAirplane / Live_Flying_Helicopter /
+ *   <li>Path movers: LiveBoat/Live_Bus/Live_Bus2 (+Z cruise); LiveAirplane / Live_Flying_Helicopter /
  *       LivePlane / LiveAirBalloon / LiveFlyingShip1/2 (climb → level → descend aviation path)</li>
  *   <li>{@code /removelive} clears active lives; world-folder {@code LiveStructures/} persistence</li>
  *   <li>Path movers default to legacy one-shot remove ({@code doLoop=false}); optional short loop</li>
@@ -276,6 +276,9 @@ public final class LiveStructureTicker {
 		// Legacy Live_Bus: nslides=1 → Live_Bus0 only; same +Z path
 		new LiveDef("Live_Bus", BOAT_BUS_PATH,
 			"Live_Bus0"),
+		// Legacy Live_Bus2: nslides=1 → dedicated Live_Bus20 (distinct schematic); same +Z path
+		new LiveDef("Live_Bus2", BOAT_BUS_PATH,
+			"Live_Bus20"),
 		// Legacy LiveAirplane: nslides=1, aviation climb/level/descend +Z
 		new LiveDef("LiveAirplane", AIRPLANE_PATH,
 			"LiveAirplane0"),

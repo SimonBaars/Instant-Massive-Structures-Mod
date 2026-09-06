@@ -143,7 +143,7 @@ public class StructureBlock extends Block {
 				} else {
 					player.sendSystemMessage(Component.literal(
 						"Live '" + started + "' path: " + pm.defaultDistance()
-							+ " blocks +Z (legacy one-shot). Use /imsm live boat <n> [loop]."));
+							+ " blocks +Z (legacy one-shot). Use /imsm live boat|bus|bus2 <n> [loop]."));
 				}
 			} else {
 				String timing = liveDef.hasVariableWaits()

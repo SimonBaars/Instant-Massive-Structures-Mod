@@ -53,6 +53,10 @@ loom {
 				vmArg '-Xmx6G'
 				programArgs '--quickPlaySingleplayer', 'imsplay'
 			}
+			if (project.hasProperty('bus2shot')) {
+				vmArg '-Dimsm.bus2shot=1'
+				programArgs '--quickPlaySingleplayer', 'imsplay'
+			}
 			if (project.hasProperty('persistencesmoke')) {
 				vmArg '-Dimsm.persistencesmoke=1'
 				programArgs '--quickPlaySingleplayer', 'imsplay'

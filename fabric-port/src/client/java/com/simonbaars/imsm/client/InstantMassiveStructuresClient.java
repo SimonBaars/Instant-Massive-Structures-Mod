@@ -10,6 +10,7 @@ public class InstantMassiveStructuresClient implements ClientModInitializer {
 		PlanePlaytestShot.registerIfRequested();
 		BalloonPlaytestShot.registerIfRequested();
 		ShipPlaytestShot.registerIfRequested();
+		Bus2PlaytestShot.registerIfRequested();
 		PersistenceSmokeShot.registerIfRequested();
 	}
 }

@@ -25,10 +25,10 @@ public final class ImmsCommands {
 	private static final SuggestionProvider<CommandSourceStack> LIVE_SUGGESTIONS = (ctx, builder) ->
 		SharedSuggestionProvider.suggest(Arrays.asList(
 			"ferris", "mill", "watermill", "windmill", "helicopter", "cinema", "freefall",
-			"boat", "bus", "airplane", "flyingheli", "plane", "balloon", "ship1", "ship2",
+			"boat", "bus", "bus2", "airplane", "flyingheli", "plane", "balloon", "ship1", "ship2",
 			"Live_FerrisWheel", "Live_Mill", "Live_WaterMill",
 			"Live_Power_Windmill_East", "Live_Helicopter", "Live_Cinema", "Live_Fair_FreeFall",
-			"LiveBoat", "Live_Bus", "LiveAirplane", "Live_Flying_Helicopter",
+			"LiveBoat", "Live_Bus", "Live_Bus2", "LiveAirplane", "Live_Flying_Helicopter",
 			"LivePlane", "LiveAirBalloon", "LiveFlyingShip1", "LiveFlyingShip2"
 		), builder);
 
@@ -136,6 +136,7 @@ public final class ImmsCommands {
 			case "freefall", "free_fall", "fair", "live_fair_freefall", "live_fair_free_fall" -> "Live_Fair_FreeFall";
 			case "boat", "liveboat", "live_boat" -> "LiveBoat";
 			case "bus", "live_bus", "live__bus" -> "Live_Bus";
+			case "bus2", "live_bus2", "live__bus2" -> "Live_Bus2";
 			case "airplane", "liveairplane", "live_airplane" -> "LiveAirplane";
 			case "flyingheli", "flying_heli", "flyheli", "live_flying_helicopter",
 				"live__flying__helicopter" -> "Live_Flying_Helicopter";
@@ -151,7 +152,7 @@ public final class ImmsCommands {
 			source.sendFailure(Component.literal(
 				"Unknown live type '" + type
 					+ "'. Try: ferris, mill, watermill, windmill, helicopter, cinema, freefall, "
-					+ "boat, bus, airplane, flyingheli, plane, balloon, ship1, ship2"));
+					+ "boat, bus, bus2, airplane, flyingheli, plane, balloon, ship1, ship2"));
 			return 0;
 		}
 		ServerLevel level = player.level();

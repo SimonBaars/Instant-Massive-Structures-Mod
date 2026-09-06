@@ -22,7 +22,7 @@ Legacy `EventHandler.getAnimationFor` multi-phase arrays are mapped to `PathMoti
 | LivePlane | `{-1,1,0}` ×30 | `{-1,0,0}` | `{-1,-1,0}` ×31 | 2 (~100ms) |
 | LiveAirBalloon / LiveFlyingShip1 | `{0,1,-1}` ×30 | `{0,0,-1}` | `{0,-1,-1}` ×31 | 10 (~500ms) |
 | LiveFlyingShip2 | `{1,1,0}` ×30 | `{1,0,0}` | `{1,-1,0}` ×31 | 10 (~500ms) |
-| LiveBoat / Live_Bus | — | `{0,0,1}` ×d | — | 6 |
+| LiveBoat / Live_Bus / Live_Bus2 | — | `{0,0,1}` ×d | — | 6 |
 
 - Chat-typed distance dialog is **N/A** → `/imsm live <type> [distance] [loop]`.
 - Path `doLoop`: legacy constructors all pass **false** (one-shot then remove). Port default matches; append `loop` for playtest short-loop.
