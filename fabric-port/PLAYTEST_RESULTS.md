@@ -1,6 +1,6 @@
 # IMS Playtest Results
 
-Date: 2026-09-05 evening / 2026-09-06 ~1:35 AM PT
+Date: 2026-09-05 evening / 2026-09-06 ~1:45 AM PT
 World: `imsplay` (Creative)
 Client: Fabric Loom `runClient` on DISPLAY=:5 (`-Pimsplay` quickPlay).
 
@@ -13,17 +13,16 @@ Client: Fabric Loom `runClient` on DISPLAY=:5 (`-Pimsplay` quickPlay).
 - **Live Water Mill: PASS** — Wired; cycling `Live_WaterMill0..2`. Screenshots: `20-*`, `24-*`, `29-*` (wheel visible).
 - **Live Power Windmill East: PASS** — Wired; cycling `Live_Power_Windmill_East0..2` (1×32×32 slab). Screenshots: `21-*`, `25-*`, `28-*`.
 - **Live Helicopter: PASS** — Wired; cycling `Live_Helicopter0..3` every 10 ticks. Screenshots: `22-*`, `26-*`, `30-*`.
+- **Live Cinema: PASS** — Wired; `/imsm live cinema` at (700,51,-200); cycles `Live_Cinema0..42` (43 frames) every **20 ticks** (slower than legacy 300ms≈6 ticks for llvmpipe). Frames are thin **1×20×30** screen slabs (~600 blocks), not the full 51×39×50 `Live_Cinema.structure` building. Full loop observed through frame 42. One incidental "Can't keep up" (~2s) during chunk/teleport load — cinema alone is light. Screenshots: `31-cinema-started.png`, `32-cinema-animating.png`, `33-cinema-mid.png` (sunflower-screen wall + chat confirming 43 frames / 20 ticks).
 
-Helper: `/imsm live <ferris|mill|watermill|windmill|helicopter>` starts a wired cycler at the player. Block right-click also starts any matching live item (`useWithoutItem` + `useItemOn`).
+Helper: `/imsm live <ferris|mill|watermill|windmill|helicopter|cinema>` starts a wired cycler at the player. Block right-click also starts any matching live item (`useWithoutItem` + `useItemOn`).
 
 ## Screenshots (this pass)
 
-- `playtest-shots/18-mill-started.png`
-- `playtest-shots/19-mill-animating.png` / `19b-mill-midframe.png`
-- `playtest-shots/20-watermill.png` / `20b-watermill-mid.png`
-- `playtest-shots/21-windmill.png` / `21b-windmill-mid.png`
-- `playtest-shots/22-helicopter.png`
-- `playtest-shots/23-mill-view.png` … `30-heli-close.png`
+- `playtest-shots/18-mill-started.png` … `30-heli-close.png` (prior lives)
+- `playtest-shots/31-cinema-started.png`
+- `playtest-shots/32-cinema-animating.png`
+- `playtest-shots/33-cinema-mid.png`
 
 ## Remaining gaps (honest)
 
@@ -35,19 +34,19 @@ Helper: `/imsm live <ferris|mill|watermill|windmill|helicopter>` starts a wired 
 | LiveFlyingShip1 / LiveFlyingShip2 | Path animation + distance dialog |
 | Live_Flying_Helicopter | Path animation + distance dialog |
 | LiveBoat / Live_Bus / Live_Bus2 | Path animation + distance dialog |
-| Live_Cinema | 43 slides; could cycle in place but heavy; not wired |
 | Live_Fair_FreeFall | 21 slides + custom waitTimes + `/ride` |
 | Ride / `/removelive` / live persistence | Legacy EventHandler liveCreators save/load not ported |
 
 ### Other
 
 - Auto-generated lang names remain utilitarian.
-- Large schematics stress llvmpipe (“Can't keep up”) when multiple lives animate at once.
+- Large schematics / many simultaneous lives stress llvmpipe (“Can't keep up”). Cinema alone is fine at 20 ticks.
 - Special held-item interactions (Redstone / Book / Fire Charge) still stub messages.
-- Clear+replace frame cycling flickers; mill/windmill are thin slabs so camera angle matters.
+- Clear+replace frame cycling flickers; mill/windmill/cinema are thin slabs so camera angle matters.
+- Cinema entry block starts screen animation only (Legacy also placed the full building via StructureCreatorClient) — full building is still placeable as static schematic if not routed through live matcher… actually Live_Cinema block matches live def, so right-click starts animation of screen frames, not the 51×39×50 building.
 
 ## Commits (local only)
 
 - Generalize LiveStructureTicker for mill/watermill/windmill/helicopter (+ ferris)
 - StructureBlock `useItemOn` + `/imsm live` playtest command
-- Playtest docs + PORT_STATUS update
+- Wire Live_Cinema (43 frames / 20 ticks) + playtest docs + PORT_STATUS

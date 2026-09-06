@@ -13,8 +13,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Live-structure animation: cycles schematic frames in place for stationary rides
- * (Ferris, Mill, Water Mill, Power Windmill). Legacy also had moving vehicles /
- * cinema / free-fall with path animation and player input — those remain unwired.
+ * (Ferris, Mill, Water Mill, Power Windmill, Helicopter, Cinema). Legacy also had
+ * moving vehicles / free-fall with path animation and player input — those remain unwired.
  */
 public final class LiveStructureTicker {
 	/** One animated live type: entry base name + frame schematic names + tick interval. */
@@ -45,7 +45,7 @@ public final class LiveStructureTicker {
 
 	/**
 	 * Stationary frame-cyclers from legacy BlockLiveStructure nslides.
-	 * Aviation/boat/bus/cinema/free-fall need movement paths — not included.
+	 * Aviation/boat/bus/free-fall still need movement paths / ride — not included.
 	 */
 	private static final LiveDef[] DEFINITIONS = {
 		new LiveDef("Live_FerrisWheel", 40,
@@ -62,6 +62,17 @@ public final class LiveStructureTicker {
 		// Legacy nslides=4 → Live_Helicopter0..3 (200ms ≈ 4 ticks; use 10 for visibility)
 		new LiveDef("Live_Helicopter", 10,
 			"Live_Helicopter0", "Live_Helicopter1", "Live_Helicopter2", "Live_Helicopter3"),
+		// Legacy nslides=43 → Live_Cinema0..42, slidespeed 300ms ≈ 6 ticks; use 20 (slower) for llvmpipe
+		// Frames are thin 1×20×30 screen slabs (~600 blocks), not the full 51×39×50 building.
+		new LiveDef("Live_Cinema", 20,
+			"Live_Cinema0", "Live_Cinema1", "Live_Cinema2", "Live_Cinema3", "Live_Cinema4", "Live_Cinema5",
+			"Live_Cinema6", "Live_Cinema7", "Live_Cinema8", "Live_Cinema9", "Live_Cinema10", "Live_Cinema11",
+			"Live_Cinema12", "Live_Cinema13", "Live_Cinema14", "Live_Cinema15", "Live_Cinema16", "Live_Cinema17",
+			"Live_Cinema18", "Live_Cinema19", "Live_Cinema20", "Live_Cinema21", "Live_Cinema22", "Live_Cinema23",
+			"Live_Cinema24", "Live_Cinema25", "Live_Cinema26", "Live_Cinema27", "Live_Cinema28", "Live_Cinema29",
+			"Live_Cinema30", "Live_Cinema31", "Live_Cinema32", "Live_Cinema33", "Live_Cinema34", "Live_Cinema35",
+			"Live_Cinema36", "Live_Cinema37", "Live_Cinema38", "Live_Cinema39", "Live_Cinema40", "Live_Cinema41",
+			"Live_Cinema42"),
 	};
 
 	private static final Map<String, LiveDef> BY_BASE = new LinkedHashMap<>();

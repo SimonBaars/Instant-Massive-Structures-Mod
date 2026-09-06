@@ -87,4 +87,5 @@
 - [x] Live Power Windmill East cycles frames
 - [x] Live Helicopter cycles frames
 - [ ] Aviation / boat / bus path animation + distance dialog
-- [ ] Live Cinema / Fair FreeFall / ride system
+- [x] Live Cinema cycles frames (`/imsm live cinema`, 43 frames / 20 ticks)
+- [ ] Fair FreeFall / ride system

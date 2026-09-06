@@ -20,9 +20,9 @@ import java.util.Locale;
 public final class ImmsCommands {
 	private static final SuggestionProvider<CommandSourceStack> LIVE_SUGGESTIONS = (ctx, builder) ->
 		SharedSuggestionProvider.suggest(Arrays.asList(
-			"ferris", "mill", "watermill", "windmill", "helicopter",
+			"ferris", "mill", "watermill", "windmill", "helicopter", "cinema",
 			"Live_FerrisWheel", "Live_Mill", "Live_WaterMill",
-			"Live_Power_Windmill_East", "Live_Helicopter"
+			"Live_Power_Windmill_East", "Live_Helicopter", "Live_Cinema"
 		), builder);
 
 	private ImmsCommands() {}
@@ -49,12 +49,13 @@ public final class ImmsCommands {
 			case "watermill", "water", "live_watermill" -> "Live_WaterMill";
 			case "windmill", "power", "live_power_windmill_east" -> "Live_Power_Windmill_East";
 			case "helicopter", "heli", "live_helicopter" -> "Live_Helicopter";
+			case "cinema", "live_cinema" -> "Live_Cinema";
 			default -> type; // allow exact base names
 		};
 		LiveStructureTicker.LiveDef def = LiveStructureTicker.findDefinition(base);
 		if (def == null) {
 			source.sendFailure(Component.literal(
-				"Unknown live type '" + type + "'. Try: ferris, mill, watermill, windmill, helicopter"));
+				"Unknown live type '" + type + "'. Try: ferris, mill, watermill, windmill, helicopter, cinema"));
 			return 0;
 		}
 		ServerLevel level = player.level();
