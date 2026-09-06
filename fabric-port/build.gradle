@@ -57,6 +57,26 @@ loom {
 				vmArg '-Dimsm.bus2shot=1'
 				programArgs '--quickPlaySingleplayer', 'imsplay'
 			}
+			if (project.hasProperty('freefallrideshot')) {
+				vmArg '-Dimsm.freefallrideshot=1'
+				programArgs '--quickPlaySingleplayer', 'imsplay'
+			}
+			if (project.hasProperty('flyinghelishot')) {
+				vmArg '-Dimsm.flyinghelishot=1'
+				programArgs '--quickPlaySingleplayer', 'imsplay'
+			}
+			if (project.hasProperty('framecyclershot')) {
+				vmArg '-Dimsm.framecyclershot=1'
+				programArgs '--quickPlaySingleplayer', 'imsplay'
+			}
+			if (project.hasProperty('staticheldshot')) {
+				vmArg '-Dimsm.staticheldshot=1'
+				programArgs '--quickPlaySingleplayer', 'imsplay'
+			}
+			if (project.hasProperty('boatbusshot')) {
+				vmArg '-Dimsm.boatbusshot=1'
+				programArgs '--quickPlaySingleplayer', 'imsplay'
+			}
 			if (project.hasProperty('persistencesmoke')) {
 				vmArg '-Dimsm.persistencesmoke=1'
 				programArgs '--quickPlaySingleplayer', 'imsplay'
