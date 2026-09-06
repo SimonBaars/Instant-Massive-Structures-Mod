@@ -27,6 +27,7 @@ import java.util.stream.Stream;
  * <p>
  * Port maps animationPhase→pathPhase and animationTimes→steps done within phase; restores
  * origin and resumes the ticker without re-placing the first frame (blocks already in world).
+ * Honors saved doLoop; lean legacy files reconstruct stepsRemaining from phase length − times.
  */
 public final class LiveStructurePersistence {
 	private static final String DIR = "LiveStructures";
@@ -168,7 +169,7 @@ public final class LiveStructurePersistence {
 			w.println("true"); // doPlaceAir
 			w.println(inst.pathPhase); // animationPhase (−1 = stationary cycler)
 			w.println(inst.stepsDone); // animationTimes (approx)
-			w.println(inst.path != null && inst.path.loop());
+			w.println(inst.loopEnabled);
 			w.println(inst.frames.length);
 			w.println(inst.ticksUntilNext);
 			if (inst.path != null) {
@@ -225,7 +226,8 @@ public final class LiveStructurePersistence {
 			in.readLine(); // doPlaceAir
 			int phase = Integer.parseInt(in.readLine().trim());
 			int times = Integer.parseInt(in.readLine().trim());
-			in.readLine(); // doLoop
+			String loopLine = in.readLine(); // doLoop
+			boolean loopEnabled = loopLine != null && Boolean.parseBoolean(loopLine.trim());
 			in.readLine(); // amountOfSlides
 			int wait = Integer.parseInt(in.readLine().trim());
 
@@ -248,6 +250,7 @@ public final class LiveStructurePersistence {
 			int frameIndex = 0;
 			int levelSteps = def.isPathMover() ? def.path().levelStepsForDistance(distance) : 0;
 			int lastL = 0, lastH = 0, lastW = 0;
+			boolean hasExtended = false;
 
 			String distLine = in.readLine();
 			if (distLine != null && !distLine.isBlank()) {
@@ -263,9 +266,27 @@ public final class LiveStructurePersistence {
 					lastL = Integer.parseInt(in.readLine().trim());
 					lastH = Integer.parseInt(in.readLine().trim());
 					lastW = Integer.parseInt(in.readLine().trim());
+					hasExtended = true;
 				} else if (def.isPathMover()) {
 					levelSteps = def.path().levelStepsForDistance(distance);
 				}
+			}
+
+			// Lean legacy save (no extended port fields): best-effort reconstruct phase budget.
+			// animationTimes≈stepsDone within phase; remaining = phaseLength − times.
+			if (def.isPathMover() && !hasExtended) {
+				levelSteps = def.path().levelStepsForDistance(distance);
+				LiveStructureTicker.PathMotion pm = def.path();
+				int phaseLen = switch (phase) {
+					case 1 -> pm.climbCount();
+					case 2 -> levelSteps;
+					case 3 -> pm.descendCount();
+					default -> 0;
+				};
+				stepsRemaining = Math.max(0, phaseLen - Math.max(0, times));
+				InstantMassiveStructures.LOGGER.info(
+					"Mid-path resume best-effort for '{}': phase={} times={} → stepsRemaining={}",
+					name, phase, times, stepsRemaining);
 			}
 
 			LiveStructureTicker.LiveInstance inst = LiveStructureTicker.LiveInstance.restore(
@@ -280,7 +301,8 @@ public final class LiveStructurePersistence {
 				frameIndex,
 				levelSteps,
 				Math.max(1, wait),
-				lastL, lastH, lastW
+				lastL, lastH, lastW,
+				loopEnabled
 			);
 			LiveStructureTicker.resumeFromSave(inst);
 			return true;
