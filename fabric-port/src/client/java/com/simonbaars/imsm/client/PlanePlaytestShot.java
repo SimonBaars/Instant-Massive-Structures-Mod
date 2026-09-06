@@ -6,7 +6,7 @@ import net.minecraft.client.Screenshot;
 
 /**
  * Dev-only: {@code -Dimsm.planeshot=1} + quickPlay {@code imsplay}
- * starts LivePlane climb/level/descend (−X aviation) short loop and screenshots phases.
+ * starts LivePlane climb/level/descend (−X aviation) one-shot voyage and screenshots phases.
  */
 public final class PlanePlaytestShot {
 	private static final int PAD_X = 1200;

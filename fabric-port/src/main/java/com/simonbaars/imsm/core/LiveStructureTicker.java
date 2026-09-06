@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.LinkedHashMap;
@@ -24,8 +25,11 @@ import java.util.concurrent.ThreadLocalRandom;
  *   <li>Path movers: LiveBoat/Live_Bus (+Z cruise); LiveAirplane / Live_Flying_Helicopter /
  *       LivePlane / LiveAirBalloon / LiveFlyingShip1/2 (climb → level → descend aviation path)</li>
  *   <li>{@code /removelive} clears active lives; world-folder {@code LiveStructures/} persistence</li>
+ *   <li>Path movers default to legacy one-shot remove ({@code doLoop=false}); optional short loop</li>
+ *   <li>Obstacle-explode on horizontal lead edge (legacy {@code scheduleExplosion} r=25)</li>
+ *   <li>Trail cleanup via full-bounds clear each step (supersedes legacy {@code removeStuff} slabs)</li>
  * </ul>
- * Chat-typed distance dialog N/A — replaced by {@code /imsm live <type> [distance]}.
+ * Chat-typed distance dialog N/A — replaced by {@code /imsm live <type> [distance] [loop]}.
  */
 public final class LiveStructureTicker {
 	/**
@@ -50,7 +54,7 @@ public final class LiveStructureTicker {
 		/** Playtest boarding (~2s); legacy was 10000ms */
 		int boardingTicks,
 		int defaultDistance,
-		/** Short continuous loop for demo; legacy removes after one trip */
+		/** Legacy path movers use false (one-shot then remove). Opt-in short loop for playtest. */
 		boolean loop,
 		/** If true, level steps = max(1, distance − 60); climb/descend are fixed */
 		boolean aviation,
@@ -173,21 +177,21 @@ public final class LiveStructureTicker {
 		35, 34, 34, 33, 31, 29, 27, 23, 20, 17, 13, 10, 7, 3, 0
 	};
 
-	/** Shared boat/bus cruise: +Z, 6 ticks/step, short boarding, default 24-block loop. */
+	/** Shared boat/bus cruise: +Z, 6 ticks/step, short boarding, default 24 blocks, one-shot. */
 	private static final PathMotion BOAT_BUS_PATH = new PathMotion(
 		0, 0, 1,
 		6,
 		40,
 		24,
-		true
+		false
 	);
 
 	/**
 	 * Legacy LiveAirplane: climb 30×{0,+1,+1} @300ms → level (d−60)×{0,0,+1} → descend 31×{0,−1,+1}.
-	 * Default distance 76 → 16 level steps; short loop for playtest.
+	 * Default distance 76 → 16 level steps; legacy one-shot (loop=false).
 	 */
 	private static final PathMotion AIRPLANE_PATH = PathMotion.aviation(
-		6, 40, 76, true,
+		6, 40, 76, false,
 		new PathStep(0, 1, 1), 30,
 		new PathStep(0, 0, 1),
 		new PathStep(0, -1, 1), 31
@@ -198,7 +202,7 @@ public final class LiveStructureTicker {
 	 * descend 31×{0,−1,−1}. Default 76 → 16 level; 4 rotor frames.
 	 */
 	private static final PathMotion FLYING_HELI_PATH = PathMotion.aviation(
-		4, 40, 76, true,
+		4, 40, 76, false,
 		new PathStep(0, 1, -1), 30,
 		new PathStep(0, 0, -1),
 		new PathStep(0, -1, -1), 31
@@ -206,10 +210,10 @@ public final class LiveStructureTicker {
 
 	/**
 	 * Legacy LivePlane: climb 30×{−1,+1,0} @100ms → level (d−60)×{−1,0,0} → descend 31×{−1,−1,0}.
-	 * 100ms ≈ 2 ticks; default fly 76 → 16 level; short loop for playtest.
+	 * 100ms ≈ 2 ticks; default fly 76 → 16 level; legacy one-shot (loop=false).
 	 */
 	private static final PathMotion PLANE_PATH = PathMotion.aviation(
-		2, 40, 76, true,
+		2, 40, 76, false,
 		new PathStep(-1, 1, 0), 30,
 		new PathStep(-1, 0, 0),
 		new PathStep(-1, -1, 0), 31
@@ -220,7 +224,7 @@ public final class LiveStructureTicker {
 	 * descend 31×{0,−1,−1}. 500ms ≈ 10 ticks.
 	 */
 	private static final PathMotion BALLOON_SHIP1_PATH = PathMotion.aviation(
-		10, 40, 76, true,
+		10, 40, 76, false,
 		new PathStep(0, 1, -1), 30,
 		new PathStep(0, 0, -1),
 		new PathStep(0, -1, -1), 31
@@ -230,7 +234,7 @@ public final class LiveStructureTicker {
 	 * Legacy LiveFlyingShip2: climb 30×{+1,+1,0} @500ms → level (d−60)×{+1,0,0} → descend 31×{+1,−1,0}.
 	 */
 	private static final PathMotion FLYING_SHIP2_PATH = PathMotion.aviation(
-		10, 40, 76, true,
+		10, 40, 76, false,
 		new PathStep(1, 1, 0), 30,
 		new PathStep(1, 0, 0),
 		new PathStep(1, -1, 0), 31
@@ -366,14 +370,25 @@ public final class LiveStructureTicker {
 	 */
 	public static String startLive(ServerLevel world, BlockPos origin, LiveDef def) {
 		int distance = def.isPathMover() ? def.path().defaultDistance() : 0;
-		return startLive(world, origin, def, distance);
+		return startLive(world, origin, def, distance, null);
 	}
 
 	/**
 	 * @param distance sail/ride distance in blocks for path movers (ignored for stationary)
 	 */
 	public static String startLive(ServerLevel world, BlockPos origin, LiveDef def, int distance) {
+		return startLive(world, origin, def, distance, null);
+	}
+
+	/**
+	 * @param loopOverride null → PathMotion.loop() (legacy false); true forces short loop for playtest
+	 */
+	public static String startLive(ServerLevel world, BlockPos origin, LiveDef def, int distance,
+		Boolean loopOverride) {
 		LiveInstance inst = new LiveInstance(world, origin, def, distance);
+		if (loopOverride != null) {
+			inst.loopEnabled = loopOverride;
+		}
 		try {
 			inst.placeCurrentFrame(true);
 			inst.applyWaitAfterCurrentFrame();
@@ -386,7 +401,7 @@ public final class LiveStructureTicker {
 					def.baseName(), origin, def.frames().length, inst.flyDistance,
 					inst.levelSteps, pm.climbCount(),
 					formatStep(pm.climb()), pm.descendCount(), formatStep(pm.descend()),
-					pm.ticksPerStep(), pm.boardingTicks(), pm.loop(), pm.aviation());
+					pm.ticksPerStep(), pm.boardingTicks(), inst.loopEnabled, pm.aviation());
 			} else {
 				InstantMassiveStructures.LOGGER.info(
 					"Started {} live animation at {} ({} frames, base {} ticks{})",
@@ -546,6 +561,8 @@ public final class LiveStructureTicker {
 		int levelSteps;
 		int flyDistance;
 		int stepsDone;
+		/** Effective loop flag (legacy false; playtest may set true). */
+		boolean loopEnabled;
 
 		// FreeFall ride subset
 		UUID riderUuid;
@@ -576,13 +593,14 @@ public final class LiveStructureTicker {
 				: 0;
 			this.stepsRemaining = 0;
 			this.stepsDone = 0;
+			this.loopEnabled = def.isPathMover() && def.path().loop();
 		}
 
 		/** Rebuild from {@code LiveStructures/N.txt} after world reload. */
 		static LiveInstance restore(ServerLevel world, BlockPos startOrigin, BlockPos origin,
 			LiveDef def, int distance, int pathPhase, int stepsDone, int stepsRemaining,
 			int frameIndex, int levelSteps, int ticksUntilNext,
-			int lastLength, int lastHeight, int lastWidth) {
+			int lastLength, int lastHeight, int lastWidth, boolean loopEnabled) {
 			LiveInstance inst = new LiveInstance(world, startOrigin, def, distance);
 			inst.origin = origin.immutable();
 			inst.pathPhase = pathPhase;
@@ -597,6 +615,7 @@ public final class LiveStructureTicker {
 			inst.lastWidth = lastWidth;
 			inst.flyDistance = Math.max(1, distance > 0 ? distance : (def.isPathMover()
 				? def.path().defaultDistance() : 0));
+			inst.loopEnabled = loopEnabled;
 			return inst;
 		}
 
@@ -633,6 +652,11 @@ public final class LiveStructureTicker {
 			origin = origin.offset(step.dx(), step.dy(), step.dz());
 			frameIndex = (frameIndex + 1) % frames.length;
 			placeCurrentFrame(false);
+			// Legacy trail: removeStuff slabs behind the craft. Port clears full prior AABB
+			// in clearLastBounds (strictly stronger than legacy removeStuff).
+			if (hitObstacleAndExplode(step)) {
+				return;
+			}
 			carryNearbyPlayers(step.dx(), step.dy(), step.dz());
 			stepsDone++;
 			stepsRemaining--;
@@ -699,7 +723,7 @@ public final class LiveStructureTicker {
 		}
 
 		private void finishOrLoop() throws Exception {
-			if (path.loop()) {
+			if (loopEnabled) {
 				clearLastBounds();
 				origin = startOrigin;
 				frameIndex = 0;
@@ -711,10 +735,11 @@ public final class LiveStructureTicker {
 				InstantMassiveStructures.LOGGER.info(
 					"{} completed short loop; returning to {} (reboard)", baseName, startOrigin);
 			} else {
-				clearLastBounds();
+				// Legacy doLoop=false: leave last frame, drop from ACTIVE next tick
 				pathPhase = 4;
 				ticksUntilNext = 1;
-				InstantMassiveStructures.LOGGER.info("{} voyage complete; removing", baseName);
+				InstantMassiveStructures.LOGGER.info(
+					"{} voyage complete (legacy one-shot); removing", baseName);
 			}
 		}
 
@@ -759,6 +784,57 @@ public final class LiveStructureTicker {
 			}
 			SchematicStructure.clearBounds(world, origin.getX(), origin.getY(), origin.getZ(),
 				lastLength, lastHeight, lastWidth);
+		}
+
+		/**
+		 * Legacy LiveStructure obstacle probe: 5 columns on the horizontal lead edge at mid height.
+		 * Non-air → {@code scheduleExplosion} equivalent (power 25, fire) + remove this live.
+		 */
+		boolean hitObstacleAndExplode(PathStep step) {
+			if (step == null || (step.dx() == 0 && step.dz() == 0)) {
+				return false;
+			}
+			if (lastLength <= 0 || lastHeight <= 0 || lastWidth <= 0) {
+				return false;
+			}
+			int x = origin.getX();
+			int y = origin.getY();
+			int z = origin.getZ();
+			int midY = y + (lastHeight / 2);
+			for (int i = -2; i <= 2; i++) {
+				int checkx;
+				int checkz;
+				if (step.dx() != 0) {
+					if (step.dx() > 0) {
+						checkx = x + 1;
+						checkz = z - (lastLength / 2) + i;
+					} else {
+						checkx = x - lastWidth - 1;
+						checkz = z - (lastLength / 2) + i;
+					}
+				} else if (step.dz() > 0) {
+					checkx = x - (lastLength / 2) + i + 1;
+					checkz = z + 1;
+				} else {
+					checkx = x - (lastLength / 2) + i;
+					checkz = z - lastWidth - 1;
+				}
+				BlockPos check = new BlockPos(checkx, midY, checkz);
+				if (!world.getBlockState(check).isAir()) {
+					double ex = x - (lastLength / 2.0);
+					double ey = y + (lastHeight / 2.0);
+					double ez = z - (lastWidth / 2.0);
+					world.explode(null, ex, ey, ez, 25.0F, true, Level.ExplosionInteraction.TNT);
+					clearRide();
+					ACTIVE.remove(this);
+					LiveStructurePersistence.saveAll(ACTIVE);
+					InstantMassiveStructures.LOGGER.info(
+						"{} hit obstacle {} at {}; exploded (r=25) and removed",
+						baseName, world.getBlockState(check).getBlock(), check);
+					return true;
+				}
+			}
+			return false;
 		}
 
 		/** Carry players standing on/near the moving structure by the step delta. */

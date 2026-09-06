@@ -17,7 +17,8 @@ import java.util.Locale;
 
 /**
  * Playtest helpers: {@code /imsm live <type> [distance]} starts a wired live at the player.
- * Path movers accept optional distance. Aviation: total fly distance (level = distance − 60).
+ * Path movers accept optional distance and optional {@code loop} (playtest short-loop;
+ * default is legacy one-shot). Aviation: total fly distance (level = distance − 60).
  * {@code /ride} toggles FreeFall/Ferris rides. {@code /removelive} stops all active lives.
  */
 public final class ImmsCommands {
@@ -42,15 +43,28 @@ public final class ImmsCommands {
 						.executes(ctx -> {
 							ServerPlayer player = ctx.getSource().getPlayerOrException();
 							String type = StringArgumentType.getString(ctx, "type");
-							return startLive(ctx.getSource(), player, type, -1);
+							return startLive(ctx.getSource(), player, type, -1, null);
 						})
+						.then(Commands.literal("loop")
+							.executes(ctx -> {
+								ServerPlayer player = ctx.getSource().getPlayerOrException();
+								String type = StringArgumentType.getString(ctx, "type");
+								return startLive(ctx.getSource(), player, type, -1, true);
+							}))
 						.then(Commands.argument("distance", IntegerArgumentType.integer(1, 256))
 							.executes(ctx -> {
 								ServerPlayer player = ctx.getSource().getPlayerOrException();
 								String type = StringArgumentType.getString(ctx, "type");
 								int distance = IntegerArgumentType.getInteger(ctx, "distance");
-								return startLive(ctx.getSource(), player, type, distance);
-							}))))
+								return startLive(ctx.getSource(), player, type, distance, null);
+							})
+							.then(Commands.literal("loop")
+								.executes(ctx -> {
+									ServerPlayer player = ctx.getSource().getPlayerOrException();
+									String type = StringArgumentType.getString(ctx, "type");
+									int distance = IntegerArgumentType.getInteger(ctx, "distance");
+									return startLive(ctx.getSource(), player, type, distance, true);
+								})))))
 				.then(Commands.literal("ride")
 					.executes(ctx -> {
 						ServerPlayer player = ctx.getSource().getPlayerOrException();
@@ -109,7 +123,8 @@ public final class ImmsCommands {
 		};
 	}
 
-	private static int startLive(CommandSourceStack source, ServerPlayer player, String type, int distance) {
+	private static int startLive(CommandSourceStack source, ServerPlayer player, String type, int distance,
+			Boolean loopOverride) {
 		String key = type.toLowerCase(Locale.ROOT);
 		String base = switch (key) {
 			case "ferris", "live_ferriswheel" -> "Live_FerrisWheel";
@@ -145,10 +160,11 @@ public final class ImmsCommands {
 			int dist = distance > 0
 				? distance
 				: (def.isPathMover() ? def.path().defaultDistance() : 0);
-			String started = LiveStructureTicker.startLive(level, origin, def, dist);
+			String started = LiveStructureTicker.startLive(level, origin, def, dist, loopOverride);
 			if (def.isPathMover()) {
 				int finalDist = dist;
 				LiveStructureTicker.PathMotion pm = def.path();
+				boolean looping = loopOverride != null ? loopOverride : pm.loop();
 				String brand = pm.aviation() ? "Aviation"
 					: ("LiveBoat".equals(started) ? "Maritime" : "Bus Depot");
 				int levelSteps = pm.levelStepsForDistance(finalDist);
@@ -158,10 +174,11 @@ public final class ImmsCommands {
 						+ "), " + formatStep(pm.climb()) + "/" + formatStep(pm.cruise())
 						+ "/" + formatStep(pm.descend()))
 					: ("sail/ride " + finalDist + " blocks " + formatStep(pm.cruise()));
+				String loopMsg = looping ? "short loop on" : "legacy one-shot";
 				source.sendSuccess(() -> Component.literal(
 					"Thanks for choosing SimJoo's " + brand
 						+ " Solutions. " + detail + ", " + def.frames().length
-						+ " frames, " + pm.ticksPerStep() + " ticks/step, short loop on."), true);
+						+ " frames, " + pm.ticksPerStep() + " ticks/step, " + loopMsg + "."), true);
 				source.sendSuccess(() -> Component.literal(
 					"Please hop aboard quickly — departing after boarding wait (~"
 						+ (pm.boardingTicks() / 20.0) + "s)."), true);
