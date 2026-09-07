@@ -52,3 +52,10 @@ Client: Fabric Loom `runClient` on DISPLAY=:5 (`JAVA_HOME=/workspace/jdk-25`)
 
 **Harness:** `-Pmetashot` / `imsm.metashot=1`; commands `/imsm place` + `/imsm metastats`.
 
+## Expanded meta audit (2026-09-06 PT night)
+
+Offline: **952/952** schematics; **626** unique (id,meta); **504** meta≠0; after mapper fixes **0 high-impact gaps**, 78 harmless N/A, 2 trivial unmapped (jukebox/spawner).
+
+In-game: 24× `/imsm metastats` + place/shots **118–137** beyond house/Ferris.
+
+Report: `playtest-shots/META_AUDIT_REPORT.md`
