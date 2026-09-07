@@ -5,25 +5,70 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.Screenshot;
 
 /**
- * Dev-only: {@code -Dimsm.metashot=1} — place stairs-heavy WoodenHouse + Live_FerrisWheel;
- * screenshot close-ups proving legacy meta orientations.
+ * Dev-only: {@code -Dimsm.metashot=1} — batch {@code /imsm metastats} across many schematics,
+ * then place+screenshot a diverse high-meta subset beyond WoodenHouse/Ferris.
  */
 public final class MetaOrientationPlaytestShot {
-	private static final int PAD_X = 3200;
 	private static final int PAD_Y = 90;
-	private static final int PAD_Z = 200;
-	private static final int FERRIS_X = 3300;
-	private static final int FERRIS_Z = 300;
+	/** Structures for metastats-only (no place). */
+	private static final String[] METASTATS = {
+		"WoodenHouse",
+		"Live_FerrisWheel",
+		"BlockCosyHouse",
+		"BlockMegaHouse",
+		"BlockMegaTower",
+		"BlockStadium",
+		"BlockCastleTower",
+		"BlockLighthouse",
+		"ChristmasHouse",
+		"ChristmasMarket",
+		"BlockRollercoaster",
+		"BlockWaterSlide",
+		"DecorationSoccerStadiumNorthSouth",
+		"PublicLibraryNorthSouth",
+		"PublicHospitalBigNorth",
+		"PublicTownhallBigNorthSouth",
+		"RandomImmense_White_House",
+		"ResidentalEnormous_DensityModernNorth",
+		"ShoppingHigh_DensityQuartzNorthSouth",
+		"OfficeHigh_DensitySpirolBuildingNorth",
+		"Live_Cinema",
+		"BlockHountedHouse",
+		"BlockPrison",
+		"FoodCarrotsNorthSouth"
+	};
+
+	/** Place+shot pads: name, x, z, camera offsets for 1–2 views. */
+	private static final String[] PLACE_NAMES = {
+		"BlockCosyHouse",
+		"BlockCastleTower",
+		"ChristmasHouse",
+		"BlockStadium",
+		"BlockLighthouse",
+		"PublicLibraryNorthSouth",
+		"BlockHountedHouse",
+		"Live_Cinema",
+		"BlockMegaHouse",
+		"DecorationSoccerStadiumNorthSouth"
+	};
+	private static final int[] PLACE_X = {
+		3400, 3500, 3600, 3700, 3800, 3900, 4000, 4100, 4200, 4300
+	};
+	private static final int[] PLACE_Z = {
+		200, 200, 200, 250, 200, 200, 200, 250, 200, 250
+	};
 
 	private static int ticks = -1;
-	private static int phase;
+	private static int phase; // 0=metastats, 1=place loop, 2=done
+	private static int placeIdx;
+	private static int metaIdx;
 	private static boolean done;
 
 	private MetaOrientationPlaytestShot() {}
 
 	public static void registerIfRequested() {
 		if (!"1".equals(System.getProperty("imsm.metashot"))) return;
-		InstantMassiveStructures.LOGGER.info("MetaOrientationPlaytestShot armed");
+		InstantMassiveStructures.LOGGER.info("MetaOrientationPlaytestShot armed (batch)");
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (done || client.level == null || client.player == null) return;
 			if (client.isPaused()) client.setScreenAndShow(null);
@@ -38,94 +83,81 @@ public final class MetaOrientationPlaytestShot {
 					conn.sendCommand("weather clear");
 					conn.sendCommand("difficulty peaceful");
 					conn.sendCommand("effect give @p minecraft:night_vision 999 0 true");
-					conn.sendCommand("forceload add " + (PAD_X - 40) + " " + (PAD_Z - 40)
-						+ " " + (PAD_X + 40) + " " + (PAD_Z + 40));
-					conn.sendCommand("forceload add " + (FERRIS_X - 40) + " " + (FERRIS_Z - 40)
-						+ " " + (FERRIS_X + 40) + " " + (FERRIS_Z + 40));
 				}
-				if (ticks == 60) {
-					// Small pad fills under 32768 limit
-					conn.sendCommand("fill " + (PAD_X - 30) + " " + PAD_Y + " " + (PAD_Z - 30)
-						+ " " + (PAD_X + 30) + " " + (PAD_Y + 40) + " " + (PAD_Z + 30) + " minecraft:air");
+				// Stagger metastats so chat/log stays readable
+				if (ticks >= 60 && metaIdx < METASTATS.length && (ticks - 60) % 8 == 0) {
+					String name = METASTATS[metaIdx++];
+					conn.sendCommand("imsm metastats " + name);
+					InstantMassiveStructures.LOGGER.info("MetaOrientationPlaytestShot: metastats {}", name);
 				}
-				if (ticks == 80) {
-					conn.sendCommand("fill " + (PAD_X - 30) + " " + (PAD_Y - 1) + " " + (PAD_Z - 30)
-						+ " " + (PAD_X + 30) + " " + (PAD_Y - 1) + " " + (PAD_Z + 30) + " minecraft:smooth_stone");
-					conn.sendCommand("tp @p " + PAD_X + " " + PAD_Y + " " + PAD_Z + " 0 20");
-					InstantMassiveStructures.LOGGER.info("MetaOrientationPlaytestShot: pad ready");
-				}
-				if (ticks == 100) {
-					conn.sendCommand("imsm metastats WoodenHouse");
-					conn.sendCommand("imsm metastats Live_FerrisWheel");
-				}
-				if (ticks == 120) {
-					conn.sendCommand("imsm place WoodenHouse");
-					InstantMassiveStructures.LOGGER.info("MetaOrientationPlaytestShot: placed WoodenHouse");
-				}
-				if (ticks == 160) {
-					conn.sendCommand("tp @p " + (PAD_X - 8) + " " + (PAD_Y + 4) + " " + (PAD_Z - 10) + " -25 15");
-				}
-				if (ticks == 180) {
-					Screenshot.grab(client, false);
-					InstantMassiveStructures.LOGGER.info("MetaOrientationPlaytestShot: house close-up 1");
-				}
-				if (ticks == 200) {
-					conn.sendCommand("tp @p " + (PAD_X + 10) + " " + (PAD_Y + 6) + " " + (PAD_Z + 4) + " 140 25");
-				}
-				if (ticks == 220) {
-					Screenshot.grab(client, false);
-					InstantMassiveStructures.LOGGER.info("MetaOrientationPlaytestShot: house close-up 2");
-				}
-				if (ticks == 240) {
+				if (metaIdx >= METASTATS.length && ticks >= 60 + METASTATS.length * 8 + 20) {
 					phase = 1;
+					placeIdx = 0;
 					ticks = 0;
+					InstantMassiveStructures.LOGGER.info("MetaOrientationPlaytestShot: metastats batch done");
 				}
 				return;
 			}
 
 			if (phase == 1) {
-				if (ticks == 10) {
-					conn.sendCommand("removelive");
-					conn.sendCommand("fill " + (FERRIS_X - 30) + " " + PAD_Y + " " + (FERRIS_Z - 30)
-						+ " " + (FERRIS_X + 30) + " " + (PAD_Y + 50) + " " + (FERRIS_Z + 30) + " minecraft:air");
+				if (placeIdx >= PLACE_NAMES.length) {
+					phase = 2;
+					ticks = 0;
+					return;
+				}
+				int px = PLACE_X[placeIdx];
+				int pz = PLACE_Z[placeIdx];
+				String name = PLACE_NAMES[placeIdx];
+
+				if (ticks == 5) {
+					conn.sendCommand("forceload add " + (px - 48) + " " + (pz - 48)
+						+ " " + (px + 48) + " " + (pz + 48));
+				}
+				if (ticks == 15) {
+					conn.sendCommand("fill " + (px - 40) + " " + PAD_Y + " " + (pz - 40)
+						+ " " + (px + 40) + " " + (PAD_Y + 45) + " " + (pz + 40) + " minecraft:air");
 				}
 				if (ticks == 30) {
-					conn.sendCommand("fill " + (FERRIS_X - 30) + " " + (PAD_Y - 1) + " " + (FERRIS_Z - 30)
-						+ " " + (FERRIS_X + 30) + " " + (PAD_Y - 1) + " " + (FERRIS_Z + 30) + " minecraft:smooth_stone");
-					conn.sendCommand("tp @p " + FERRIS_X + " " + PAD_Y + " " + FERRIS_Z + " 0 10");
+					conn.sendCommand("fill " + (px - 40) + " " + (PAD_Y - 1) + " " + (pz - 40)
+						+ " " + (px + 40) + " " + (PAD_Y - 1) + " " + (pz + 40) + " minecraft:smooth_stone");
+					conn.sendCommand("tp @p " + px + " " + PAD_Y + " " + pz + " 0 15");
 				}
 				if (ticks == 50) {
-					conn.sendCommand("imsm live ferris");
-					InstantMassiveStructures.LOGGER.info("MetaOrientationPlaytestShot: started ferris");
+					conn.sendCommand("imsm place " + name);
+					InstantMassiveStructures.LOGGER.info("MetaOrientationPlaytestShot: placed {}", name);
 				}
-				if (ticks == 100) {
-					// Side view of wheel — look toward +Z/+X where rim/stairs cluster
-					conn.sendCommand("tp @p " + (FERRIS_X - 20) + " " + (PAD_Y + 20) + " " + (FERRIS_Z - 45) + " 20 15");
+				if (ticks == 90) {
+					conn.sendCommand("tp @p " + (px - 12) + " " + (PAD_Y + 6) + " " + (pz - 18) + " -20 18");
 				}
-				if (ticks == 120) {
+				if (ticks == 110) {
 					Screenshot.grab(client, false);
-					InstantMassiveStructures.LOGGER.info("MetaOrientationPlaytestShot: ferris wide");
+					InstantMassiveStructures.LOGGER.info("MetaOrientationPlaytestShot: shot A {}", name);
 				}
-				if (ticks == 140) {
-					conn.sendCommand("tp @p " + (FERRIS_X + 5) + " " + (PAD_Y + 8) + " " + (FERRIS_Z - 25) + " 0 5");
+				if (ticks == 130) {
+					conn.sendCommand("tp @p " + (px + 14) + " " + (PAD_Y + 10) + " " + (pz + 8) + " 140 28");
 				}
-				if (ticks == 160) {
+				if (ticks == 150) {
 					Screenshot.grab(client, false);
-					InstantMassiveStructures.LOGGER.info("MetaOrientationPlaytestShot: ferris rim close-up");
+					InstantMassiveStructures.LOGGER.info("MetaOrientationPlaytestShot: shot B {}", name);
 				}
-				if (ticks == 180) {
-					conn.sendCommand("tp @p " + (FERRIS_X - 5) + " " + (PAD_Y + 35) + " " + (FERRIS_Z + 5) + " 90 40");
+				if (ticks == 170) {
+					// Clear pad for next (avoid fill limit: two passes)
+					conn.sendCommand("fill " + (px - 40) + " " + PAD_Y + " " + (pz - 40)
+						+ " " + (px + 40) + " " + (PAD_Y + 22) + " " + (pz + 40) + " minecraft:air");
 				}
-				if (ticks == 200) {
-					Screenshot.grab(client, false);
-					InstantMassiveStructures.LOGGER.info("MetaOrientationPlaytestShot: ferris top close-up");
+				if (ticks == 185) {
+					conn.sendCommand("fill " + (px - 40) + " " + (PAD_Y + 23) + " " + (pz - 40)
+						+ " " + (px + 40) + " " + (PAD_Y + 45) + " " + (pz + 40) + " minecraft:air");
+					placeIdx++;
+					ticks = 0;
 				}
-				if (ticks == 220) {
-					conn.sendCommand("removelive");
-					InstantMassiveStructures.LOGGER.info("MetaOrientationPlaytestShot: done; quitting");
-					done = true;
-					client.stop();
-				}
+				return;
+			}
+
+			if (phase == 2 && ticks >= 20) {
+				InstantMassiveStructures.LOGGER.info("MetaOrientationPlaytestShot: batch done; quitting");
+				done = true;
+				client.stop();
 			}
 		});
 	}
