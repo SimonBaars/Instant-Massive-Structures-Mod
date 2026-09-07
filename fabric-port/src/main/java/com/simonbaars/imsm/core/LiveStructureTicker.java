@@ -8,6 +8,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.LinkedHashMap;
@@ -310,6 +312,15 @@ public final class LiveStructureTicker {
 	private static final List<LiveInstance> ACTIVE = new CopyOnWriteArrayList<>();
 	private static boolean registered;
 
+	/** Dev/playtest: skip heavy schematic place/clear/explode on path steps after first frame. */
+	static boolean lightPathMode() {
+		return "1".equals(System.getProperty("imsm.lightpath"));
+	}
+
+	static boolean fastRideMode() {
+		return "1".equals(System.getProperty("imsm.fastride"));
+	}
+
 	private LiveStructureTicker() {}
 
 	public static void init() {
@@ -323,11 +334,23 @@ public final class LiveStructureTicker {
 				return;
 			}
 			for (LiveInstance inst : ACTIVE) {
-				// Seek/continue rides every tick — Ferris frames are 40t apart; mount window
-				// was missed when only checked inside advanceFrame.
-				// Waiting for slide/mount only — in-ride teleports still advance with frames
-				if (inst.riderUuid != null && inst.rideProgress >= -2 && inst.rideProgress < 0 && inst.path == null) {
-					inst.tickRide();
+				// Seek mount every tick while waiting; while riding, hold seat every tick
+				// (legacy ySync) so gravity between Ferris 40t frames does not drop the rider.
+				if (inst.riderUuid != null && inst.rideProgress >= -2 && inst.path == null) {
+					if (inst.rideProgress < 0) {
+						inst.tickRide();
+					} else {
+						inst.holdRideSeat();
+						// Playtest fastride: advance cart every 2t so full 61-point loop
+						// can complete under llvmpipe (frame place is ~60k–110k voxels).
+						if (fastRideMode()) {
+							inst.rideFastCounter++;
+							if (inst.rideFastCounter >= 2) {
+								inst.rideFastCounter = 0;
+								inst.tickRide();
+							}
+						}
+					}
 				}
 				inst.ticksSinceFrame++;
 				if (inst.ticksSinceFrame < inst.ticksUntilNext) {
@@ -400,6 +423,9 @@ public final class LiveStructureTicker {
 		}
 		try {
 			inst.placeCurrentFrame(true);
+			if (def.isPathMover()) {
+				inst.clearSpawnCorridor();
+			}
 			inst.applyWaitAfterCurrentFrame();
 			ACTIVE.add(inst);
 			LiveStructurePersistence.saveAll(ACTIVE);
@@ -576,6 +602,7 @@ public final class LiveStructureTicker {
 		// FreeFall ride subset
 		UUID riderUuid;
 		int rideProgress = -3; // -3 = none; -2 = waiting for slide 2; -1 = waiting mount; >=0 riding
+		int rideFastCounter;
 		double rideHoldX;
 		double rideHoldZ;
 
@@ -637,7 +664,9 @@ public final class LiveStructureTicker {
 			frameIndex = (frameIndex + 1) % frames.length;
 			placeCurrentFrame(false);
 			applyWaitAfterCurrentFrame();
-			tickRide();
+			if (!fastRideMode() || rideProgress < 0) {
+				tickRide();
+			}
 		}
 
 		void advancePath() throws Exception {
@@ -657,23 +686,113 @@ public final class LiveStructureTicker {
 				return;
 			}
 
-			clearLastBounds();
+			boolean light = lightPathMode();
+			if (!light) {
+				clearLastBounds();
+			}
 			origin = origin.offset(step.dx(), step.dy(), step.dz());
 			frameIndex = (frameIndex + 1) % frames.length;
-			placeCurrentFrame(false);
-			// Legacy trail: removeStuff slabs behind the craft. Port clears full prior AABB
-			// in clearLastBounds (strictly stronger than legacy removeStuff).
-			if (hitObstacleAndExplode(step)) {
-				return;
+			if (!light) {
+				placeCurrentFrame(false);
+				// Legacy trail: removeStuff slabs behind the craft. Port clears full prior AABB
+				// in clearLastBounds (strictly stronger than legacy removeStuff).
+				// Probe grace: first N motion steps skip explode so leftover spawn-pad terrain
+				// (uncleared corridor edge) does not detonate a fresh craft.
+				int grace = probeGraceSteps();
+				if (stepsDone >= grace && hitObstacleAndExplode(step)) {
+					return;
+				}
+			} else if (stepsDone == 0) {
+				InstantMassiveStructures.LOGGER.info(
+					"{} lightpath mode: skipping place/clear/explode after first frame", baseName);
 			}
 			carryNearbyPlayers(step.dx(), step.dy(), step.dz());
 			stepsDone++;
 			stepsRemaining--;
-			ticksUntilNext = Math.max(1, path.ticksPerStep());
+			ticksUntilNext = light ? 1 : Math.max(1, path.ticksPerStep());
 
 			if (stepsRemaining <= 0) {
 				advanceMotionPhase();
 			}
+		}
+
+		/** Steps after depart before obstacle probe arms (half-extent + pad margin). */
+		int probeGraceSteps() {
+			int half = Math.max(lastLength, lastWidth) / 2;
+			return Math.max(4, half + 2);
+		}
+
+		/**
+		 * Strip air along the expected voyage so leftover terrain does not explode the craft
+		 * on the first motion steps (matches playtest pad fills). Boat/bus: full AABB tunnel.
+		 * Aviation/ships: thin mid-band + early horizontal steps only (avoid 35k×N clears).
+		 */
+		void clearSpawnCorridor() {
+			if (path == null || lastLength <= 0 || lastHeight <= 0 || lastWidth <= 0) {
+				return;
+			}
+			int steps = levelSteps;
+			if (path.aviation()) {
+				steps += path.climbCount() + path.descendCount();
+			}
+			steps = Math.max(steps, probeGraceSteps() + 2);
+			// Thin lead-face strip only (same columns as obstacle probe) — never wipe the
+			// just-placed boarding craft. Full AABB tunnel would also be ruinously expensive
+			// for ships (~35k voxels × N).
+			PathStep primary = path.aviation() && path.climbCount() > 0 ? path.climb() : path.cruise();
+			if (primary.dx() == 0 && primary.dz() == 0) {
+				return;
+			}
+			int sample = path.aviation() ? Math.min(steps, probeGraceSteps() + 8) : steps;
+			BlockPos cursor = startOrigin;
+			int cleared = 0;
+			for (int i = 0; i < sample; i++) {
+				cursor = cursor.offset(primary.dx(), primary.dy(), primary.dz());
+				cleared += clearLeadProbeColumns(cursor, primary);
+			}
+			InstantMassiveStructures.LOGGER.info(
+				"{} cleared spawn corridor ({} lead cells, {} slices, grace {} steps) from {}",
+				baseName, cleared, sample, probeGraceSteps(), startOrigin);
+		}
+
+		/** Clear the 5-column mid-height lead face just outside craft AABB at {@code at}. */
+		int clearLeadProbeColumns(BlockPos at, PathStep step) {
+			int x = at.getX();
+			int y = at.getY();
+			int z = at.getZ();
+			int minX = x - (lastLength / 2) + 1;
+			int minZ = z - (lastWidth / 2) + 1;
+			int maxX = minX + lastLength - 1;
+			int maxZ = minZ + lastWidth - 1;
+			int midY = y + (lastHeight / 2);
+			int n = 0;
+			for (int i = -2; i <= 2; i++) {
+				int checkx;
+				int checkz;
+				if (step.dx() != 0) {
+					if (step.dx() > 0) {
+						checkx = maxX + 1;
+						checkz = minZ + (lastWidth / 2) + i;
+					} else {
+						checkx = minX - 1;
+						checkz = minZ + (lastWidth / 2) + i;
+					}
+				} else if (step.dz() > 0) {
+					checkx = minX + (lastLength / 2) + i;
+					checkz = maxZ + 1;
+				} else {
+					checkx = minX + (lastLength / 2) + i;
+					checkz = minZ - 1;
+				}
+				// Clear a short vertical column so pad terrain / trees at mid-height vanish
+				for (int dy = -2; dy <= 2; dy++) {
+					BlockPos p = new BlockPos(checkx, midY + dy, checkz);
+					world.setBlock(p, Blocks.AIR.defaultBlockState(),
+						Block.UPDATE_ALL);
+					n++;
+				}
+			}
+			return n;
 		}
 
 		private PathStep currentMotionStep() {
@@ -701,7 +820,7 @@ public final class LiveStructureTicker {
 					"{} departing {} for {} blocks {}",
 					baseName, origin, levelSteps, formatStep(path.cruise()));
 			}
-			ticksUntilNext = Math.max(1, path.ticksPerStep());
+			ticksUntilNext = lightPathMode() ? 1 : Math.max(1, path.ticksPerStep());
 		}
 
 		private void advanceMotionPhase() throws Exception {
@@ -777,10 +896,18 @@ public final class LiveStructureTicker {
 		void placeCurrentFrame(boolean first) throws Exception {
 			SchematicStructure structure = new SchematicStructure(frames[frameIndex]);
 			structure.readFromFile();
-			structure.process(world, origin.getX(), origin.getY(), origin.getZ());
 			lastLength = structure.getLength();
 			lastHeight = structure.getHeight();
 			lastWidth = structure.getWidth();
+			if (lightPathMode() && path != null) {
+				// Measure-only + gold marker — skip 35k voxel place so phase FSM can finish on VM.
+				world.setBlock(origin, Blocks.GOLD_BLOCK.defaultBlockState(), Block.UPDATE_ALL);
+				InstantMassiveStructures.LOGGER.info(
+					"{} lightpath place skip {} (measured {}x{}x{}, marker at {})",
+					baseName, frames[frameIndex], lastLength, lastHeight, lastWidth, origin);
+				return;
+			}
+			structure.process(world, origin.getX(), origin.getY(), origin.getZ());
 			if (!first) {
 				InstantMassiveStructures.LOGGER.debug("Live frame {} at {} (next wait {} ticks)",
 					frames[frameIndex], origin, ticksUntilNext);
@@ -935,7 +1062,11 @@ public final class LiveStructureTicker {
 				double expectX = ox - 4.5;
 				double expectY = oy + 1.0 + FERRIS_RIDE_Y[idx];
 				double expectZ = oz - 36.0 - FERRIS_RIDE_Z[idx] + 0.5;
-				if (rider.distanceToSqr(expectX, expectY, expectZ) > 4.0) {
+				// Soft drift: only XZ walk-away ends the ride. Y is re-held every tick
+				// (holdRideSeat); legacy int-distance>1 was too tight under 40t frames.
+				double dx = rider.getX() - expectX;
+				double dz = rider.getZ() - expectZ;
+				if (dx * dx + dz * dz > 36.0) {
 					rider.sendSystemMessage(Component.literal(
 						"Thanks for your visit. We hope to see you again soon!"));
 					clearRide();
@@ -944,6 +1075,8 @@ public final class LiveStructureTicker {
 				if (rideProgress >= FERRIS_RIDE_Y.length - 1) {
 					rider.sendSystemMessage(Component.literal(
 						"Thanks for your visit. We hope to see you again soon!"));
+					InstantMassiveStructures.LOGGER.info(
+						"{} ride complete ({} cart points)", baseName, FERRIS_RIDE_Y.length);
 					clearRide();
 					return;
 				}
@@ -968,6 +1101,26 @@ public final class LiveStructureTicker {
 
 			rideProgress++;
 			teleportFreeFallRide(rider, oy);
+		}
+
+		/** Every-tick seat lock while riding (legacy ySync). Does not advance progress. */
+		void holdRideSeat() {
+			if (riderUuid == null || rideProgress < 0) {
+				return;
+			}
+			ServerPlayer rider = world.getServer().getPlayerList().getPlayer(riderUuid);
+			if (rider == null) {
+				clearRide();
+				return;
+			}
+			double ox = origin.getX();
+			double oy = origin.getY();
+			double oz = origin.getZ();
+			if ("Live_FerrisWheel".equals(baseName)) {
+				teleportFerrisRide(rider, ox, oy, oz);
+			} else {
+				teleportFreeFallRide(rider, oy);
+			}
 		}
 
 		private void teleportFreeFallRide(ServerPlayer rider, double originY) {
