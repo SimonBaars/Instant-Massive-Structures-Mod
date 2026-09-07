@@ -1,0 +1,32 @@
+{
+	"schemaVersion": 1,
+	"id": "imsm",
+	"version": "${version}",
+	"name": "Instant Massive Structures Mod",
+	"description": "Spawn massive structures instantly with the click of a button",
+	"authors": [
+		"SimonBaars",
+		"Ported to Fabric 26.2"
+	],
+	"contact": {
+		"sources": "https://github.com/SimonBaars/Instant-Massive-Structures-Mod"
+	},
+	"license": "MIT",
+	"icon": "assets/imsm/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.simonbaars.imsm.InstantMassiveStructures"
+		],
+		"client": [
+			"com.simonbaars.imsm.client.InstantMassiveStructuresClient"
+		]
+	},
+	"mixins": [],
+	"depends": {
+		"fabricloader": ">=0.19.5",
+		"minecraft": "~26.2",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}

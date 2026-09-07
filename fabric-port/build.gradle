@@ -1,0 +1,126 @@
+plugins {
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
+	id 'maven-publish'
+}
+
+version = project.version
+group = project.maven_group
+
+base {
+	archivesName = project.archives_base_name
+}
+
+repositories {
+	mavenCentral()
+}
+
+loom {
+	splitEnvironmentSourceSets()
+
+	mods {
+		"imsm" {
+			sourceSet sourceSets.main
+			sourceSet sourceSets.client
+		}
+	}
+
+	runs {
+		client {
+			// Optional: -Pimsplay to boot straight into the imsplay creative world
+			if (project.hasProperty('imsplay')) {
+				programArgs '--quickPlaySingleplayer', 'imsplay'
+			}
+			// Optional: -Paviationshot auto-runs LiveAirplane path + screenshots then quits
+			if (project.hasProperty('aviationshot')) {
+				vmArg '-Dimsm.aviationshot=1'
+				programArgs '--quickPlaySingleplayer', 'imsplay'
+			}
+			if (project.hasProperty('ferrisrideshot')) {
+				vmArg '-Dimsm.ferrisrideshot=1'
+				vmArg '-Dimsm.fastride=1'
+				programArgs '--quickPlaySingleplayer', 'imsplay'
+			}
+			if (project.hasProperty('planeshot')) {
+				vmArg '-Dimsm.planeshot=1'
+				programArgs '--quickPlaySingleplayer', 'imsplay'
+			}
+			if (project.hasProperty('balloonshot')) {
+				vmArg '-Dimsm.balloonshot=1'
+				vmArg '-Xmx4G'
+				programArgs '--quickPlaySingleplayer', 'imsplay'
+			}
+			if (project.hasProperty('shipshot')) {
+				vmArg '-Dimsm.shipshot=1'
+				vmArg '-Dimsm.lightpath=1'
+				vmArg '-Xmx6G'
+				programArgs '--quickPlaySingleplayer', 'imsplay'
+			}
+			if (project.hasProperty('bus2shot')) {
+				vmArg '-Dimsm.bus2shot=1'
+				programArgs '--quickPlaySingleplayer', 'imsplay'
+			}
+			if (project.hasProperty('bus2light')) {
+				vmArg '-Dimsm.bus2shot=1'
+				vmArg '-Dimsm.lightpath=1'
+				programArgs '--quickPlaySingleplayer', 'imsplay'
+			}
+			if (project.hasProperty('freefallrideshot')) {
+				vmArg '-Dimsm.freefallrideshot=1'
+				programArgs '--quickPlaySingleplayer', 'imsplay'
+			}
+			if (project.hasProperty('flyinghelishot')) {
+				vmArg '-Dimsm.flyinghelishot=1'
+				programArgs '--quickPlaySingleplayer', 'imsplay'
+			}
+			if (project.hasProperty('framecyclershot')) {
+				vmArg '-Dimsm.framecyclershot=1'
+				programArgs '--quickPlaySingleplayer', 'imsplay'
+			}
+			if (project.hasProperty('staticheldshot')) {
+				vmArg '-Dimsm.staticheldshot=1'
+				programArgs '--quickPlaySingleplayer', 'imsplay'
+			}
+			if (project.hasProperty('boatbusshot')) {
+				vmArg '-Dimsm.boatbusshot=1'
+				programArgs '--quickPlaySingleplayer', 'imsplay'
+			}
+			if (project.hasProperty('persistencesmoke')) {
+				vmArg '-Dimsm.persistencesmoke=1'
+				programArgs '--quickPlaySingleplayer', 'imsplay'
+			}
+		}
+	}
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+}
+
+processResources {
+	inputs.property "version", project.version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 25
+}
+
+java {
+	withSourcesJar()
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(25)
+	}
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
+}
+
+jar {
+	from("LICENSE") {
+		rename { "${it}_${project.archives_base_name}"}
+	}
+}

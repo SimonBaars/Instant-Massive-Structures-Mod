@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "imsm:block/transport_street_roundabout_north_east_south_west"
+    }
+  }
+}

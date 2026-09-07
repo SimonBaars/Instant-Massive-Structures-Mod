@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "imsm:block/transport_public_hightram_e_north"
+    }
+  }
+}

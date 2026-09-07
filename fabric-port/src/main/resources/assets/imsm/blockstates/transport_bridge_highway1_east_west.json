@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "imsm:block/transport_bridge_highway1_east_west"
+    }
+  }
+}

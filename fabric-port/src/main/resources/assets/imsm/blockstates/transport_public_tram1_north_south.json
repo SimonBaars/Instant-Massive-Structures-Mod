@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "imsm:block/transport_public_tram1_north_south"
+    }
+  }
+}

@@ -1,0 +1,79 @@
+# Playtest Checklist
+
+## Pre-Testing Setup
+
+- [ ] Install Minecraft 1.21.11
+- [ ] Install Fabric Loader 0.19.5+
+- [ ] Install Fabric API 0.141.6+1.21.11
+- [ ] Place mod JAR in mods folder
+- [ ] Launch game successfully
+
+## Basic Functionality
+
+- [ ] Mod loads without errors
+- [ ] "Instant Massive Structures" creative tab appears
+- [ ] All 5 structure blocks appear in creative tab with correct names
+
+## Structure Placement Testing
+
+### Wooden House
+- [ ] Place structure block in world
+- [ ] Right-click block
+- [ ] Structure spawns instantly
+- [ ] No console errors
+- [ ] Structure is complete (no missing blocks)
+- [ ] Structure block is removed after placement
+
+### House
+- [ ] Place and spawn structure
+- [ ] Verify completeness
+- [ ] No errors
+
+### Cosy House  
+- [ ] Place and spawn structure
+- [ ] Verify completeness
+- [ ] No errors
+
+### Giant Tree
+- [ ] Place and spawn structure
+- [ ] Verify tree is complete
+- [ ] No errors
+
+### Farm
+- [ ] Place and spawn structure
+- [ ] Verify crops/farmland placed correctly
+- [ ] No errors
+
+## Edge Cases
+
+- [ ] Place structure on uneven terrain
+- [ ] Place structure partially over water
+- [ ] Place structure partially over lava
+- [ ] Place multiple structures near each other
+- [ ] Place structure at high Y coordinates (near build limit)
+- [ ] Place structure at low Y coordinates (near bedrock)
+
+## Special Item Interactions (Should show "not yet implemented" messages)
+
+- [ ] Right-click with Redstone held
+- [ ] Right-click with Book held
+- [ ] Right-click with Fire Charge held
+
+## Performance
+
+- [ ] Structure placement is instant (no lag)
+- [ ] Multiple rapid placements don't crash game
+- [ ] Structures in loaded chunks persist after relog
+
+## Compatibility
+
+- [ ] Works in Singleplayer
+- [ ] Test on server (if available)
+- [ ] No conflicts with Fabric API
+- [ ] No conflicts with other common mods (if available)
+
+## Known Issues to Document
+
+- List any bugs found during testing
+- Note any structures that don't spawn correctly
+- Document any performance issues

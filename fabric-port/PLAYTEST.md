@@ -1,0 +1,96 @@
+# Playtest Checklist
+
+## Pre-Testing Setup
+
+- [ ] Install Minecraft 26.2
+- [ ] Install Fabric Loader 0.19.5+
+- [ ] Install Fabric API 0.159.0+26.2
+- [ ] Place mod JAR in mods folder
+- [ ] Launch game successfully
+
+## Basic Functionality
+
+- [ ] Mod loads without errors
+- [x] "Instant Massive Structures" creative tab appears
+- [x] All 952 structure blocks appear in creative tab (lang names auto-generated; verify a sample of pretty names)
+
+## Structure Placement Testing
+
+### Wooden House
+- [ ] Place structure block in world
+- [ ] Right-click block
+- [ ] Structure spawns instantly
+- [ ] No console errors
+- [ ] Structure is complete (no missing blocks)
+- [ ] Structure block is removed after placement
+
+### House
+- [ ] Place and spawn structure
+- [ ] Verify completeness
+- [ ] No errors
+
+### Cosy House  
+- [ ] Place and spawn structure
+- [ ] Verify completeness
+- [ ] No errors
+
+### Giant Tree
+- [ ] Place and spawn structure
+- [ ] Verify tree is complete
+- [ ] No errors
+
+### Farm
+- [ ] Place and spawn structure
+- [ ] Verify crops/farmland placed correctly
+- [ ] No errors
+
+## Edge Cases
+
+- [ ] Place structure on uneven terrain
+- [ ] Place structure partially over water
+- [ ] Place structure partially over lava
+- [ ] Place multiple structures near each other
+- [ ] Place structure at high Y coordinates (near build limit)
+- [ ] Place structure at low Y coordinates (near bedrock)
+
+## Special Item Interactions (Should show "not yet implemented" messages)
+
+- [x] Right-click with Redstone held (glass outline)
+- [x] Right-click with Book held (replace-air toggle)
+- [x] Right-click with Fire Charge held (undo last static)
+
+## Performance
+
+- [ ] Structure placement is instant (no lag)
+- [ ] Multiple rapid placements don't crash game
+- [ ] Structures in loaded chunks persist after relog
+
+## Compatibility
+
+- [ ] Works in Singleplayer
+- [ ] Test on server (if available)
+- [ ] No conflicts with Fabric API
+- [ ] No conflicts with other common mods (if available)
+
+## Known Issues to Document
+
+- List any bugs found during testing
+- Note any structures that don't spawn correctly
+- Document any performance issues
+
+
+## Live structures (frame ticker)
+
+- [x] Live Ferris Wheel cycles frames
+- [x] Live Mill cycles frames (`/imsm live mill`)
+- [x] Live Water Mill cycles frames
+- [x] Live Power Windmill East cycles frames
+- [x] Live Helicopter cycles frames
+- [x] LiveBoat / Live_Bus +Z path short loop (`/imsm live boat [n]`; chat distance dialog N/A→command)
+- [x] Aviation path subset: LiveAirplane (+ Live_Flying_Helicopter wired) climb/level/descend (`/imsm live airplane [n]`; chat dialog N/A→command)
+- [x] LivePlane / LiveAirBalloon / LiveFlyingShip1/2 aviation paths (`/imsm live plane|balloon|ship1|ship2 [n]`)
+- [x] `/removelive` (+ aliases) stops all active lives
+- [x] LiveStructures persistence (`<world>/LiveStructures/N.txt` save/load)
+- [x] Live Cinema cycles frames (`/imsm live cinema`, 43 frames / 20 ticks)
+- [x] Fair FreeFall frame cycle (`/imsm live freefall`, 21 frames / variable waits) + `/ride` Y-curve subset
+- [x] Ferris `/ride` 2D cart-path subset (legacy RideStructure #0 Y+Z arrays)

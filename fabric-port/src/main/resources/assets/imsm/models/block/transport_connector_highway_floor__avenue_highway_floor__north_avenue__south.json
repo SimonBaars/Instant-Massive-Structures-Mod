@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "imsm:block/transport_connector_highway_floor__avenue_highway_floor__north_avenue__south"
+  }
+}

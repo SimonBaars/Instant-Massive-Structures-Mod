@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "imsm:block/transport_water4_corner_north_south_east_west"
+    }
+  }
+}

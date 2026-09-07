@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "imsm:block/random_spawn_house_prod"
+    }
+  }
+}

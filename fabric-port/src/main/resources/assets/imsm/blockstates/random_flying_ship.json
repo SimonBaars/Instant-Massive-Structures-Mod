@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "imsm:block/random_flying_ship"
+    }
+  }
+}

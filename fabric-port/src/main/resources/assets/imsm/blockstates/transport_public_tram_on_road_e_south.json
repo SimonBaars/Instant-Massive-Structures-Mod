@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "imsm:block/transport_public_tram_on_road_e_south"
+    }
+  }
+}
