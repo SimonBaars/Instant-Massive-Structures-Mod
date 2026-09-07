@@ -45,6 +45,10 @@ Legacy `BlockLiveStructure` ignored held items → live start always. Port match
 
 Extended `LiveStructures/N.txt` stores origin, phase, stepsRemaining, frame, dims, **doLoop**. Lean legacy files reconstruct `stepsRemaining ≈ phaseLength − animationTimes` (best-effort). Dialog sentinel `waitTime=2e9` still dropped on load.
 
+## Honest board status
+
+**Mostly OK** (not Done). See `fabric-port/PORT_STATUS.md` — Bus2 AABB explode fixed; Ferris/FreeFall `/ride` started; ship full multi-phase film N/A under llvmpipe.
+
 ## Build / playtest
 
 ```bash
