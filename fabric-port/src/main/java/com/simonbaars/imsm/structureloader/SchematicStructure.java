@@ -97,7 +97,8 @@ public class SchematicStructure {
 					BlockPos pos = new BlockPos(posX + x, posY + y, posZ + z);
 					
 					try {
-						BlockState state = block.defaultBlockState();
+						int metadata = blockData[y][z][x];
+						BlockState state = LegacyBlockMetadataConverter.applyMetadata(block, metadata);
 						world.setBlock(pos, state, Block.UPDATE_ALL);
 						blocksPlaced++;
 					} catch (Exception e) {
