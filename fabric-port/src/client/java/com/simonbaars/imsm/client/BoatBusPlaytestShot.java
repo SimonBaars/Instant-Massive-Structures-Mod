@@ -6,9 +6,9 @@ import net.minecraft.client.Screenshot;
 
 /** Dev-only: {@code -Dimsm.boatbusshot=1} — boat then bus one-shot +Z complete without explode. */
 public final class BoatBusPlaytestShot {
-	private static final int PAD_X = 900;
-	private static final int PAD_Y = 68;
-	private static final int PAD_Z = -200;
+	private static final int PAD_X = 2200;
+	private static final int PAD_Y = 100;
+	private static final int PAD_Z = 300;
 
 	private static int ticks = -1;
 	private static int stage; // 0 setup, 1 boat, 2 bus, 3 done
@@ -34,10 +34,13 @@ public final class BoatBusPlaytestShot {
 				conn.sendCommand("effect give @p minecraft:night_vision 999 0 true");
 				conn.sendCommand("forceload add " + (PAD_X - 40) + " " + (PAD_Z - 40)
 					+ " " + (PAD_X + 40) + " " + (PAD_Z + 100));
-				conn.sendCommand("fill " + (PAD_X - 40) + " " + (PAD_Y - 5) + " " + (PAD_Z - 30)
-					+ " " + (PAD_X + 40) + " " + (PAD_Y + 25) + " " + (PAD_Z + 80) + " minecraft:air");
-				conn.sendCommand("fill " + (PAD_X - 40) + " " + (PAD_Y - 5) + " " + (PAD_Z - 30)
-					+ " " + (PAD_X + 40) + " " + (PAD_Y - 4) + " " + (PAD_Z + 80) + " minecraft:smooth_stone");
+				for (int zz = PAD_Z - 30; zz <= PAD_Z + 80; zz += 16) {
+					int z2 = Math.min(zz + 15, PAD_Z + 80);
+					conn.sendCommand("fill " + (PAD_X - 20) + " " + (PAD_Y - 5) + " " + zz
+						+ " " + (PAD_X + 20) + " " + (PAD_Y + 16) + " " + z2 + " minecraft:air");
+					conn.sendCommand("fill " + (PAD_X - 20) + " " + (PAD_Y - 5) + " " + zz
+						+ " " + (PAD_X + 20) + " " + (PAD_Y - 4) + " " + z2 + " minecraft:smooth_stone");
+				}
 				conn.sendCommand("tp @p " + PAD_X + " " + (PAD_Y + 4) + " " + PAD_Z + " 0 15");
 				stage = 1;
 				ticks = 0;
@@ -64,10 +67,13 @@ public final class BoatBusPlaytestShot {
 				if (removed && ticks == 240) {
 					if (stage == 1) {
 						// /removelive leaves last-frame blocks; clear corridor before bus
-						conn.sendCommand("fill " + (PAD_X - 40) + " " + (PAD_Y - 5) + " " + (PAD_Z - 30)
-							+ " " + (PAD_X + 40) + " " + (PAD_Y + 25) + " " + (PAD_Z + 80) + " minecraft:air");
-						conn.sendCommand("fill " + (PAD_X - 40) + " " + (PAD_Y - 5) + " " + (PAD_Z - 30)
-							+ " " + (PAD_X + 40) + " " + (PAD_Y - 4) + " " + (PAD_Z + 80) + " minecraft:smooth_stone");
+						for (int zz = PAD_Z - 30; zz <= PAD_Z + 80; zz += 16) {
+					int z2 = Math.min(zz + 15, PAD_Z + 80);
+					conn.sendCommand("fill " + (PAD_X - 20) + " " + (PAD_Y - 5) + " " + zz
+						+ " " + (PAD_X + 20) + " " + (PAD_Y + 16) + " " + z2 + " minecraft:air");
+					conn.sendCommand("fill " + (PAD_X - 20) + " " + (PAD_Y - 5) + " " + zz
+						+ " " + (PAD_X + 20) + " " + (PAD_Y - 4) + " " + z2 + " minecraft:smooth_stone");
+				}
 						stage = 2;
 						ticks = 0;
 						started = shotMid = removed = false;

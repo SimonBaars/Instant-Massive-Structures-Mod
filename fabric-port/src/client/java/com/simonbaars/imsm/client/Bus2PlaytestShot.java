@@ -9,9 +9,9 @@ import net.minecraft.client.Screenshot;
  * starts Live_Bus2 +Z path (dedicated Live_Bus20 frame), waits for one-shot voyage complete.
  */
 public final class Bus2PlaytestShot {
-	private static final int PAD_X = 1100;
-	private static final int PAD_Y = 70;
-	private static final int PAD_Z = -100;
+	private static final int PAD_X = 2100;
+	private static final int PAD_Y = 100;
+	private static final int PAD_Z = 200;
 	private static final int DISTANCE = 16;
 
 	private static int ticks = -1;
@@ -53,12 +53,14 @@ public final class Bus2PlaytestShot {
 				// Force-load corridor chunks so pad fill sticks (+Z cruise)
 				conn.sendCommand("forceload add " + (PAD_X - 32) + " " + (PAD_Z - 32)
 					+ " " + (PAD_X + 32) + " " + (PAD_Z + 96));
-				conn.sendCommand("fill " + (PAD_X - 30) + " " + (PAD_Y - 2) + " " + (PAD_Z - 20)
-					+ " " + (PAD_X + 30) + " " + (PAD_Y + 20) + " " + (PAD_Z + 80)
-					+ " minecraft:air");
-				conn.sendCommand("fill " + (PAD_X - 30) + " " + (PAD_Y - 2) + " " + (PAD_Z - 20)
-					+ " " + (PAD_X + 30) + " " + (PAD_Y - 1) + " " + (PAD_Z + 80)
-					+ " minecraft:smooth_stone");
+				// Strip fills keep each command under MC's 32768 block limit
+				for (int zz = PAD_Z - 20; zz <= PAD_Z + 80; zz += 16) {
+					int z2 = Math.min(zz + 15, PAD_Z + 80);
+					conn.sendCommand("fill " + (PAD_X - 20) + " " + (PAD_Y - 2) + " " + zz
+						+ " " + (PAD_X + 20) + " " + (PAD_Y + 16) + " " + z2 + " minecraft:air");
+					conn.sendCommand("fill " + (PAD_X - 20) + " " + (PAD_Y - 2) + " " + zz
+						+ " " + (PAD_X + 20) + " " + (PAD_Y - 1) + " " + z2 + " minecraft:smooth_stone");
+				}
 				conn.sendCommand("tp @p " + PAD_X + " " + (PAD_Y + 4) + " " + PAD_Z + " 0 20");
 				teleported = true;
 				InstantMassiveStructures.LOGGER.info("Bus2PlaytestShot: pad cleared at {},{},{}",

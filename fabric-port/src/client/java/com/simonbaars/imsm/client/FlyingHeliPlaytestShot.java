@@ -52,18 +52,18 @@ public final class FlyingHeliPlaytestShot {
 				InstantMassiveStructures.LOGGER.info("FlyingHeliPlaytestShot: screenshot boarding");
 			}
 			// 4 ticks/step; climb 30 → ~120t; start~140
-			if (started && !shotClimb && ticks == 200) {
+			if (started && !shotClimb && ticks == 220) {
 				conn.sendCommand("tp @p " + (PAD_X + 20) + " " + (PAD_Y + 20) + " " + (PAD_Z - 20) + " 140 30");
 			}
-			if (started && !shotClimb && ticks == 215) {
+			if (started && !shotClimb && ticks == 240) {
 				Screenshot.grab(client, false);
 				shotClimb = true;
 				InstantMassiveStructures.LOGGER.info("FlyingHeliPlaytestShot: screenshot climb");
 			}
-			if (started && !shotLevel && ticks == 280) {
+			if (started && !shotLevel && ticks == 340) {
 				conn.sendCommand("tp @p " + (PAD_X + 25) + " " + (PAD_Y + 40) + " " + (PAD_Z - 50) + " 150 20");
 			}
-			if (started && !shotLevel && ticks == 295) {
+			if (started && !shotLevel && ticks == 450) {
 				Screenshot.grab(client, false);
 				shotLevel = true;
 				InstantMassiveStructures.LOGGER.info("FlyingHeliPlaytestShot: screenshot level");
@@ -71,12 +71,12 @@ public final class FlyingHeliPlaytestShot {
 			if (started && !shotDescend && ticks == 360) {
 				conn.sendCommand("tp @p " + (PAD_X + 30) + " " + (PAD_Y + 20) + " " + (PAD_Z - 90) + " 160 25");
 			}
-			if (started && !shotDescend && ticks == 375) {
+			if (started && !shotDescend && ticks == 470) {
 				Screenshot.grab(client, false);
 				shotDescend = true;
 				InstantMassiveStructures.LOGGER.info("FlyingHeliPlaytestShot: screenshot descend");
 			}
-			if (shotDescend && ticks == 400) {
+			if (shotDescend && ticks == 520) {
 				conn.sendCommand("removelive");
 				InstantMassiveStructures.LOGGER.info("FlyingHeliPlaytestShot: quitting");
 				done = true;
