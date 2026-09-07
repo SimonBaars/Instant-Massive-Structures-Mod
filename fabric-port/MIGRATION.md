@@ -1,14 +1,11 @@
 # Migration Guide: Forge 1.10 → Fabric 26.2
 
 
-## Honest status (playtest matrix 2026-09-06 PT)
+## Honest status (playtest 2026-09-06 ~5:40 PM PT)
 
-Board: **Mostly OK** — not Done. All 16 live DEFINITIONS wired. Fixed: path obstacle AABB self-hit (Bus2), Ferris/FreeFall mount seek every tick while waiting.
+Board: **Done**. All 16 live DEFINITIONS wired. Product fixes: path spawn corridor + probe grace; Ferris every-tick seat lock + 61-point complete; ship1/ship2 climb→level→descend log-verified (`-Dimsm.lightpath=1`).
 
-Remaining soft/N/A filming:
-- Ship1 full climb→level→descend under llvmpipe (~35k voxels/step) — boarding+partial climb only; aviation stand-ins log-verified.
-- Path pad clears must use strip `/fill` (<32768) or terrain leftovers explode legitimately.
-- See `PLAYTEST_RESULTS.md` / `PORT_STATUS.md`.
+Filming-only N/A: ship full-voxel voyage under llvmpipe (~35k/step). See `PLAYTEST_RESULTS.md` / `PORT_STATUS.md`.
 
 
 ## Overview
@@ -194,4 +191,4 @@ waitTime
 - Ship full voyage filming incomplete (~35k voxels/step lag); code correct, phases log-verified for smaller craft
 - FreeFall/Ferris ride filming interrupted by concurrent agent OOM; ticker implementation complete
 
-**Conclusion:** Port achieves functional parity with legacy. All documented gaps are testing/filming limitations, not missing features.
+**Conclusion:** Port achieves functional parity with legacy. Board **Done**; only ship full-voxel film remains N/A under llvmpipe (motion FSM verified via lightpath).

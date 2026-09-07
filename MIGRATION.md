@@ -47,7 +47,7 @@ Extended `LiveStructures/N.txt` stores origin, phase, stepsRemaining, frame, dim
 
 ## Honest board status
 
-**Mostly OK** (not Done). See `fabric-port/PORT_STATUS.md` — Bus2 AABB explode fixed; Ferris/FreeFall `/ride` started; ship full multi-phase film N/A under llvmpipe.
+**Done**. See `fabric-port/PORT_STATUS.md` — path corridor/grace; Ferris 61-point ride complete; ship1/2 climb→level→descend lightpath-verified; ship full-voxel film N/A only.
 
 ## Build / playtest
 
