@@ -88,6 +88,11 @@ loom {
 				vmArg '-Dimsm.persistencesmoke=1'
 				programArgs '--quickPlaySingleplayer', 'imsplay'
 			}
+			if (project.hasProperty('metashot')) {
+				vmArg '-Dimsm.metashot=1'
+				vmArg '-Xmx4G'
+				programArgs '--quickPlaySingleplayer', 'imsplay'
+			}
 		}
 	}
 }
