@@ -8,6 +8,8 @@ import net.minecraft.world.level.block.state.properties.*;
 /**
  * Converts legacy Minecraft 1.7-1.12 block metadata (id + data value)
  * to modern BlockState properties for Fabric 1.21+.
+ * <p>Superseded for placement by {@link LegacyBlockStates} (needs raw id+meta for
+ * color/wood remaps). Kept for reference / property-only helpers.
  */
 public class LegacyBlockMetadataConverter {
 
