@@ -1,5 +1,16 @@
 # Migration Guide: Forge 1.10 → Fabric 26.2
 
+
+## Honest status (playtest matrix 2026-09-06 PT)
+
+Board: **Mostly OK** — not Done. All 16 live DEFINITIONS wired. Fixed: path obstacle AABB self-hit (Bus2), Ferris/FreeFall mount seek every tick while waiting.
+
+Remaining soft/N/A filming:
+- Ship1 full climb→level→descend under llvmpipe (~35k voxels/step) — boarding+partial climb only; aviation stand-ins log-verified.
+- Path pad clears must use strip `/fill` (<32768) or terrain leftovers explode legitimately.
+- See `PLAYTEST_RESULTS.md` / `PORT_STATUS.md`.
+
+
 ## Overview
 
 This document details the differences between the original Instant-Massive-Structures Forge 1.10 mod and the Fabric 26.2 port.
