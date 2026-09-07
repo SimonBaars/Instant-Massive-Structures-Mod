@@ -37,6 +37,7 @@ loom {
 			}
 			if (project.hasProperty('ferrisrideshot')) {
 				vmArg '-Dimsm.ferrisrideshot=1'
+				vmArg '-Dimsm.fastride=1'
 				programArgs '--quickPlaySingleplayer', 'imsplay'
 			}
 			if (project.hasProperty('planeshot')) {
@@ -50,11 +51,17 @@ loom {
 			}
 			if (project.hasProperty('shipshot')) {
 				vmArg '-Dimsm.shipshot=1'
+				vmArg '-Dimsm.lightpath=1'
 				vmArg '-Xmx6G'
 				programArgs '--quickPlaySingleplayer', 'imsplay'
 			}
 			if (project.hasProperty('bus2shot')) {
 				vmArg '-Dimsm.bus2shot=1'
+				programArgs '--quickPlaySingleplayer', 'imsplay'
+			}
+			if (project.hasProperty('bus2light')) {
+				vmArg '-Dimsm.bus2shot=1'
+				vmArg '-Dimsm.lightpath=1'
 				programArgs '--quickPlaySingleplayer', 'imsplay'
 			}
 			if (project.hasProperty('freefallrideshot')) {

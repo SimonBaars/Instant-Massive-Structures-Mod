@@ -83,29 +83,29 @@ public final class Bus2PlaytestShot {
 			}
 
 			// Mid cruise: depart ~t140; ~8 of 16 steps @6t → ~t188
-			if (started && !shotMid && ticks == 180) {
+			if (started && !shotMid && ticks == 280) {
 				conn.sendCommand("tp @p " + (PAD_X + 12) + " " + (PAD_Y + 6) + " " + (PAD_Z + 8) + " -30 20");
 			}
-			if (started && !shotMid && ticks == 195) {
+			if (started && !shotMid && ticks == 320) {
 				Screenshot.grab(client, false);
 				shotMid = true;
 				InstantMassiveStructures.LOGGER.info("Bus2PlaytestShot: screenshot mid cruise");
 			}
 
 			// One-shot: board 40 + 16*6 = 136t after start → complete ~t236; capture then removelive
-			if (started && !shotDone && ticks == 300) {
+			if (started && !shotDone && ticks == 700) {
 				Screenshot.grab(client, false);
 				shotDone = true;
 				InstantMassiveStructures.LOGGER.info("Bus2PlaytestShot: screenshot voyage-end window");
 			}
 
-			if (shotDone && !removed && ticks == 310) {
+			if (shotDone && !removed && ticks == 720) {
 				conn.sendCommand("removelive");
 				removed = true;
 				InstantMassiveStructures.LOGGER.info("Bus2PlaytestShot: /removelive");
 			}
 
-			if (removed && ticks == 330) {
+			if (removed && ticks == 740) {
 				InstantMassiveStructures.LOGGER.info("Bus2PlaytestShot: quitting");
 				done = true;
 				client.stop();
