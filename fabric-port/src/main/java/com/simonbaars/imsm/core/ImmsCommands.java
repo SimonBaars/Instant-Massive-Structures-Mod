@@ -11,6 +11,17 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import com.simonbaars.imsm.InstantMassiveStructures;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.level.block.RotatedPillarBlock;
+import net.minecraft.world.level.block.state.properties.Half;
+import com.simonbaars.imsm.structureloader.SchematicStructure;
+import com.simonbaars.imsm.structureloader.LegacyBlockStates;
+import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.Direction;
+import java.util.EnumMap;
+import java.util.Map;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -70,6 +81,14 @@ public final class ImmsCommands {
 						ServerPlayer player = ctx.getSource().getPlayerOrException();
 						return LiveStructureTicker.toggleRide(player) ? 1 : 0;
 					}))
+				.then(Commands.literal("place")
+					.then(Commands.argument("structure", StringArgumentType.word())
+						.executes(ctx -> placeStatic(ctx.getSource(),
+							StringArgumentType.getString(ctx, "structure")))))
+				.then(Commands.literal("metastats")
+					.then(Commands.argument("structure", StringArgumentType.word())
+						.executes(ctx -> metaStats(ctx.getSource(),
+							StringArgumentType.getString(ctx, "structure")))))
 				.then(Commands.literal("removelive")
 					.executes(ctx -> removelive(ctx.getSource()))));
 
@@ -99,6 +118,74 @@ public final class ImmsCommands {
 			dispatcher.register(Commands.literal("livestructuresremove")
 				.executes(ctx -> removelive(ctx.getSource())));
 		});
+	}
+
+
+	/** Place a static schematic at the player (playtest / meta verification). */
+	private static int placeStatic(CommandSourceStack source, String structureName) {
+		try {
+			ServerPlayer player = source.getPlayerOrException();
+			ServerLevel world = player.level();
+			BlockPos origin = player.blockPosition();
+			SchematicStructure structure = new SchematicStructure(structureName);
+			structure.readFromFile();
+			structure.process(world, origin.getX(), origin.getY(), origin.getZ(), true);
+			source.sendSuccess(() -> Component.literal(
+				"Placed static " + structureName + " at " + origin
+					+ " (" + structure.getLength() + "x" + structure.getHeight() + "x" + structure.getWidth() + ")"), true);
+			return 1;
+		} catch (Exception e) {
+			source.sendFailure(Component.literal("place failed: " + e.getMessage()));
+			return 0;
+		}
+	}
+
+	/** Count stair facings produced by legacy id+meta mapping (no world write). */
+	private static int metaStats(CommandSourceStack source, String structureName) {
+		try {
+			SchematicStructure structure = new SchematicStructure(structureName);
+			structure.readFromFile();
+			Map<Direction, Integer> facings = new EnumMap<>(Direction.class);
+			int stairs = 0, nonDefaultHalf = 0, colored = 0, axisNonY = 0, total = 0;
+			for (int y = 0; y < structure.getHeight(); y++) {
+				for (int z = 0; z < structure.getWidth(); z++) {
+					for (int x = 0; x < structure.getLength(); x++) {
+						int id = structure.getLegacyId(x, y, z);
+						if (id < 0) continue;
+						BlockState state = LegacyBlockStates.fromLegacy(id, structure.getLegacyMeta(x, y, z));
+						if (state == null || state.isAir()) continue;
+						total++;
+						if (state.getBlock() instanceof StairBlock) {
+							stairs++;
+							Direction f = state.getValue(StairBlock.FACING);
+							facings.merge(f, 1, Integer::sum);
+							if (state.getValue(StairBlock.HALF) == Half.TOP) {
+								nonDefaultHalf++;
+							}
+						}
+						String key = BuiltInRegistries.BLOCK.getKey(state.getBlock()).getPath();
+						if (key.contains("_wool") || key.contains("_terracotta") || key.contains("_carpet")) {
+							if (!key.startsWith("white_")) colored++;
+						}
+						if (state.hasProperty(RotatedPillarBlock.AXIS)
+								&& state.getValue(RotatedPillarBlock.AXIS) != Direction.Axis.Y) {
+							axisNonY++;
+						}
+					}
+				}
+			}
+			String msg = "metastats " + structureName + ": blocks=" + total
+				+ " stairs=" + stairs + " facings=" + facings
+				+ " upsideDown=" + nonDefaultHalf
+				+ " nonWhiteColor=" + colored
+				+ " logAxisNonY=" + axisNonY;
+			source.sendSuccess(() -> Component.literal(msg), true);
+			InstantMassiveStructures.LOGGER.info(msg);
+			return stairs;
+		} catch (Exception e) {
+			source.sendFailure(Component.literal("metastats failed: " + e.getMessage()));
+			return 0;
+		}
 	}
 
 	private static int removelive(CommandSourceStack source) {

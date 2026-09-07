@@ -2,10 +2,8 @@ package com.simonbaars.imsm.structureloader;
 
 import com.simonbaars.imsm.InstantMassiveStructures;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -17,7 +15,8 @@ import java.util.zip.GZIPInputStream;
 
 public class SchematicStructure {
 	private final String fileName;
-	private Block[][][] blocks;
+	/** Pre-flattening block ids; -1 = unset / unmapped. */
+	private int[][][] legacyIds;
 	private int[][][] blockData;
 	private int length;
 	private int height;
@@ -42,21 +41,26 @@ public class SchematicStructure {
 		this.width = nbt.getShort("Length").orElse((short)0);
 		this.height = nbt.getShort("Height").orElse((short)0);
 
-		this.blocks = new Block[height][width][length];
+		this.legacyIds = new int[height][width][length];
 		this.blockData = new int[height][width][length];
+		for (int y0 = 0; y0 < height; y0++) {
+			for (int z0 = 0; z0 < width; z0++) {
+				for (int x0 = 0; x0 < length; x0++) {
+					this.legacyIds[y0][z0][x0] = -1;
+				}
+			}
+		}
 
 		byte[] blockIds = nbt.getByteArray("Blocks").orElse(new byte[0]);
 		byte[] blockDataBytes = nbt.getByteArray("Data").orElse(new byte[0]);
 
 		int x = 1, y = 1, z = 1;
 		for (int i = 0; i < blockIds.length; i++) {
-			int blockId = (short) (blockIds[i] & 0xFF);
-			
-			Block block = getBlockFromLegacyId(blockId);
-			if (block != null) {
-				this.blocks[y - 1][z - 1][x - 1] = block;
-				this.blockData[y - 1][z - 1][x - 1] = blockDataBytes[i] & 0xFF;
-			}
+			int blockId = blockIds[i] & 0xFF;
+			int meta = i < blockDataBytes.length ? (blockDataBytes[i] & 0xFF) : 0;
+			// Keep raw id+meta; BlockState resolved at process-time via LegacyBlockStates
+			this.legacyIds[y - 1][z - 1][x - 1] = blockId;
+			this.blockData[y - 1][z - 1][x - 1] = meta;
 
 			x++;
 			if (x > length) {
@@ -90,15 +94,16 @@ public class SchematicStructure {
 		for (int y = 0; y < height; y++) {
 			for (int z = 0; z < width; z++) {
 				for (int x = 0; x < length; x++) {
-					Block block = blocks[y][z][x];
-					if (block == null) continue;
-					if (!replaceAir && block == Blocks.AIR) continue;
+					int legacyId = legacyIds[y][z][x];
+					if (legacyId < 0) continue;
+
+					BlockState state = LegacyBlockStates.fromLegacy(legacyId, blockData[y][z][x]);
+					if (state == null) continue;
+					if (!replaceAir && state.isAir()) continue;
 
 					BlockPos pos = new BlockPos(posX + x, posY + y, posZ + z);
 					
 					try {
-						int metadata = blockData[y][z][x];
-						BlockState state = LegacyBlockMetadataConverter.applyMetadata(block, metadata);
 						world.setBlock(pos, state, Block.UPDATE_ALL);
 						blocksPlaced++;
 					} catch (Exception e) {
@@ -148,61 +153,6 @@ public class SchematicStructure {
 		}
 	}
 
-	private Block getBlockFromLegacyId(int legacyId) {
-		String[] legacyMappings = {
-			"air", "stone", "grass_block", "dirt", "cobblestone", "oak_planks",
-			"oak_sapling", "bedrock", "water", "water", "lava", "lava", "sand",
-			"gravel", "gold_ore", "iron_ore", "coal_ore", "oak_log", "oak_leaves",
-			"sponge", "glass", "lapis_ore", "lapis_block", "dispenser", "sandstone",
-			"note_block", "red_bed", "powered_rail", "detector_rail", "sticky_piston",
-			"cobweb", "grass", "dead_bush", "piston", "white_wool", "dandelion",
-			"poppy", "brown_mushroom", "red_mushroom", "gold_block", "iron_block",
-			"smooth_stone_slab", "bricks", "tnt", "bookshelf", "mossy_cobblestone",
-			"obsidian", "torch", "fire", "spawner", "oak_stairs", "chest", "redstone_wire",
-			"diamond_ore", "diamond_block", "crafting_table", "wheat", "farmland",
-			"furnace", "oak_sign", "oak_door", "ladder", "rail", "cobblestone_stairs",
-			"oak_wall_sign", "lever", "stone_pressure_plate", "iron_door", "oak_pressure_plate",
-			"redstone_ore", "redstone_torch", "stone_button", "snow", "ice", "snow_block",
-			"cactus", "clay", "sugar_cane", "jukebox", "oak_fence", "pumpkin",
-			"netherrack", "soul_sand", "glowstone", "nether_portal", "jack_o_lantern",
-			"cake", "repeater", "white_stained_glass", "oak_trapdoor", "stone_bricks",
-			"brown_mushroom_block", "red_mushroom_block", "iron_bars", "glass_pane",
-			"melon", "pumpkin_stem", "melon_stem", "vine", "oak_fence_gate",
-			"brick_stairs", "stone_brick_stairs", "mycelium", "lily_pad", "nether_bricks",
-			"nether_brick_fence", "nether_brick_stairs", "nether_wart", "enchanting_table",
-			"brewing_stand", "cauldron", "end_portal", "end_portal_frame", "end_stone",
-			"dragon_egg", "redstone_lamp", "oak_slab", "sandstone_stairs", "emerald_ore",
-			"ender_chest", "tripwire_hook", "tripwire", "emerald_block", "spruce_stairs",
-			"birch_stairs", "jungle_stairs", "command_block", "beacon", "cobblestone_wall",
-			"flower_pot", "carrots", "potatoes", "oak_button", "skeleton_skull",
-			"anvil", "trapped_chest", "light_weighted_pressure_plate", "heavy_weighted_pressure_plate",
-			"comparator", "daylight_detector", "redstone_block", "nether_quartz_ore", "hopper",
-			"quartz_block", "quartz_stairs", "activator_rail", "dropper", "white_terracotta",
-			"white_stained_glass_pane", "acacia_leaves", "acacia_log", "acacia_stairs", "dark_oak_stairs",
-			"slime_block", "barrier", "iron_trapdoor", "prismarine", "sea_lantern",
-			"hay_block", "white_carpet", "terracotta", "coal_block", "packed_ice",
-			"sunflower", "standing_banner", "wall_banner", "daylight_detector", "red_sandstone",
-			"red_sandstone_stairs", "red_sandstone_slab", "spruce_fence_gate", "birch_fence_gate",
-			"jungle_fence_gate", "dark_oak_fence_gate", "acacia_fence_gate", "spruce_fence",
-			"birch_fence", "jungle_fence", "dark_oak_fence", "acacia_fence", "spruce_door",
-			"birch_door", "jungle_door", "acacia_door", "dark_oak_door", "end_rod",
-			"chorus_plant", "chorus_flower", "purpur_block", "purpur_pillar", "purpur_stairs",
-			"purpur_slab", "end_stone_bricks", "beetroots", "dirt_path", "end_gateway",
-			"repeating_command_block", "chain_command_block", "frosted_ice", "magma_block",
-			"nether_wart_block", "red_nether_bricks", "bone_block", "structure_void",
-			"observer", "white_shulker_box", "orange_shulker_box"
-		};
-
-		if (legacyId >= 0 && legacyId < legacyMappings.length) {
-			String blockName = legacyMappings[legacyId];
-			Identifier targetId = Identifier.fromNamespaceAndPath("minecraft", blockName);
-			return BuiltInRegistries.BLOCK.get(targetId)
-				.map(h -> h.value())
-				.orElse(null);
-		}
-
-		return null;
-	}
 
 	public int getLength() {
 		return length;
@@ -214,6 +164,14 @@ public class SchematicStructure {
 
 	public int getWidth() {
 		return width;
+	}
+
+	public int getLegacyId(int x, int y, int z) {
+		return legacyIds[y][z][x];
+	}
+
+	public int getLegacyMeta(int x, int y, int z) {
+		return blockData[y][z][x];
 	}
 
 	/** Clear the same centered bounding box that {@link #process} would occupy. */

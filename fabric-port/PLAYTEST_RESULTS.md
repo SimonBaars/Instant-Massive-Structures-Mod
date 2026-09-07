@@ -37,3 +37,18 @@ Client: Fabric Loom `runClient` on DISPLAY=:5 (`JAVA_HOME=/workspace/jdk-25`)
 ## Screenshots
 
 `playtest-shots/94-*.png` … `107-ferris-ride-late-complete.png`
+
+## Block metadata fix (2026-09-06 PT evening)
+
+**Root cause:** `SchematicStructure.process` placed `block.defaultBlockState()` and never applied schematic `Data` (legacy meta). Legacy 1.12 used `getStateFromMeta(blockData)`.
+
+**Fix:** `LegacyBlockStates.fromLegacy(id, meta)` + process uses stored legacy ids/meta. Covers stairs facing/half, slabs, log axis, wool/terracotta/carpet/glass colors, ladder/furnace/chest facing, torches, trapdoors, fence gates, rails, pistons, etc.
+
+**Evidence (`/imsm metastats`):**
+- WoodenHouse: stairs facings `{north=5,south=2,west=4,east=4}` upsideDown=4 logAxisNonY=16
+- Live_FerrisWheel: stairs=1596 with mixed facings; **nonWhiteColor=3628** (would be 0 if meta ignored)
+
+**Shots:** `playtest-shots/113-meta-AFTER-house-close1.png` … `117-meta-AFTER-ferris-top.png` (+ jpg previews). BEFORE ref: `108-meta-BEFORE-ferris-default.webp`.
+
+**Harness:** `-Pmetashot` / `imsm.metashot=1`; commands `/imsm place` + `/imsm metastats`.
+
