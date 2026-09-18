@@ -3,14 +3,20 @@ package com.simonbaars.imsm.structureloader;
 import com.simonbaars.imsm.InstantMassiveStructures;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.io.DataInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
 public class SchematicStructure {
@@ -18,6 +24,8 @@ public class SchematicStructure {
 	/** Pre-flattening block ids; -1 = unset / unmapped. */
 	private int[][][] legacyIds;
 	private int[][][] blockData;
+	/** Tile entities from schematic, keyed by relative position "x,y,z" */
+	private Map<String, CompoundTag> tileEntities;
 	private int length;
 	private int height;
 	private int width;
@@ -43,6 +51,8 @@ public class SchematicStructure {
 
 		this.legacyIds = new int[height][width][length];
 		this.blockData = new int[height][width][length];
+		this.tileEntities = new HashMap<>();
+		
 		for (int y0 = 0; y0 < height; y0++) {
 			for (int z0 = 0; z0 < width; z0++) {
 				for (int x0 = 0; x0 < length; x0++) {
@@ -72,9 +82,20 @@ public class SchematicStructure {
 				y++;
 			}
 		}
+		
+		// Read tile entities
+		ListTag tileEntitiesList = nbt.getList("TileEntities", 10); // 10 = CompoundTag type
+		for (int i = 0; i < tileEntitiesList.size(); i++) {
+			CompoundTag te = tileEntitiesList.getCompound(i);
+			int teX = te.getInt("x");
+			int teY = te.getInt("y");
+			int teZ = te.getInt("z");
+			String posKey = teX + "," + teY + "," + teZ;
+			tileEntities.put(posKey, te);
+		}
 
-		InstantMassiveStructures.LOGGER.info("Loaded structure {} with dimensions {}x{}x{}", 
-			fileName, length, height, width);
+		InstantMassiveStructures.LOGGER.info("Loaded structure {} with dimensions {}x{}x{}, {} tile entities", 
+			fileName, length, height, width, tileEntities.size());
 	}
 
 	public void process(ServerLevel world, int posX, int posY, int posZ) {
@@ -86,11 +107,13 @@ public class SchematicStructure {
 	 *                   existing world blocks are not cleared. Non-air still places.
 	 */
 	public void process(ServerLevel world, int posX, int posY, int posZ, boolean replaceAir) {
-		posX -= length / 2 - 1;
-		posZ -= width / 2 - 1;
+		int originX = posX - length / 2 + 1;
+		int originZ = posZ - width / 2 + 1;
 
 		int blocksPlaced = 0;
+		int tilesPlaced = 0;
 
+		// First pass: place all blocks
 		for (int y = 0; y < height; y++) {
 			for (int z = 0; z < width; z++) {
 				for (int x = 0; x < length; x++) {
@@ -101,7 +124,7 @@ public class SchematicStructure {
 					if (state == null) continue;
 					if (!replaceAir && state.isAir()) continue;
 
-					BlockPos pos = new BlockPos(posX + x, posY + y, posZ + z);
+					BlockPos pos = new BlockPos(originX + x, posY + y, originZ + z);
 					
 					try {
 						world.setBlock(pos, state, Block.UPDATE_ALL);
@@ -113,9 +136,48 @@ public class SchematicStructure {
 				}
 			}
 		}
+		
+		// Second pass: place tile entities
+		for (Map.Entry<String, CompoundTag> entry : tileEntities.entrySet()) {
+			String[] coords = entry.getKey().split(",");
+			int schematicX = Integer.parseInt(coords[0]);
+			int schematicY = Integer.parseInt(coords[1]);
+			int schematicZ = Integer.parseInt(coords[2]);
+			
+			BlockPos worldPos = new BlockPos(originX + schematicX, posY + schematicY, originZ + schematicZ);
+			
+			try {
+				BlockEntity blockEntity = world.getBlockEntity(worldPos);
+				if (blockEntity != null) {
+					CompoundTag tileEntityData = entry.getValue().copy();
+					
+					// Update position to world coordinates
+					tileEntityData.putInt("x", worldPos.getX());
+					tileEntityData.putInt("y", worldPos.getY());
+					tileEntityData.putInt("z", worldPos.getZ());
+					
+					// Convert legacy tile entity ID to modern format if needed
+					String teId = tileEntityData.getString("id");
+					if (!teId.contains(":")) {
+						// Legacy format like "Chest" needs to become "minecraft:chest"
+						tileEntityData.putString("id", "minecraft:" + teId.toLowerCase());
+					}
+					
+					blockEntity.loadWithComponents(tileEntityData, world.registryAccess());
+					blockEntity.setChanged();
+					tilesPlaced++;
+				} else {
+					InstantMassiveStructures.LOGGER.warn("No block entity at {} for tile entity type {}", 
+						worldPos, entry.getValue().getString("id"));
+				}
+			} catch (Exception e) {
+				InstantMassiveStructures.LOGGER.error("Failed to place tile entity at {}: {}", 
+					worldPos, e.getMessage());
+			}
+		}
 
-		InstantMassiveStructures.LOGGER.info("Placed {} blocks for structure {} (replaceAir={})", 
-			blocksPlaced, fileName, replaceAir);
+		InstantMassiveStructures.LOGGER.info("Placed {} blocks, {} tile entities for structure {} (replaceAir={})", 
+			blocksPlaced, tilesPlaced, fileName, replaceAir);
 	}
 
 	/**
