@@ -5,7 +5,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.TagValueInput;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -84,7 +88,7 @@ public class SchematicStructure {
 		}
 		
 		// Read tile entities
-		ListTag tileEntitiesList = nbt.getList("TileEntities", 10); // 10 = CompoundTag type
+		ListTag tileEntitiesList = nbt.getListOrEmpty("TileEntities", 10); // 10 = CompoundTag type
 		for (int i = 0; i < tileEntitiesList.size(); i++) {
 			CompoundTag te = tileEntitiesList.getCompound(i);
 			int teX = te.getInt("x");
@@ -138,6 +142,7 @@ public class SchematicStructure {
 		}
 		
 		// Second pass: place tile entities
+		int containerItemsApplied = 0;
 		for (Map.Entry<String, CompoundTag> entry : tileEntities.entrySet()) {
 			String[] coords = entry.getKey().split(",");
 			int schematicX = Integer.parseInt(coords[0]);
@@ -159,16 +164,53 @@ public class SchematicStructure {
 					// Convert legacy tile entity ID to modern format if needed
 					String teId = tileEntityData.getString("id");
 					if (!teId.contains(":")) {
-						// Legacy format like "Chest" needs to become "minecraft:chest"
 						tileEntityData.putString("id", "minecraft:" + teId.toLowerCase());
 					}
 					
-					blockEntity.loadWithComponents(tileEntityData, world.registryAccess());
-					blockEntity.setChanged();
-					tilesPlaced++;
+					// MC 26.2: use TagValueInput.of() and loadWithComponents(ValueInput)
+					try {
+						blockEntity.loadWithComponents(TagValueInput.of(NbtOps.INSTANCE, tileEntityData), world.registryAccess());
+						blockEntity.setChanged();
+						tilesPlaced++;
+					} catch (Exception loadEx) {
+						InstantMassiveStructures.LOGGER.warn("Failed to load TE components at {}: {}", 
+							worldPos, loadEx.getMessage());
+					}
+					
+					// Apply legacy Items to Container (chests, furnaces, etc.)
+					if (blockEntity instanceof Container container && tileEntityData.contains("Items", 9)) {
+						ListTag itemsList = tileEntityData.getList("Items", 10); // 10 = CompoundTag
+						for (int i = 0; i < itemsList.size(); i++) {
+							CompoundTag itemTag = itemsList.getCompound(i);
+							try {
+								byte slot = itemTag.getByte("Slot");
+								short legacyId = itemTag.getShort("id");
+								byte count = itemTag.getByte("Count");
+								short damage = itemTag.getShort("Damage");
+								
+								// Convert legacy item ID to modern Item
+								var modernItem = LegacyItems.fromLegacyId(legacyId);
+								if (modernItem != null && !modernItem.equals(net.minecraft.world.item.Items.AIR)) {
+									ItemStack stack = new ItemStack(modernItem, count);
+									// Note: damage/meta conversion would go here if needed
+									if (slot >= 0 && slot < container.getContainerSize()) {
+										container.setItem(slot, stack);
+										containerItemsApplied++;
+									}
+								}
+							} catch (Exception itemEx) {
+								InstantMassiveStructures.LOGGER.warn("Failed to parse item in TE at {}: {}", 
+									worldPos, itemEx.getMessage());
+							}
+						}
+					}
 				} else {
-					InstantMassiveStructures.LOGGER.warn("No block entity at {} for tile entity type {}", 
-						worldPos, entry.getValue().getString("id"));
+					String teType = entry.getValue().getString("id");
+					// Known modern blocks without block entities (cauldron, etc.) - suppress warning
+					if (!teType.equals("Cauldron")) {
+						InstantMassiveStructures.LOGGER.warn("No block entity at {} for tile entity type {}", 
+							worldPos, teType);
+					}
 				}
 			} catch (Exception e) {
 				InstantMassiveStructures.LOGGER.error("Failed to place tile entity at {}: {}", 
@@ -176,8 +218,8 @@ public class SchematicStructure {
 			}
 		}
 
-		InstantMassiveStructures.LOGGER.info("Placed {} blocks, {} tile entities for structure {} (replaceAir={})", 
-			blocksPlaced, tilesPlaced, fileName, replaceAir);
+		InstantMassiveStructures.LOGGER.info("Placed {} blocks, {} tile entities, {} container items for structure {} (replaceAir={})", 
+			blocksPlaced, tilesPlaced, containerItemsApplied, fileName, replaceAir);
 	}
 
 	/**
