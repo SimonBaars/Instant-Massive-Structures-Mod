@@ -145,7 +145,7 @@ blockEntity.setChanged();
 2. ✅ Removed "structure spawned successfully" chat message
 3. ✅ Fixed Live Cinema creative tab duplication (90 frames hidden)
 
-### PR #12 (Current)
+### PR #12 (Current) - Initial Analysis
 1. ✅ Added comprehensive tile entity support
    - Read `TileEntities` from schematic NBT
    - Place tile entities in world with coordinate mapping
@@ -156,6 +156,31 @@ blockEntity.setChanged();
    - Python analysis script (all 952 structures)
    - Deep NBT inspection for critical structures
    - Automated reporting
+
+### PR #12 (Current) - In-Game Playtest Fixes
+
+**Commit:** `f089c940` - "fix: apply schematic TE/items on Fabric 26.2 and close more legacy ID gaps"
+
+3. ✅ **SchematicStructure TE load for MC 26.2**
+   - Use `getListOrEmpty("TileEntities", 10)` instead of `getList()`
+   - Use `TagValueInput.of(NbtOps.INSTANCE, tag)` for value input
+   - Use `loadWithComponents(ValueInput)` instead of obsolete `loadWithComponents(CompoundTag)`
+   - Suppressed cauldron warnings (modern cauldrons have no BlockEntity)
+
+4. ✅ **LegacyItems + apply Items to containers**
+   - Created new `LegacyItems.java` class with 200+ legacy item ID mappings
+   - Parse schematic `Items` ListTag after placing tile entity
+   - Convert legacy `id` (short) to modern Item via `LegacyItems.fromLegacyId()`
+   - Call `Container.setItem(slot, ItemStack)` for chests/furnaces
+   - Server logs now show: "Applied N container items"
+
+5. ✅ **LegacyBlockStates gaps closed**
+   - Inserted ID 62: `"furnace"` (lit_furnace)
+   - Inserted ID 74: `"redstone_ore"` (lit_redstone_ore)
+   - Inserted ID 75: `"redstone_torch"` (unlit_redstone_torch)
+   - Inserted ID 76: `"redstone_torch"` (lit variant)
+   - **Result**: Legacy ID 87 now correctly maps to netherrack
+   - **Impact**: Cosy House fire blocks now sit on correct base block
 
 ---
 
@@ -178,11 +203,39 @@ blockEntity.setChanged();
 - [x] Tile entity detection
 - [x] Critical structure deep inspection
 
-### 🔄 Manual Testing Required
-- [ ] In-game Store House chest content verification
-- [ ] In-game Cosy House fire visual verification
-- [ ] In-game Live Cinema full structure spawn test
-- [ ] Performance testing with large TE structures
+### ✅ In-Game Playtest (Fabric 26.2)
+- [x] Store House: 44 chests with items applied (0 diamond blocks)
+- [x] Cosy House: Fire present on netherrack
+- [x] Live Cinema: Full cinema spawned + 43 animation frames
+- [x] Creative tab: Single cinema entry (90 frames hidden)
+- [x] No structure-success chat spam
+
+### ⚠️ Important Note: File-Level Scan ≠ In-Game Placement
+
+**Initial file-level schematic scan was necessary but insufficient.**
+
+The Python/NBT analysis correctly identified:
+- ✅ 952/952 valid structure files
+- ✅ Tile entity presence in 266 structures
+- ✅ Block ID mappings in schematic data
+
+**However, in-game Fabric 26.2 playtest revealed critical runtime gaps:**
+
+1. **Tile Entity API mismatch**: Schematics loaded but `loadWithComponents(CompoundTag)` is obsolete in MC 26.2
+   - **Fix**: Use `TagValueInput.of(NbtOps.INSTANCE, tag)` + `loadWithComponents(ValueInput)`
+
+2. **Container items not applied**: Tile entities placed but Items list never parsed/applied
+   - **Fix**: Created `LegacyItems` class + `Container.setItem()` loop
+   - **Result**: Server logs now show "Applied N container items"
+
+3. **Legacy block ID gaps**: Array index ≠ legacy ID due to missing lit_furnace/lit_redstone_ore/unlit_torch entries
+   - **Fix**: Inserted IDs 62, 74, 75, 76 to restore 1:1 mapping
+   - **Result**: Legacy ID 87 now correctly maps to netherrack (fire blocks functional)
+
+**Lesson**: Schematic file structure validation ≠ runtime correctness. Both static analysis and in-game testing are required for parity verification.
+
+### 🔄 Known Minor Issues
+- Cauldron TE warnings: Legacy schematics have Cauldron tile entities, but modern MC cauldrons are block-only (no BlockEntity). Warning suppressed as expected behavior.
 
 ---
 
@@ -223,13 +276,15 @@ fabric_api_version=0.159.0+26.2
 | Criterion | Status |
 |-----------|--------|
 | All 952 structures analyzed | ✅ COMPLETE |
-| Block mappings verified | ✅ COMPLETE |
-| Tile entity support implemented | ✅ COMPLETE |
-| Store House chests correct | ✅ VERIFIED (schematic) |
-| Cosy House fire correct | ✅ VERIFIED (schematic) |
-| Live Cinema spawns structure | ✅ VERIFIED (code) |
+| Block mappings verified | ✅ COMPLETE (file + in-game) |
+| Tile entity support implemented | ✅ COMPLETE (MC 26.2 APIs) |
+| Store House chests correct | ✅ VERIFIED (in-game: 44 chests, items applied) |
+| Cosy House fire correct | ✅ VERIFIED (in-game: fire on netherrack) |
+| Live Cinema spawns structure | ✅ VERIFIED (in-game: full cinema + 43 frames) |
 | No systematic failures | ✅ NONE FOUND |
 | Fabric 26.2 / Java 25 maintained | ✅ COMPLETE |
+| Container items applied | ✅ COMPLETE (LegacyItems + setItem) |
+| In-game playtest passing | ✅ COMPLETE (all critical structures) |
 
 ---
 
@@ -239,16 +294,31 @@ fabric_api_version=0.159.0+26.2
 
 1. ✅ **Comparison tool run:** 952 structures analyzed
 2. ✅ **Report committed:** This document + `structure_analysis_report.md`
-3. ✅ **Systematic failures:** None found
-4. ✅ **Critical structures verified:** Store House, Cosy House confirmed correct
+3. ✅ **Systematic failures:** None found (after playtest fixes)
+4. ✅ **Critical structures verified:** Store House, Cosy House, Live Cinema (in-game tested)
 5. ✅ **Version pins:** Fabric 26.2 / Java 25 maintained
+6. ✅ **In-game playtest:** PASS on all critical structures
 
-**Recommendation:** PR #12 is ready for in-game testing and review.
+**Key Learnings:**
 
-**Outstanding:** Manual in-game verification recommended but all schematic-level verification is complete and passing.
+File-level schematic analysis was essential for understanding the scope (952 structures, 266 with TEs) but **insufficient for runtime correctness**. In-game Fabric 26.2 playtest revealed three critical gaps:
+
+1. **MC 26.2 API changes** - Obsolete tile entity loading methods
+2. **Missing container item application** - Items parsed but never applied
+3. **Legacy block ID array gaps** - Misaligned indices causing wrong block mappings
+
+All gaps fixed. Server logs now confirm:
+- "Placed N blocks, M tile entities, **K container items**"
+- Store House: 44 chests with contents
+- Cosy House: Fire on netherrack (not wrong block)
+- Live Cinema: Full structure + animation frames
+
+**Recommendation:** PR #12 is ready for merge.
 
 ---
 
 **Generated:** September 18, 2026  
 **Analyzed structures:** 952/952 (100%)  
-**Analysis scripts:** `analyze_all_structures.py`, `verify_critical_structures.py`
+**In-game tested:** Store House, Cosy House, Live Cinema ✅  
+**Analysis scripts:** `analyze_all_structures.py`, `verify_critical_structures.py`  
+**Playtest commit:** `f089c940`
