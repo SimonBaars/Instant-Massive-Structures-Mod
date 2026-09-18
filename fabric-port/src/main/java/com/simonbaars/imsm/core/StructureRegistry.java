@@ -18,6 +18,8 @@ import java.util.List;
 public class StructureRegistry {
 	private static final List<Block> STRUCTURE_BLOCKS = new ArrayList<>();
 	private static final List<Item> STRUCTURE_ITEMS = new ArrayList<>();
+	/** Items that should appear in creative tab (excludes animation frame variants). */
+	private static final List<Item> CREATIVE_TAB_ITEMS = new ArrayList<>();
 
 	public static void registerBlocks() {
 		InstantMassiveStructures.LOGGER.info("Registering 952 structure blocks...");
@@ -219,104 +221,104 @@ public class StructureRegistry {
 		registerStructureBlock("live_plane", "LivePlane", 26, 0, 19);
 		registerStructureBlock("live_plane0", "LivePlane0", 0, 0, 0);
 		registerStructureBlock("live__bus", "Live_Bus", 0, 0, 0);
-		registerStructureBlock("live__bus0", "Live_Bus0", 0, 0, 0);
-		registerStructureBlock("live__bus2", "Live_Bus2", 0, 0, 0);
-		registerStructureBlock("live__bus20", "Live_Bus20", 0, 0, 0);
+		registerStructureBlock("live__bus0", "Live_Bus0", 0, 0, 0, false);
+		registerStructureBlock("live__bus2", "Live_Bus2", 0, 0, 0, false);
+		registerStructureBlock("live__bus20", "Live_Bus20", 0, 0, 0, false);
 		registerStructureBlock("live__cinema", "Live_Cinema", 0, 0, 0);
-		registerStructureBlock("live__cinema0", "Live_Cinema0", 0, 0, 0);
-		registerStructureBlock("live__cinema1", "Live_Cinema1", 0, 0, 0);
-		registerStructureBlock("live__cinema10", "Live_Cinema10", 0, 0, 0);
-		registerStructureBlock("live__cinema11", "Live_Cinema11", 0, 0, 0);
-		registerStructureBlock("live__cinema12", "Live_Cinema12", 0, 0, 0);
-		registerStructureBlock("live__cinema13", "Live_Cinema13", 0, 0, 0);
-		registerStructureBlock("live__cinema14", "Live_Cinema14", 0, 0, 0);
-		registerStructureBlock("live__cinema15", "Live_Cinema15", 0, 0, 0);
-		registerStructureBlock("live__cinema16", "Live_Cinema16", 0, 0, 0);
-		registerStructureBlock("live__cinema17", "Live_Cinema17", 0, 0, 0);
-		registerStructureBlock("live__cinema18", "Live_Cinema18", 0, 0, 0);
-		registerStructureBlock("live__cinema19", "Live_Cinema19", 0, 0, 0);
-		registerStructureBlock("live__cinema2", "Live_Cinema2", 0, 0, 0);
-		registerStructureBlock("live__cinema20", "Live_Cinema20", 0, 0, 0);
-		registerStructureBlock("live__cinema21", "Live_Cinema21", 0, 0, 0);
-		registerStructureBlock("live__cinema22", "Live_Cinema22", 0, 0, 0);
-		registerStructureBlock("live__cinema23", "Live_Cinema23", 0, 0, 0);
-		registerStructureBlock("live__cinema24", "Live_Cinema24", 0, 0, 0);
-		registerStructureBlock("live__cinema25", "Live_Cinema25", 0, 0, 0);
-		registerStructureBlock("live__cinema26", "Live_Cinema26", 0, 0, 0);
-		registerStructureBlock("live__cinema27", "Live_Cinema27", 0, 0, 0);
-		registerStructureBlock("live__cinema28", "Live_Cinema28", 0, 0, 0);
-		registerStructureBlock("live__cinema29", "Live_Cinema29", 0, 0, 0);
-		registerStructureBlock("live__cinema3", "Live_Cinema3", 0, 0, 0);
-		registerStructureBlock("live__cinema30", "Live_Cinema30", 0, 0, 0);
-		registerStructureBlock("live__cinema31", "Live_Cinema31", 0, 0, 0);
-		registerStructureBlock("live__cinema32", "Live_Cinema32", 0, 0, 0);
-		registerStructureBlock("live__cinema33", "Live_Cinema33", 0, 0, 0);
-		registerStructureBlock("live__cinema34", "Live_Cinema34", 0, 0, 0);
-		registerStructureBlock("live__cinema35", "Live_Cinema35", 0, 0, 0);
-		registerStructureBlock("live__cinema36", "Live_Cinema36", 0, 0, 0);
-		registerStructureBlock("live__cinema37", "Live_Cinema37", 0, 0, 0);
-		registerStructureBlock("live__cinema38", "Live_Cinema38", 0, 0, 0);
-		registerStructureBlock("live__cinema39", "Live_Cinema39", 0, 0, 0);
-		registerStructureBlock("live__cinema4", "Live_Cinema4", 0, 0, 0);
-		registerStructureBlock("live__cinema40", "Live_Cinema40", 0, 0, 0);
-		registerStructureBlock("live__cinema41", "Live_Cinema41", 0, 0, 0);
-		registerStructureBlock("live__cinema42", "Live_Cinema42", 0, 0, 0);
-		registerStructureBlock("live__cinema5", "Live_Cinema5", 0, 0, 0);
-		registerStructureBlock("live__cinema6", "Live_Cinema6", 0, 0, 0);
-		registerStructureBlock("live__cinema7", "Live_Cinema7", 0, 0, 0);
-		registerStructureBlock("live__cinema8", "Live_Cinema8", 0, 0, 0);
-		registerStructureBlock("live__cinema9", "Live_Cinema9", 0, 0, 0);
+		registerStructureBlock("live__cinema0", "Live_Cinema0", 0, 0, 0, false);
+		registerStructureBlock("live__cinema1", "Live_Cinema1", 0, 0, 0, false);
+		registerStructureBlock("live__cinema10", "Live_Cinema10", 0, 0, 0, false);
+		registerStructureBlock("live__cinema11", "Live_Cinema11", 0, 0, 0, false);
+		registerStructureBlock("live__cinema12", "Live_Cinema12", 0, 0, 0, false);
+		registerStructureBlock("live__cinema13", "Live_Cinema13", 0, 0, 0, false);
+		registerStructureBlock("live__cinema14", "Live_Cinema14", 0, 0, 0, false);
+		registerStructureBlock("live__cinema15", "Live_Cinema15", 0, 0, 0, false);
+		registerStructureBlock("live__cinema16", "Live_Cinema16", 0, 0, 0, false);
+		registerStructureBlock("live__cinema17", "Live_Cinema17", 0, 0, 0, false);
+		registerStructureBlock("live__cinema18", "Live_Cinema18", 0, 0, 0, false);
+		registerStructureBlock("live__cinema19", "Live_Cinema19", 0, 0, 0, false);
+		registerStructureBlock("live__cinema2", "Live_Cinema2", 0, 0, 0, false);
+		registerStructureBlock("live__cinema20", "Live_Cinema20", 0, 0, 0, false);
+		registerStructureBlock("live__cinema21", "Live_Cinema21", 0, 0, 0, false);
+		registerStructureBlock("live__cinema22", "Live_Cinema22", 0, 0, 0, false);
+		registerStructureBlock("live__cinema23", "Live_Cinema23", 0, 0, 0, false);
+		registerStructureBlock("live__cinema24", "Live_Cinema24", 0, 0, 0, false);
+		registerStructureBlock("live__cinema25", "Live_Cinema25", 0, 0, 0, false);
+		registerStructureBlock("live__cinema26", "Live_Cinema26", 0, 0, 0, false);
+		registerStructureBlock("live__cinema27", "Live_Cinema27", 0, 0, 0, false);
+		registerStructureBlock("live__cinema28", "Live_Cinema28", 0, 0, 0, false);
+		registerStructureBlock("live__cinema29", "Live_Cinema29", 0, 0, 0, false);
+		registerStructureBlock("live__cinema3", "Live_Cinema3", 0, 0, 0, false);
+		registerStructureBlock("live__cinema30", "Live_Cinema30", 0, 0, 0, false);
+		registerStructureBlock("live__cinema31", "Live_Cinema31", 0, 0, 0, false);
+		registerStructureBlock("live__cinema32", "Live_Cinema32", 0, 0, 0, false);
+		registerStructureBlock("live__cinema33", "Live_Cinema33", 0, 0, 0, false);
+		registerStructureBlock("live__cinema34", "Live_Cinema34", 0, 0, 0, false);
+		registerStructureBlock("live__cinema35", "Live_Cinema35", 0, 0, 0, false);
+		registerStructureBlock("live__cinema36", "Live_Cinema36", 0, 0, 0, false);
+		registerStructureBlock("live__cinema37", "Live_Cinema37", 0, 0, 0, false);
+		registerStructureBlock("live__cinema38", "Live_Cinema38", 0, 0, 0, false);
+		registerStructureBlock("live__cinema39", "Live_Cinema39", 0, 0, 0, false);
+		registerStructureBlock("live__cinema4", "Live_Cinema4", 0, 0, 0, false);
+		registerStructureBlock("live__cinema40", "Live_Cinema40", 0, 0, 0, false);
+		registerStructureBlock("live__cinema41", "Live_Cinema41", 0, 0, 0, false);
+		registerStructureBlock("live__cinema42", "Live_Cinema42", 0, 0, 0, false);
+		registerStructureBlock("live__cinema5", "Live_Cinema5", 0, 0, 0, false);
+		registerStructureBlock("live__cinema6", "Live_Cinema6", 0, 0, 0, false);
+		registerStructureBlock("live__cinema7", "Live_Cinema7", 0, 0, 0, false);
+		registerStructureBlock("live__cinema8", "Live_Cinema8", 0, 0, 0, false);
+		registerStructureBlock("live__cinema9", "Live_Cinema9", 0, 0, 0, false);
 		registerStructureBlock("live__fair__free_fall", "Live_Fair_FreeFall", 0, 0, 0);
-		registerStructureBlock("live__fair__free_fall0", "Live_Fair_FreeFall0", 0, 0, 0);
-		registerStructureBlock("live__fair__free_fall1", "Live_Fair_FreeFall1", 0, 0, 0);
-		registerStructureBlock("live__fair__free_fall10", "Live_Fair_FreeFall10", 0, 0, 0);
-		registerStructureBlock("live__fair__free_fall11", "Live_Fair_FreeFall11", 0, 0, 0);
-		registerStructureBlock("live__fair__free_fall12", "Live_Fair_FreeFall12", 0, 0, 0);
-		registerStructureBlock("live__fair__free_fall13", "Live_Fair_FreeFall13", 0, 0, 0);
-		registerStructureBlock("live__fair__free_fall14", "Live_Fair_FreeFall14", 0, 0, 0);
-		registerStructureBlock("live__fair__free_fall15", "Live_Fair_FreeFall15", 0, 0, 0);
-		registerStructureBlock("live__fair__free_fall16", "Live_Fair_FreeFall16", 0, 0, 0);
-		registerStructureBlock("live__fair__free_fall17", "Live_Fair_FreeFall17", 0, 0, 0);
-		registerStructureBlock("live__fair__free_fall18", "Live_Fair_FreeFall18", 0, 0, 0);
-		registerStructureBlock("live__fair__free_fall19", "Live_Fair_FreeFall19", 0, 0, 0);
-		registerStructureBlock("live__fair__free_fall2", "Live_Fair_FreeFall2", 0, 0, 0);
-		registerStructureBlock("live__fair__free_fall20", "Live_Fair_FreeFall20", 0, 0, 0);
-		registerStructureBlock("live__fair__free_fall3", "Live_Fair_FreeFall3", 0, 0, 0);
-		registerStructureBlock("live__fair__free_fall4", "Live_Fair_FreeFall4", 0, 0, 0);
-		registerStructureBlock("live__fair__free_fall5", "Live_Fair_FreeFall5", 0, 0, 0);
-		registerStructureBlock("live__fair__free_fall6", "Live_Fair_FreeFall6", 0, 0, 0);
-		registerStructureBlock("live__fair__free_fall7", "Live_Fair_FreeFall7", 0, 0, 0);
-		registerStructureBlock("live__fair__free_fall8", "Live_Fair_FreeFall8", 0, 0, 0);
-		registerStructureBlock("live__fair__free_fall9", "Live_Fair_FreeFall9", 0, 0, 0);
+		registerStructureBlock("live__fair__free_fall0", "Live_Fair_FreeFall0", 0, 0, 0, false);
+		registerStructureBlock("live__fair__free_fall1", "Live_Fair_FreeFall1", 0, 0, 0, false);
+		registerStructureBlock("live__fair__free_fall10", "Live_Fair_FreeFall10", 0, 0, 0, false);
+		registerStructureBlock("live__fair__free_fall11", "Live_Fair_FreeFall11", 0, 0, 0, false);
+		registerStructureBlock("live__fair__free_fall12", "Live_Fair_FreeFall12", 0, 0, 0, false);
+		registerStructureBlock("live__fair__free_fall13", "Live_Fair_FreeFall13", 0, 0, 0, false);
+		registerStructureBlock("live__fair__free_fall14", "Live_Fair_FreeFall14", 0, 0, 0, false);
+		registerStructureBlock("live__fair__free_fall15", "Live_Fair_FreeFall15", 0, 0, 0, false);
+		registerStructureBlock("live__fair__free_fall16", "Live_Fair_FreeFall16", 0, 0, 0, false);
+		registerStructureBlock("live__fair__free_fall17", "Live_Fair_FreeFall17", 0, 0, 0, false);
+		registerStructureBlock("live__fair__free_fall18", "Live_Fair_FreeFall18", 0, 0, 0, false);
+		registerStructureBlock("live__fair__free_fall19", "Live_Fair_FreeFall19", 0, 0, 0, false);
+		registerStructureBlock("live__fair__free_fall2", "Live_Fair_FreeFall2", 0, 0, 0, false);
+		registerStructureBlock("live__fair__free_fall20", "Live_Fair_FreeFall20", 0, 0, 0, false);
+		registerStructureBlock("live__fair__free_fall3", "Live_Fair_FreeFall3", 0, 0, 0, false);
+		registerStructureBlock("live__fair__free_fall4", "Live_Fair_FreeFall4", 0, 0, 0, false);
+		registerStructureBlock("live__fair__free_fall5", "Live_Fair_FreeFall5", 0, 0, 0, false);
+		registerStructureBlock("live__fair__free_fall6", "Live_Fair_FreeFall6", 0, 0, 0, false);
+		registerStructureBlock("live__fair__free_fall7", "Live_Fair_FreeFall7", 0, 0, 0, false);
+		registerStructureBlock("live__fair__free_fall8", "Live_Fair_FreeFall8", 0, 0, 0, false);
+		registerStructureBlock("live__fair__free_fall9", "Live_Fair_FreeFall9", 0, 0, 0, false);
 		registerStructureBlock("live__ferris_wheel", "Live_FerrisWheel", 0, 0, 0);
-		registerStructureBlock("live__ferris_wheel0", "Live_FerrisWheel0", 0, 0, 0);
-		registerStructureBlock("live__ferris_wheel1", "Live_FerrisWheel1", 0, 0, 0);
-		registerStructureBlock("live__ferris_wheel2", "Live_FerrisWheel2", 0, 0, 0);
+		registerStructureBlock("live__ferris_wheel0", "Live_FerrisWheel0", 0, 0, 0, false);
+		registerStructureBlock("live__ferris_wheel1", "Live_FerrisWheel1", 0, 0, 0, false);
+		registerStructureBlock("live__ferris_wheel2", "Live_FerrisWheel2", 0, 0, 0, false);
 		registerStructureBlock("live__flying__helicopter", "Live_Flying_Helicopter", 0, 0, 0);
-		registerStructureBlock("live__flying__helicopter0", "Live_Flying_Helicopter0", 0, 0, 0);
-		registerStructureBlock("live__flying__helicopter1", "Live_Flying_Helicopter1", 0, 0, 0);
-		registerStructureBlock("live__flying__helicopter2", "Live_Flying_Helicopter2", 0, 0, 0);
-		registerStructureBlock("live__flying__helicopter3", "Live_Flying_Helicopter3", 0, 0, 0);
+		registerStructureBlock("live__flying__helicopter0", "Live_Flying_Helicopter0", 0, 0, 0, false);
+		registerStructureBlock("live__flying__helicopter1", "Live_Flying_Helicopter1", 0, 0, 0, false);
+		registerStructureBlock("live__flying__helicopter2", "Live_Flying_Helicopter2", 0, 0, 0, false);
+		registerStructureBlock("live__flying__helicopter3", "Live_Flying_Helicopter3", 0, 0, 0, false);
 		registerStructureBlock("live__helicopter", "Live_Helicopter", 0, 0, 0);
-		registerStructureBlock("live__helicopter0", "Live_Helicopter0", 0, 0, 0);
-		registerStructureBlock("live__helicopter1", "Live_Helicopter1", 0, 0, 0);
-		registerStructureBlock("live__helicopter2", "Live_Helicopter2", 0, 0, 0);
-		registerStructureBlock("live__helicopter3", "Live_Helicopter3", 0, 0, 0);
+		registerStructureBlock("live__helicopter0", "Live_Helicopter0", 0, 0, 0, false);
+		registerStructureBlock("live__helicopter1", "Live_Helicopter1", 0, 0, 0, false);
+		registerStructureBlock("live__helicopter2", "Live_Helicopter2", 0, 0, 0, false);
+		registerStructureBlock("live__helicopter3", "Live_Helicopter3", 0, 0, 0, false);
 		registerStructureBlock("live__mill", "Live_Mill", 0, 0, 0);
-		registerStructureBlock("live__mill0", "Live_Mill0", 0, 0, 0);
-		registerStructureBlock("live__mill1", "Live_Mill1", 0, 0, 0);
-		registerStructureBlock("live__mill2", "Live_Mill2", 0, 0, 0);
-		registerStructureBlock("live__mill3", "Live_Mill3", 0, 0, 0);
-		registerStructureBlock("live__mill4", "Live_Mill4", 0, 0, 0);
-		registerStructureBlock("live__mill5", "Live_Mill5", 0, 0, 0);
+		registerStructureBlock("live__mill0", "Live_Mill0", 0, 0, 0, false);
+		registerStructureBlock("live__mill1", "Live_Mill1", 0, 0, 0, false);
+		registerStructureBlock("live__mill2", "Live_Mill2", 0, 0, 0, false);
+		registerStructureBlock("live__mill3", "Live_Mill3", 0, 0, 0, false);
+		registerStructureBlock("live__mill4", "Live_Mill4", 0, 0, 0, false);
+		registerStructureBlock("live__mill5", "Live_Mill5", 0, 0, 0, false);
 		registerStructureBlock("live__power__windmill__east", "Live_Power_Windmill_East", 0, 0, 0);
-		registerStructureBlock("live__power__windmill__east0", "Live_Power_Windmill_East0", 0, 0, 0);
-		registerStructureBlock("live__power__windmill__east1", "Live_Power_Windmill_East1", 0, 0, 0);
-		registerStructureBlock("live__power__windmill__east2", "Live_Power_Windmill_East2", 0, 0, 0);
+		registerStructureBlock("live__power__windmill__east0", "Live_Power_Windmill_East0", 0, 0, 0, false);
+		registerStructureBlock("live__power__windmill__east1", "Live_Power_Windmill_East1", 0, 0, 0, false);
+		registerStructureBlock("live__power__windmill__east2", "Live_Power_Windmill_East2", 0, 0, 0, false);
 		registerStructureBlock("live__water_mill", "Live_WaterMill", 0, 0, 0);
-		registerStructureBlock("live__water_mill0", "Live_WaterMill0", 0, 0, 0);
-		registerStructureBlock("live__water_mill1", "Live_WaterMill1", 0, 0, 0);
-		registerStructureBlock("live__water_mill2", "Live_WaterMill2", 0, 0, 0);
+		registerStructureBlock("live__water_mill0", "Live_WaterMill0", 0, 0, 0, false);
+		registerStructureBlock("live__water_mill1", "Live_WaterMill1", 0, 0, 0, false);
+		registerStructureBlock("live__water_mill2", "Live_WaterMill2", 0, 0, 0, false);
 		registerStructureBlock("office_high__density_brick_east_west", "OfficeHigh_DensityBrickEastWest", 0, 0, 0);
 		registerStructureBlock("office_high__density_brick_north_south", "OfficeHigh_DensityBrickNorthSouth", 0, 0, 0);
 		registerStructureBlock("office_high__density_cyan_east", "OfficeHigh_DensityCyanEast", 0, 0, 0);
@@ -980,6 +982,11 @@ public class StructureRegistry {
 
 	private static void registerStructureBlock(String id, String structureName, 
 		int modX, int modY, int modZ) {
+		registerStructureBlock(id, structureName, modX, modY, modZ, true);
+	}
+
+	private static void registerStructureBlock(String id, String structureName, 
+		int modX, int modY, int modZ, boolean showInCreativeTab) {
 		Identifier identifier = Identifier.fromNamespaceAndPath(InstantMassiveStructures.MOD_ID, id);
 		ResourceKey<Block> blockKey = ResourceKey.create(Registries.BLOCK, identifier);
 		ResourceKey<Item> itemKey = ResourceKey.create(Registries.ITEM, identifier);
@@ -999,6 +1006,10 @@ public class StructureRegistry {
 		Item item = new BlockItem(block, itemProps);
 		Registry.register(BuiltInRegistries.ITEM, itemKey, item);
 		STRUCTURE_ITEMS.add(item);
+		
+		if (showInCreativeTab) {
+			CREATIVE_TAB_ITEMS.add(item);
+		}
 	}
 
 	public static void registerItems() {
@@ -1012,6 +1023,11 @@ public class StructureRegistry {
 
 	/** All registered structure BlockItems for creative-tab population. */
 	public static List<Item> getStructureItems() {
+		return CREATIVE_TAB_ITEMS;
+	}
+	
+	/** All registered structure BlockItems including hidden frame variants. */
+	public static List<Item> getAllStructureItems() {
 		return STRUCTURE_ITEMS;
 	}
 }

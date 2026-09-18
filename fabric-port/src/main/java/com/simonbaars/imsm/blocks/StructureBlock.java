@@ -107,8 +107,6 @@ public class StructureBlock extends Block {
 			structure.process(serverWorld, spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), doReplaceAir);
 			lastPlaced = new LastPlaced(structureName, spawnPos.immutable(),
 				structure.getLength(), structure.getHeight(), structure.getWidth());
-			player.sendSystemMessage(Component.literal("Structure '" + structureName +
-				"' spawned successfully!"));
 			InstantMassiveStructures.LOGGER.info("Player {} spawned structure {} at {} (replaceAir={})",
 				player.getName().getString(), structureName, spawnPos, doReplaceAir);
 		} catch (Exception e) {
