@@ -6,7 +6,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.TagValueInput;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -88,12 +87,12 @@ public class SchematicStructure {
 		}
 		
 		// Read tile entities
-		ListTag tileEntitiesList = nbt.getListOrEmpty("TileEntities", 10); // 10 = CompoundTag type
+		ListTag tileEntitiesList = nbt.getList("TileEntities").orElse(new ListTag());
 		for (int i = 0; i < tileEntitiesList.size(); i++) {
-			CompoundTag te = tileEntitiesList.getCompound(i);
-			int teX = te.getInt("x");
-			int teY = te.getInt("y");
-			int teZ = te.getInt("z");
+			CompoundTag te = tileEntitiesList.getCompound(i).orElseThrow();
+			int teX = te.getInt("x").orElse(0);
+			int teY = te.getInt("y").orElse(0);
+			int teZ = te.getInt("z").orElse(0);
 			String posKey = teX + "," + teY + "," + teZ;
 			tileEntities.put(posKey, te);
 		}
@@ -162,14 +161,14 @@ public class SchematicStructure {
 					tileEntityData.putInt("z", worldPos.getZ());
 					
 					// Convert legacy tile entity ID to modern format if needed
-					String teId = tileEntityData.getString("id");
+					String teId = tileEntityData.getString("id").orElse("");
 					if (!teId.contains(":")) {
 						tileEntityData.putString("id", "minecraft:" + teId.toLowerCase());
 					}
 					
-					// MC 26.2: use TagValueInput.of() and loadWithComponents(ValueInput)
+					// MC 26.2: load tile entity data
 					try {
-						blockEntity.loadWithComponents(TagValueInput.of(NbtOps.INSTANCE, tileEntityData), world.registryAccess());
+						blockEntity.loadStatic(worldPos, blockEntity.getBlockState(), tileEntityData, world.registryAccess());
 						blockEntity.setChanged();
 						tilesPlaced++;
 					} catch (Exception loadEx) {
@@ -178,15 +177,15 @@ public class SchematicStructure {
 					}
 					
 					// Apply legacy Items to Container (chests, furnaces, etc.)
-					if (blockEntity instanceof Container container && tileEntityData.contains("Items", 9)) {
-						ListTag itemsList = tileEntityData.getList("Items", 10); // 10 = CompoundTag
+					if (blockEntity instanceof Container container && tileEntityData.contains("Items")) {
+						ListTag itemsList = tileEntityData.getList("Items").orElse(new ListTag());
 						for (int i = 0; i < itemsList.size(); i++) {
-							CompoundTag itemTag = itemsList.getCompound(i);
+							CompoundTag itemTag = itemsList.getCompound(i).orElse(new CompoundTag());
 							try {
-								byte slot = itemTag.getByte("Slot");
-								short legacyId = itemTag.getShort("id");
-								byte count = itemTag.getByte("Count");
-								short damage = itemTag.getShort("Damage");
+								byte slot = itemTag.getByte("Slot").orElse((byte)0);
+								short legacyId = itemTag.getShort("id").orElse((short)0);
+								byte count = itemTag.getByte("Count").orElse((byte)0);
+								short damage = itemTag.getShort("Damage").orElse((short)0);
 								
 								// Convert legacy item ID to modern Item
 								var modernItem = LegacyItems.fromLegacyId(legacyId);
@@ -205,7 +204,7 @@ public class SchematicStructure {
 						}
 					}
 				} else {
-					String teType = entry.getValue().getString("id");
+					String teType = entry.getValue().getString("id").orElse("");
 					// Known modern blocks without block entities (cauldron, etc.) - suppress warning
 					if (!teType.equals("Cauldron")) {
 						InstantMassiveStructures.LOGGER.warn("No block entity at {} for tile entity type {}", 

@@ -112,37 +112,37 @@ public class StructureComparison {
 		}
 		
 		// Read tile entities
-		ListTag tileEntitiesList = nbt.getList("TileEntities", 10); // 10 = CompoundTag
+		ListTag tileEntitiesList = nbt.getList("TileEntities").orElse(new ListTag());
 		for (int i = 0; i < tileEntitiesList.size(); i++) {
-			CompoundTag te = tileEntitiesList.getCompound(i);
-			int teX = te.getInt("x");
-			int teY = te.getInt("y");
-			int teZ = te.getInt("z");
+			CompoundTag te = tileEntitiesList.getCompound(i).orElse(new CompoundTag());
+			int teX = te.getInt("x").orElse(0);
+			int teY = te.getInt("y").orElse(0);
+			int teZ = te.getInt("z").orElse(0);
 			String pos = String.format("%d,%d,%d", teX, teY, teZ);
 			
 			StructureSnapshot.TileEntityInfo info = new StructureSnapshot.TileEntityInfo();
-			info.type = te.getString("id");
+			info.type = te.getString("id").orElse("");
 			info.nbt = te;
 			
 			// Summarize important data
 			if ("Chest".equals(info.type) || "minecraft:chest".equals(info.type)) {
-				ListTag items = te.getList("Items", 10);
+				ListTag items = te.getList("Items").orElse(new ListTag());
 				info.summary.put("items", items.size());
 				if (items.size() > 0) {
 					List<String> itemSummary = new ArrayList<>();
 					for (int j = 0; j < Math.min(3, items.size()); j++) {
-						CompoundTag item = items.getCompound(j);
-						String itemId = item.getString("id");
-						int count = item.getByte("Count");
+						CompoundTag item = items.getCompound(j).orElse(new CompoundTag());
+						String itemId = item.getString("id").orElse("");
+						int count = item.getByte("Count").orElse((byte)0);
 						itemSummary.add(String.format("%s x%d", itemId, count));
 					}
 					info.summary.put("sample", itemSummary);
 				}
 			} else if ("Furnace".equals(info.type) || "minecraft:furnace".equals(info.type)) {
-				ListTag items = te.getList("Items", 10);
+				ListTag items = te.getList("Items").orElse(new ListTag());
 				info.summary.put("items", items.size());
-				info.summary.put("burnTime", te.getShort("BurnTime"));
-				info.summary.put("cookTime", te.getShort("CookTime"));
+				info.summary.put("burnTime", te.getShort("BurnTime").orElse((short)0));
+				info.summary.put("cookTime", te.getShort("CookTime").orElse((short)0));
 			}
 			
 			snapshot.tileEntities.put(pos, info);

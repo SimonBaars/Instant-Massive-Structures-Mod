@@ -99,19 +99,19 @@ public class StructureComparisonTool {
 		}
 		
 		// Analyze tile entities
-		ListTag tileEntitiesList = nbt.getList("TileEntities", 10);
+		ListTag tileEntitiesList = nbt.getList("TileEntities").orElse(new ListTag());
 		analysis.tileEntityCount = tileEntitiesList.size();
 		
 		for (int i = 0; i < tileEntitiesList.size(); i++) {
-			CompoundTag te = tileEntitiesList.getCompound(i);
-			String teType = te.getString("id");
+			CompoundTag te = tileEntitiesList.getCompound(i).orElse(new CompoundTag());
+			String teType = te.getString("id").orElse("");
 			analysis.tileEntityTypes.merge(teType, 1, Integer::sum);
 			
 			// Warn if chest has no items
 			if ("Chest".equals(teType) || "minecraft:chest".equals(teType)) {
-				ListTag items = te.getList("Items", 10);
+				ListTag items = te.getList("Items").orElse(new ListTag());
 				if (items.isEmpty()) {
-					analysis.warnings.add("Chest at " + te.getInt("x") + "," + te.getInt("y") + "," + te.getInt("z") + " has no items");
+					analysis.warnings.add("Chest at " + te.getInt("x").orElse(0) + "," + te.getInt("y").orElse(0) + "," + te.getInt("z").orElse(0) + " has no items");
 				}
 			}
 		}
