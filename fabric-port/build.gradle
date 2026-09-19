@@ -129,3 +129,19 @@ jar {
 		rename { "${it}_${project.archives_base_name}"}
 	}
 }
+
+// Task to run PlacementParityDumper for parity verification
+task runParityDump(type: JavaExec) {
+	group = 'verification'
+	description = 'Dumps Fabric placement snapshots for all structures'
+	
+	classpath = sourceSets.test.runtimeClasspath
+	mainClass = 'com.simonbaars.imsm.test.PlacementParityDumper'
+	
+	workingDir = project.projectDir
+	
+	doFirst {
+		println "Running PlacementParityDumper..."
+		println "Working directory: ${workingDir}"
+	}
+}
