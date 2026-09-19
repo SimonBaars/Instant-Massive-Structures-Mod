@@ -5,8 +5,10 @@ import com.google.gson.GsonBuilder;
 import com.simonbaars.imsm.structureloader.LegacyBlockStates;
 import com.simonbaars.imsm.structureloader.SchematicStructure;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.*;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -90,9 +92,9 @@ public class PlacementParityDumper {
 		
 		// Extract dimensions
 		ListTag size = nbt.getList("size").orElse(new ListTag());
-		int width = size.getInt(0);
-		int height = size.getInt(1);
-		int length = size.getInt(2);
+		int width = size.size() > 0 ? ((IntTag) size.get(0)).getAsInt() : 0;
+		int height = size.size() > 1 ? ((IntTag) size.get(1)).getAsInt() : 0;
+		int length = size.size() > 2 ? ((IntTag) size.get(2)).getAsInt() : 0;
 		
 		// Extract block arrays
 		byte[] blocks = nbt.getByteArray("blocks").orElse(new byte[0]);
@@ -137,7 +139,7 @@ public class PlacementParityDumper {
 						blockRecord.put("blockId", "UNMAPPED");
 						blockRecord.put("properties", Map.of());
 					} else {
-						blockRecord.put("blockId", state.getBlock().builtInRegistryHolder().key().location().toString());
+						blockRecord.put("blockId", BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString());
 						blockRecord.put("properties", extractProperties(state));
 					}
 					
@@ -158,9 +160,9 @@ public class PlacementParityDumper {
 	
 	private static Map<String, String> extractProperties(BlockState state) {
 		Map<String, String> props = new LinkedHashMap<>();
-		state.getValues().forEach((property, value) -> {
-			props.put(property.getName(), value.toString());
-		});
+		for (Property<?> prop : state.getProperties()) {
+			props.put(prop.getName(), state.getValue(prop).toString());
+		}
 		return props;
 	}
 	
