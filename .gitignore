@@ -20,3 +20,9 @@ build
 # other
 eclipse
 run
+
+# parity dumps (regenerate in CI)
+fabric-port/parity-dumps/*.ndjson
+__pycache__/
+*.pyc
+DUMP_DIFF_REPORT.json

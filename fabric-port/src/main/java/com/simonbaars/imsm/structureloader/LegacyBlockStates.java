@@ -70,13 +70,23 @@ public final class LegacyBlockStates {
 			case 17 -> log(meta, false);
 			case 18 -> leaves(meta, false);
 			case 19 -> meta == 1 ? block("wet_sponge") : Blocks.SPONGE.defaultBlockState();
+			case 23 -> dispenserDropper(meta); // dispenser
 			case 24 -> sandstone(meta, false);
 			case 31 -> tallGrass(meta);
+			case 34 -> pistonHead(meta); // piston_head (not moving_piston)
 			case 35 -> colored("wool", meta);
 			case 38 -> flower(meta);
 			case 43 -> stoneSlab(meta, true);
 			case 44 -> stoneSlab(meta, false);
+			case 50 -> torch(meta); // torch with proper wall handling
+			case 61 -> furnace(meta, false); // furnace
+			case 62 -> furnace(meta, true); // lit_furnace
+			case 75 -> redstoneTorch(meta, false); // unlit
+			case 76 -> redstoneTorch(meta, true); // lit
+			case 86 -> carvedPumpkin(meta); // pumpkin → carved_pumpkin
 			case 90 -> netherPortal(meta);
+			case 91 -> carvedPumpkin(meta); // jack_o_lantern (also carved)
+			case 158 -> dispenserDropper(meta); // dropper
 			case 95 -> colored("stained_glass", meta);
 			case 97 -> infested(meta);
 			case 98 -> stoneBricks(meta);
@@ -818,7 +828,10 @@ public final class LegacyBlockStates {
 			"bone_block", "structure_void", "observer", "white_shulker_box", "orange_shulker_box", "magenta_shulker_box",
 			"light_blue_shulker_box", "yellow_shulker_box", "lime_shulker_box", "pink_shulker_box", "gray_shulker_box", "light_gray_shulker_box",
 			"cyan_shulker_box", "purple_shulker_box", "blue_shulker_box", "brown_shulker_box", "green_shulker_box", "red_shulker_box",
-			"black_shulker_box", "white_glazed_terracotta"
+			"black_shulker_box", "white_glazed_terracotta",
+			// Pad 236-255 for safety (MC 1.10.2 added blocks up to ~235; higher IDs rare but possible)
+			"air", "air", "air", "air", "air", "air", "air", "air", "air", "air",
+			"air", "air", "air", "air", "air", "air", "air", "air", "air", "air"
 		};
 		if (legacyId < 0 || legacyId >= legacyMappings.length) {
 			return null;
@@ -832,5 +845,95 @@ public final class LegacyBlockStates {
 		return BuiltInRegistries.BLOCK.get(Identifier.fromNamespaceAndPath("minecraft", name))
 			.map(h -> h.value().defaultBlockState())
 			.orElse(null);
+	}
+	
+	private static BlockState pistonHead(int meta) {
+		Direction facing = facingFull(meta & 0x7);
+		boolean sticky = (meta & 0x8) != 0;
+		net.minecraft.world.level.block.state.properties.PistonType type = sticky 
+			? net.minecraft.world.level.block.state.properties.PistonType.STICKY 
+			: net.minecraft.world.level.block.state.properties.PistonType.DEFAULT;
+		return Blocks.PISTON_HEAD.defaultBlockState()
+			.setValue(BlockStateProperties.FACING, facing)
+			.setValue(BlockStateProperties.PISTON_TYPE, type);
+	}
+	
+	private static BlockState torch(int meta) {
+		if (meta >= 1 && meta <= 4) {
+			Direction facing = switch(meta) {
+				case 1 -> Direction.EAST;
+				case 2 -> Direction.WEST;
+				case 3 -> Direction.SOUTH;
+				case 4 -> Direction.NORTH;
+				default -> Direction.NORTH;
+			};
+			return Blocks.WALL_TORCH.defaultBlockState()
+				.setValue(BlockStateProperties.HORIZONTAL_FACING, facing);
+		} else {
+			return Blocks.TORCH.defaultBlockState();
+		}
+	}
+	
+	private static BlockState redstoneTorch(int meta, boolean lit) {
+		if (meta >= 1 && meta <= 4) {
+			Direction facing = switch(meta) {
+				case 1 -> Direction.EAST;
+				case 2 -> Direction.WEST;
+				case 3 -> Direction.SOUTH;
+				case 4 -> Direction.NORTH;
+				default -> Direction.NORTH;
+			};
+			return Blocks.REDSTONE_WALL_TORCH.defaultBlockState()
+				.setValue(BlockStateProperties.HORIZONTAL_FACING, facing)
+				.setValue(BlockStateProperties.LIT, lit);
+		} else {
+			return Blocks.REDSTONE_TORCH.defaultBlockState()
+				.setValue(BlockStateProperties.LIT, lit);
+		}
+	}
+	
+	private static BlockState dispenserDropper(int meta) {
+		Direction facing = facingFull(meta & 0x7);
+		boolean triggered = (meta & 0x8) != 0;
+		return Blocks.DISPENSER.defaultBlockState()
+			.setValue(BlockStateProperties.FACING, facing)
+			.setValue(BlockStateProperties.TRIGGERED, triggered);
+	}
+	
+	private static BlockState furnace(int meta, boolean lit) {
+		Direction facing = switch(meta & 0x3) {
+			case 0 -> Direction.NORTH;
+			case 1 -> Direction.SOUTH;
+			case 2 -> Direction.WEST;
+			case 3 -> Direction.EAST;
+			default -> Direction.NORTH;
+		};
+		return Blocks.FURNACE.defaultBlockState()
+			.setValue(BlockStateProperties.HORIZONTAL_FACING, facing)
+			.setValue(BlockStateProperties.LIT, lit);
+	}
+	
+	private static BlockState carvedPumpkin(int meta) {
+		Direction facing = switch(meta & 0x3) {
+			case 0 -> Direction.SOUTH;
+			case 1 -> Direction.WEST;
+			case 2 -> Direction.NORTH;
+			case 3 -> Direction.EAST;
+			default -> Direction.SOUTH;
+		};
+		return Blocks.CARVED_PUMPKIN.defaultBlockState()
+			.setValue(BlockStateProperties.HORIZONTAL_FACING, facing);
+	}
+	
+	private static Direction facingFull(int meta) {
+		return switch(meta) {
+			case 0 -> Direction.DOWN;
+			case 1 -> Direction.UP;
+			case 2 -> Direction.NORTH;
+			case 3 -> Direction.SOUTH;
+			case 4 -> Direction.WEST;
+			case 5 -> Direction.EAST;
+			default -> Direction.NORTH;
+		};
 	}
 }

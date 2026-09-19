@@ -50,6 +50,7 @@ public final class LegacyItems {
 			case 57 -> Items.DIAMOND_BLOCK;
 			case 58 -> Items.CRAFTING_TABLE;
 			case 61 -> Items.FURNACE;
+			case 65 -> Items.LADDER;
 			case 79 -> Items.ICE;
 			case 80 -> Items.SNOW_BLOCK;
 			case 81 -> Items.CACTUS;
@@ -59,6 +60,7 @@ public final class LegacyItems {
 			case 87 -> Items.NETHERRACK;
 			case 89 -> Items.GLOWSTONE;
 			case 98 -> Items.STONE_BRICKS;
+			case 152 -> Items.REDSTONE_BLOCK;
 			
 			// Tools and armor
 			case 256 -> Items.IRON_SHOVEL;
