@@ -107,7 +107,7 @@ public class StructureBlock extends Block {
 			structure.process(serverWorld, spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), doReplaceAir);
 			lastPlaced = new LastPlaced(structureName, spawnPos.immutable(),
 				structure.getLength(), structure.getHeight(), structure.getWidth());
-			InstantMassiveStructures.LOGGER.info("Player {} spawned structure {} at {} (replaceAir={})",
+			InstantMassiveStructures.LOGGER.debug("Player {} spawned structure {} at {} (replaceAir={})",
 				player.getName().getString(), structureName, spawnPos, doReplaceAir);
 		} catch (Exception e) {
 			InstantMassiveStructures.LOGGER.error("Failed to spawn structure {}",
@@ -153,7 +153,7 @@ public class StructureBlock extends Block {
 					player.sendSystemMessage(Component.literal("Use /ride to ride this structure!"));
 				}
 			}
-			InstantMassiveStructures.LOGGER.info("Player {} started live {} at {}",
+			InstantMassiveStructures.LOGGER.debug("Player {} started live {} at {}",
 				player.getName().getString(), started, spawnPos);
 		} catch (Exception e) {
 			InstantMassiveStructures.LOGGER.error("Failed to spawn structure {}",
@@ -213,7 +213,7 @@ public class StructureBlock extends Block {
 			lastPlaced.origin().getX(), lastPlaced.origin().getY(), lastPlaced.origin().getZ(),
 			lastPlaced.length(), lastPlaced.height(), lastPlaced.width());
 		player.sendSystemMessage(Component.literal("The last placed structure has been removed."));
-		InstantMassiveStructures.LOGGER.info("Fire-charge undo cleared '{}' at {}",
+		InstantMassiveStructures.LOGGER.debug("Fire-charge undo cleared '{}' at {}",
 			lastPlaced.name(), lastPlaced.origin());
 		lastPlaced = null;
 		return InteractionResult.SUCCESS;

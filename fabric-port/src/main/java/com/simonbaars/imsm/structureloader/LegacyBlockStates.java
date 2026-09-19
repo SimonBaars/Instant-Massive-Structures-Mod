@@ -901,26 +901,14 @@ public final class LegacyBlockStates {
 	}
 	
 	private static BlockState furnace(int meta, boolean lit) {
-		Direction facing = switch(meta & 0x3) {
-			case 0 -> Direction.NORTH;
-			case 1 -> Direction.SOUTH;
-			case 2 -> Direction.WEST;
-			case 3 -> Direction.EAST;
-			default -> Direction.NORTH;
-		};
+		Direction facing = facingNESW(meta & 0x7);
 		return Blocks.FURNACE.defaultBlockState()
 			.setValue(BlockStateProperties.HORIZONTAL_FACING, facing)
 			.setValue(BlockStateProperties.LIT, lit);
 	}
 	
 	private static BlockState carvedPumpkin(int meta) {
-		Direction facing = switch(meta & 0x3) {
-			case 0 -> Direction.SOUTH;
-			case 1 -> Direction.WEST;
-			case 2 -> Direction.NORTH;
-			case 3 -> Direction.EAST;
-			default -> Direction.SOUTH;
-		};
+		Direction facing = facingNESW(meta);
 		return Blocks.CARVED_PUMPKIN.defaultBlockState()
 			.setValue(BlockStateProperties.HORIZONTAL_FACING, facing);
 	}
