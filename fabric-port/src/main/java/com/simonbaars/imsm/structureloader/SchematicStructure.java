@@ -189,30 +189,42 @@ public class SchematicStructure {
 						tileEntityData.putString("id", "minecraft:" + teId.toLowerCase());
 					}
 
-					// Convert legacy sign text format to modern (MC 1.20+)
-					if (blockEntity instanceof net.minecraft.world.level.block.entity.SignBlockEntity) {
-						convertLegacySignText(tileEntityData);
-					}
+				// Extract legacy sign text before conversion
+				String[] legacySignLines = null;
+				if (blockEntity instanceof net.minecraft.world.level.block.entity.SignBlockEntity) {
+					legacySignLines = extractLegacySignText(tileEntityData);
+					convertLegacySignText(tileEntityData);
+				}
 
-					// Strip legacy Items before loadStatic to avoid decode warnings
-					ListTag legacyItems = null;
-					if (tileEntityData.contains("Items")) {
-						legacyItems = tileEntityData.getList("Items").orElse(new ListTag());
-						tileEntityData.remove("Items");
-					}
+				// Strip legacy Items before loadStatic to avoid decode warnings
+				ListTag legacyItems = null;
+				if (tileEntityData.contains("Items")) {
+					legacyItems = tileEntityData.getList("Items").orElse(new ListTag());
+					tileEntityData.remove("Items");
+				}
 
-					// MC 26.2: load tile entity data
+				// MC 26.2: load tile entity data
+				try {
+					blockEntity.loadStatic(worldPos, blockEntity.getBlockState(), tileEntityData, world.registryAccess());
+					blockEntity.setChanged();
+					tilesPlaced++;
+				} catch (Exception loadEx) {
+					InstantMassiveStructures.LOGGER.warn("Failed to load TE components at {}: {}",
+						worldPos, loadEx.getMessage());
+				}
+
+				// Apply legacy sign text to SignBlockEntity after loadStatic
+				if (blockEntity instanceof net.minecraft.world.level.block.entity.SignBlockEntity sign && legacySignLines != null) {
 					try {
-						blockEntity.loadStatic(worldPos, blockEntity.getBlockState(), tileEntityData, world.registryAccess());
-						blockEntity.setChanged();
-						tilesPlaced++;
-					} catch (Exception loadEx) {
-						InstantMassiveStructures.LOGGER.warn("Failed to load TE components at {}: {}",
-							worldPos, loadEx.getMessage());
+						applySignText(sign, legacySignLines);
+					} catch (Exception signEx) {
+						InstantMassiveStructures.LOGGER.warn("Failed to apply sign text at {}: {}",
+							worldPos, signEx.getMessage());
 					}
+				}
 
-					// Apply legacy Items to Container (chests, furnaces, etc.) after loadStatic
-					if (blockEntity instanceof Container container && legacyItems != null) {
+				// Apply legacy Items to Container (chests, furnaces, etc.) after loadStatic
+				if (blockEntity instanceof Container container && legacyItems != null) {
 						for (int i = 0; i < legacyItems.size(); i++) {
 							CompoundTag itemTag = legacyItems.getCompound(i).orElse(new CompoundTag());
 							try {
@@ -327,6 +339,18 @@ public class SchematicStructure {
 	}
 	
 	/**
+	 * Extract legacy sign text (Text1-4) before conversion for later API-based application.
+	 */
+	private static String[] extractLegacySignText(CompoundTag signTag) {
+		String[] lines = new String[4];
+		for (int i = 0; i < 4; i++) {
+			String key = "Text" + (i + 1);
+			lines[i] = signTag.contains(key) ? signTag.getString(key).orElse("") : "";
+		}
+		return lines;
+	}
+
+	/**
 	 * Convert legacy sign text (Text1-4 plain strings) to modern format (front_text with messages).
 	 * Legacy: Text1, Text2, Text3, Text4 as plain strings
 	 * Modern (MC 1.20+): front_text/back_text compounds with messages array of JSON text components
@@ -357,6 +381,40 @@ public class SchematicStructure {
 		frontText.put("messages", messages);
 		frontText.putBoolean("has_glowing_text", false);
 		signTag.put("front_text", frontText);
+	}
+
+	/**
+	 * Apply legacy sign text to SignBlockEntity using the SignText API.
+	 * This ensures text is readable in-game, not just present in NBT.
+	 */
+	private static void applySignText(net.minecraft.world.level.block.entity.SignBlockEntity sign, String[] lines) {
+		// Create SignText with the legacy lines converted to Components
+		net.minecraft.network.chat.Component[] filteredMessages = new net.minecraft.network.chat.Component[4];
+		net.minecraft.network.chat.Component[] messages = new net.minecraft.network.chat.Component[4];
+		
+		for (int i = 0; i < 4; i++) {
+			String line = lines[i];
+			if (line == null || line.isEmpty()) {
+				messages[i] = net.minecraft.network.chat.Component.empty();
+			} else {
+				// Plain text - legacy signs used plain strings
+				messages[i] = net.minecraft.network.chat.Component.literal(line);
+			}
+			filteredMessages[i] = messages[i];
+		}
+		
+		// Create new SignText with the component arrays
+		// SignText(Component[] messages, Component[] filteredMessages, DyeColor color, boolean hasGlowingText)
+		net.minecraft.world.level.block.entity.SignText frontText = new net.minecraft.world.level.block.entity.SignText(
+			messages,
+			filteredMessages,
+			net.minecraft.world.item.DyeColor.BLACK,
+			false  // has_glowing_text
+		);
+		
+		// Apply to the sign's front face
+		sign.updateText(text -> frontText, true);
+		sign.setChanged();
 	}
 
 	public static void clearBounds(ServerLevel world, int posX, int posY, int posZ,
