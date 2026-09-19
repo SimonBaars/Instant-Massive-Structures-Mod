@@ -90,11 +90,11 @@ public class PlacementParityDumper {
 			nbt = NbtIo.readCompressed(input, NbtAccounter.unlimitedHeap());
 		}
 		
-		// Extract dimensions
-		ListTag size = nbt.getList("size").orElse(new ListTag());
-		int width = size.size() > 0 ? ((IntTag) size.get(0)).getAsInt() : 0;
-		int height = size.size() > 1 ? ((IntTag) size.get(1)).getAsInt() : 0;
-		int length = size.size() > 2 ? ((IntTag) size.get(2)).getAsInt() : 0;
+	// Extract dimensions
+	ListTag size = nbt.getList("size").orElse(new ListTag());
+	int width = size.size() > 0 ? ((IntTag) size.get(0)).intValue() : 0;
+	int height = size.size() > 1 ? ((IntTag) size.get(1)).intValue() : 0;
+	int length = size.size() > 2 ? ((IntTag) size.get(2)).intValue() : 0;
 		
 		// Extract block arrays
 		byte[] blocks = nbt.getByteArray("blocks").orElse(new byte[0]);
