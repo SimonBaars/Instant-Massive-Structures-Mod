@@ -38,7 +38,7 @@ public final class LegacyItems {
 			case 20 -> Items.GLASS;
 			case 22 -> Items.LAPIS_BLOCK;
 			case 24 -> Items.SANDSTONE;
-			case 35 -> Items.WHITE_WOOL;
+			case 35 -> getItem("white_wool");
 			case 41 -> Items.GOLD_BLOCK;
 			case 42 -> Items.IRON_BLOCK;
 			case 45 -> Items.BRICKS;
@@ -156,7 +156,7 @@ public final class LegacyItems {
 			case 352 -> Items.BONE;
 			case 353 -> Items.SUGAR;
 			case 354 -> Items.CAKE;
-			case 355 -> Items.WHITE_BED;
+			case 355 -> getItem("white_bed");
 			case 356 -> Items.REPEATER;
 			case 357 -> Items.COOKIE;
 			case 358 -> Items.FILLED_MAP;
@@ -217,5 +217,11 @@ public final class LegacyItems {
 			case 421 -> Items.NAME_TAG;
 			default -> Items.AIR; // Unknown legacy ID
 		};
+	}
+	
+	private static Item getItem(String name) {
+		return BuiltInRegistries.ITEM.get(Identifier.fromNamespaceAndPath("minecraft", name))
+			.map(h -> h.value())
+			.orElse(Items.AIR);
 	}
 }
