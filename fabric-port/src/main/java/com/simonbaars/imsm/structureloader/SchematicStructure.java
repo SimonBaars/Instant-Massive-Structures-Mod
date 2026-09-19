@@ -110,8 +110,8 @@ public class SchematicStructure {
 	 *                   existing world blocks are not cleared. Non-air still places.
 	 */
 	public void process(ServerLevel world, int posX, int posY, int posZ, boolean replaceAir) {
-		int originX = posX - length / 2;
-		int originZ = posZ - width / 2;
+		int originX = posX - (length / 2) + 1;
+		int originZ = posZ - (width / 2) + 1;
 
 		int blocksPlaced = 0;
 		int tilesPlaced = 0;
@@ -283,8 +283,8 @@ public class SchematicStructure {
 	public java.util.List<BlockPos> showOutline(ServerLevel world, int posX, int posY, int posZ,
 			int modX, int modY, int modZ) {
 		java.util.ArrayList<BlockPos> written = new java.util.ArrayList<>();
-		int originX = (posX + modX) - length / 2;
-		int originZ = (posZ + modZ) - width / 2;
+		int originX = (posX + modX) - (length / 2) + 1;
+		int originZ = (posZ + modZ) - (width / 2) + 1;
 		int baseY = posY + modY;
 		
 		for (int y = 0; y < height; y++) {
@@ -419,8 +419,8 @@ public class SchematicStructure {
 
 	public static void clearBounds(ServerLevel world, int posX, int posY, int posZ,
 			int length, int height, int width) {
-		posX -= length / 2;
-		posZ -= width / 2;
+		posX -= (length / 2) - 1;
+		posZ -= (width / 2) - 1;
 		for (int y = 0; y < height; y++) {
 			for (int z = 0; z < width; z++) {
 				for (int x = 0; x < length; x++) {

@@ -963,7 +963,7 @@ public final class LiveStructureTicker {
 			int x = origin.getX();
 			int y = origin.getY();
 			int z = origin.getZ();
-			// Same offsets as SchematicStructure.process / clearBounds
+			// Same offsets as SchematicStructure.process / clearBounds: legacy centering with -1 offset
 			int minX = x - (lastLength / 2) + 1;
 			int minZ = z - (lastWidth / 2) + 1;
 			int maxX = minX + lastLength - 1;

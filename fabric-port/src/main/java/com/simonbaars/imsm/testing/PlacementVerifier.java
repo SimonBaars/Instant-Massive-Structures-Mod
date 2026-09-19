@@ -30,8 +30,8 @@ public class PlacementVerifier {
 			SchematicStructure structure = new SchematicStructure(structureName);
 			structure.readFromFile();
 			
-			int originX = x - structure.getLength() / 2;
-			int originZ = z - structure.getWidth() / 2;
+			int originX = x - (structure.getLength() / 2) + 1;
+			int originZ = z - (structure.getWidth() / 2) + 1;
 			
 			report.append("Dimensions: ")
 				.append(structure.getLength()).append("x")
