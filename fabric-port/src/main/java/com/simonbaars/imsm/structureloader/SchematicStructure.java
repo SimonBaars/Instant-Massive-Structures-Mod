@@ -148,7 +148,7 @@ public class SchematicStructure {
 		// Second pass: trigger neighbor updates for connectable blocks (panes, fences, walls)
 		for (BlockPos pos : glassConnectableBlocks) {
 			BlockState state = world.getBlockState(pos);
-			world.setBlock(pos, state.updateShape(null, null, world, pos, pos), Block.UPDATE_ALL);
+			world.setBlock(pos, state, Block.UPDATE_NEIGHBORS);
 		}
 		
 		// Third pass: place tile entities
@@ -315,7 +315,7 @@ public class SchematicStructure {
 		
 		for (int i = 1; i <= 4; i++) {
 			String key = "Text" + i;
-			String text = signTag.contains(key) ? signTag.getString(key) : "";
+			String text = signTag.contains(key) ? signTag.getString(key).orElse("") : "";
 			
 			if (text.isEmpty()) {
 				text = "\"\"";

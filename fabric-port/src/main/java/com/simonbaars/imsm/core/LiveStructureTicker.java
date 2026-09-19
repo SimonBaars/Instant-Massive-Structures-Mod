@@ -105,25 +105,25 @@ public final class LiveStructureTicker {
 		String shellStructure,
 		String... frames
 	) {
-		public LiveDef(String baseName, int ticksPerFrame, String... frames) {
-			this(baseName, ticksPerFrame, null, null, null, frames);
-		}
+	public LiveDef(String baseName, int ticksPerFrame, String... frames) {
+		this(baseName, ticksPerFrame, null, null, null, frames);
+	}
 
-		public LiveDef(String baseName, int ticksPerFrame, int[] waitTicksAfterFrame, String... frames) {
-			this(baseName, ticksPerFrame, waitTicksAfterFrame, null, null, frames);
-		}
+	public LiveDef(String baseName, int ticksPerFrame, int[] waitTicksAfterFrame, String... frames) {
+		this(baseName, ticksPerFrame, waitTicksAfterFrame, null, null, frames);
+	}
 
-		public LiveDef(String baseName, PathMotion path, String... frames) {
-			this(baseName, path.ticksPerStep(), null, path, null, frames);
-		}
-		
-		public LiveDef(String baseName, int ticksPerFrame, String shellStructure, String... frames) {
-			this(baseName, ticksPerFrame, null, null, shellStructure, frames);
-		}
-		
-		public LiveDef(String baseName, int ticksPerFrame, int[] waitTicksAfterFrame, String shellStructure, String... frames) {
-			this(baseName, ticksPerFrame, waitTicksAfterFrame, null, shellStructure, frames);
-		}
+	public LiveDef(String baseName, PathMotion path, String... frames) {
+		this(baseName, path.ticksPerStep(), null, path, null, frames);
+	}
+	
+	public static LiveDef withShell(String baseName, int ticksPerFrame, String shellStructure, String... frames) {
+		return new LiveDef(baseName, ticksPerFrame, null, null, shellStructure, frames);
+	}
+	
+	public static LiveDef withShell(String baseName, int ticksPerFrame, int[] waitTicksAfterFrame, String shellStructure, String... frames) {
+		return new LiveDef(baseName, ticksPerFrame, waitTicksAfterFrame, null, shellStructure, frames);
+	}
 
 		public boolean matches(String structureName) {
 			if (structureName == null) {
@@ -256,17 +256,17 @@ public final class LiveStructureTicker {
 	 * Stationary frame-cyclers + path movers from legacy BlockLiveStructure / EventHandler.getAnimationFor.
 	 */
 	private static final LiveDef[] DEFINITIONS = {
-		new LiveDef("Live_FerrisWheel", 40, "Live_FerrisWheel",
+		LiveDef.withShell("Live_FerrisWheel", 40, "Live_FerrisWheel",
 			"Live_FerrisWheel", "Live_FerrisWheel0", "Live_FerrisWheel1", "Live_FerrisWheel2"),
-		new LiveDef("Live_Mill", 15, "Live_Mill",
+		LiveDef.withShell("Live_Mill", 15, "Live_Mill",
 			"Live_Mill0", "Live_Mill1", "Live_Mill2", "Live_Mill3", "Live_Mill4", "Live_Mill5"),
-		new LiveDef("Live_WaterMill", 15, "Live_WaterMill",
+		LiveDef.withShell("Live_WaterMill", 15, "Live_WaterMill",
 			"Live_WaterMill0", "Live_WaterMill1", "Live_WaterMill2"),
-		new LiveDef("Live_Power_Windmill_East", 15, "Live_Power_Windmill_East",
+		LiveDef.withShell("Live_Power_Windmill_East", 15, "Live_Power_Windmill_East",
 			"Live_Power_Windmill_East0", "Live_Power_Windmill_East1", "Live_Power_Windmill_East2"),
-		new LiveDef("Live_Helicopter", 10, "Live_Helicopter",
+		LiveDef.withShell("Live_Helicopter", 10, "Live_Helicopter",
 			"Live_Helicopter0", "Live_Helicopter1", "Live_Helicopter2", "Live_Helicopter3"),
-		new LiveDef("Live_Cinema", 20, "Live_Cinema",
+		LiveDef.withShell("Live_Cinema", 20, "Live_Cinema",
 			"Live_Cinema0", "Live_Cinema1", "Live_Cinema2", "Live_Cinema3", "Live_Cinema4", "Live_Cinema5",
 			"Live_Cinema6", "Live_Cinema7", "Live_Cinema8", "Live_Cinema9", "Live_Cinema10", "Live_Cinema11",
 			"Live_Cinema12", "Live_Cinema13", "Live_Cinema14", "Live_Cinema15", "Live_Cinema16", "Live_Cinema17",
@@ -275,7 +275,7 @@ public final class LiveStructureTicker {
 			"Live_Cinema30", "Live_Cinema31", "Live_Cinema32", "Live_Cinema33", "Live_Cinema34", "Live_Cinema35",
 			"Live_Cinema36", "Live_Cinema37", "Live_Cinema38", "Live_Cinema39", "Live_Cinema40", "Live_Cinema41",
 			"Live_Cinema42"),
-		new LiveDef("Live_Fair_FreeFall", 4, FREEFALL_WAIT_AFTER, "Live_Fair_FreeFall",
+		LiveDef.withShell("Live_Fair_FreeFall", 4, FREEFALL_WAIT_AFTER, "Live_Fair_FreeFall",
 			"Live_Fair_FreeFall0", "Live_Fair_FreeFall1", "Live_Fair_FreeFall2", "Live_Fair_FreeFall3",
 			"Live_Fair_FreeFall4", "Live_Fair_FreeFall5", "Live_Fair_FreeFall6", "Live_Fair_FreeFall7",
 			"Live_Fair_FreeFall8", "Live_Fair_FreeFall9", "Live_Fair_FreeFall10", "Live_Fair_FreeFall11",
