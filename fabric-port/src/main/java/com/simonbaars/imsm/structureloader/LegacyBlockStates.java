@@ -924,16 +924,4 @@ public final class LegacyBlockStates {
 		return Blocks.CARVED_PUMPKIN.defaultBlockState()
 			.setValue(BlockStateProperties.HORIZONTAL_FACING, facing);
 	}
-	
-	private static Direction facingFull(int meta) {
-		return switch(meta) {
-			case 0 -> Direction.DOWN;
-			case 1 -> Direction.UP;
-			case 2 -> Direction.NORTH;
-			case 3 -> Direction.SOUTH;
-			case 4 -> Direction.WEST;
-			case 5 -> Direction.EAST;
-			default -> Direction.NORTH;
-		};
-	}
 }
