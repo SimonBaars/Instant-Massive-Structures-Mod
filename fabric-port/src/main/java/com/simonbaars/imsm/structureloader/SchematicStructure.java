@@ -98,7 +98,7 @@ public class SchematicStructure {
 			tileEntities.put(posKey, te);
 		}
 
-		InstantMassiveStructures.LOGGER.info("Loaded structure {} with dimensions {}x{}x{}, {} tile entities", 
+		InstantMassiveStructures.LOGGER.debug("Loaded structure {} with dimensions {}x{}x{}, {} tile entities", 
 			fileName, length, height, width, tileEntities.size());
 	}
 
@@ -111,11 +111,12 @@ public class SchematicStructure {
 	 *                   existing world blocks are not cleared. Non-air still places.
 	 */
 	public void process(ServerLevel world, int posX, int posY, int posZ, boolean replaceAir) {
-		int originX = posX - length / 2 + 1;
-		int originZ = posZ - width / 2 + 1;
+		int originX = posX - length / 2;
+		int originZ = posZ - width / 2;
 
 		int blocksPlaced = 0;
 		int tilesPlaced = 0;
+		List<BlockPos> glassConnectableBlocks = new ArrayList<>();
 
 		// First pass: place all blocks
 		for (int y = 0; y < height; y++) {
@@ -133,6 +134,10 @@ public class SchematicStructure {
 					try {
 						world.setBlock(pos, state, Block.UPDATE_ALL);
 						blocksPlaced++;
+						
+						if (isConnectableBlock(state.getBlock())) {
+							glassConnectableBlocks.add(pos);
+						}
 					} catch (Exception e) {
 						InstantMassiveStructures.LOGGER.warn("Failed to place block at {}: {}", 
 							pos, e.getMessage());
@@ -141,7 +146,13 @@ public class SchematicStructure {
 			}
 		}
 		
-		// Second pass: place tile entities
+		// Second pass: trigger neighbor updates for connectable blocks (panes, fences, walls)
+		for (BlockPos pos : glassConnectableBlocks) {
+			BlockState state = world.getBlockState(pos);
+			world.setBlock(pos, state.updateShape(null, null, world, pos, pos), Block.UPDATE_ALL);
+		}
+		
+		// Third pass: place tile entities
 		int containerItemsApplied = 0;
 		for (Map.Entry<String, CompoundTag> entry : tileEntities.entrySet()) {
 			String[] coords = entry.getKey().split(",");
@@ -165,6 +176,11 @@ public class SchematicStructure {
 					String teId = tileEntityData.getString("id");
 					if (!teId.contains(":")) {
 						tileEntityData.putString("id", "minecraft:" + teId.toLowerCase());
+					}
+					
+					// Convert legacy sign text format to modern (MC 1.20+)
+					if (blockEntity instanceof net.minecraft.world.level.block.entity.SignBlockEntity) {
+						convertLegacySignText(tileEntityData);
 					}
 					
 					// MC 26.2: use TagValueInput.of() and loadWithComponents(ValueInput)
@@ -218,7 +234,7 @@ public class SchematicStructure {
 			}
 		}
 
-		InstantMassiveStructures.LOGGER.info("Placed {} blocks, {} tile entities, {} container items for structure {} (replaceAir={})", 
+		InstantMassiveStructures.LOGGER.debug("Placed {} blocks, {} tile entities, {} container items for structure {} (replaceAir={})", 
 			blocksPlaced, tilesPlaced, containerItemsApplied, fileName, replaceAir);
 	}
 
@@ -229,22 +245,21 @@ public class SchematicStructure {
 	public java.util.List<BlockPos> showOutline(ServerLevel world, int posX, int posY, int posZ,
 			int modX, int modY, int modZ) {
 		java.util.ArrayList<BlockPos> written = new java.util.ArrayList<>();
-		// Legacy: BlockPos(x-i+modifierx, y+j+modifiery, z-k+modifierz) for shell voxels
-		int baseX = posX + modX;
+		int originX = (posX + modX) - length / 2;
+		int originZ = (posZ + modZ) - width / 2;
 		int baseY = posY + modY;
-		int baseZ = posZ + modZ;
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-				for (int k = 0; k < length; k++) {
-					if (!(i == 0 || j == 0 || k == 0)) continue;
-					if (i == modX && j == modY && k == modZ) continue;
-					BlockPos pos0 = new BlockPos(baseX - i, baseY + j, baseZ - k);
+		
+		for (int y = 0; y < height; y++) {
+			for (int z = 0; z < width; z++) {
+				for (int x = 0; x < length; x++) {
+					if (!(x == 0 || y == 0 || z == 0 || x == length - 1 || y == height - 1 || z == width - 1)) continue;
+					BlockPos pos0 = new BlockPos(originX + x, baseY + y, originZ + z);
 					world.setBlock(pos0, Blocks.GLASS.defaultBlockState(), Block.UPDATE_ALL);
 					written.add(pos0);
 				}
 			}
 		}
-		InstantMassiveStructures.LOGGER.info("Outline {} glass blocks for {}", written.size(), fileName);
+		InstantMassiveStructures.LOGGER.debug("Outline {} glass blocks for {}", written.size(), fileName);
 		return written;
 	}
 
@@ -279,10 +294,49 @@ public class SchematicStructure {
 	}
 
 	/** Clear the same centered bounding box that {@link #process} would occupy. */
+	private static boolean isConnectableBlock(Block block) {
+		return block instanceof net.minecraft.world.level.block.IronBarsBlock
+			|| block instanceof net.minecraft.world.level.block.FenceBlock
+			|| block instanceof net.minecraft.world.level.block.WallBlock;
+	}
+	
+	/**
+	 * Convert legacy sign text (Text1-4 plain strings) to modern format (front_text with messages).
+	 * Legacy: Text1, Text2, Text3, Text4 as plain strings
+	 * Modern (MC 1.20+): front_text/back_text compounds with messages array of JSON text components
+	 */
+	private static void convertLegacySignText(CompoundTag signTag) {
+		if (!signTag.contains("Text1") && !signTag.contains("Text2") 
+			&& !signTag.contains("Text3") && !signTag.contains("Text4")) {
+			return;
+		}
+		
+		CompoundTag frontText = new CompoundTag();
+		ListTag messages = new ListTag();
+		
+		for (int i = 1; i <= 4; i++) {
+			String key = "Text" + i;
+			String text = signTag.contains(key) ? signTag.getString(key) : "";
+			
+			if (text.isEmpty()) {
+				text = "\"\"";
+			} else if (!text.startsWith("{") && !text.startsWith("\"")) {
+				text = "{\"text\":\"" + text.replace("\\", "\\\\").replace("\"", "\\\"") + "\"}";
+			}
+			
+			messages.add(net.minecraft.nbt.StringTag.valueOf(text));
+			signTag.remove(key);
+		}
+		
+		frontText.put("messages", messages);
+		frontText.putBoolean("has_glowing_text", false);
+		signTag.put("front_text", frontText);
+	}
+
 	public static void clearBounds(ServerLevel world, int posX, int posY, int posZ,
 			int length, int height, int width) {
-		posX -= length / 2 - 1;
-		posZ -= width / 2 - 1;
+		posX -= length / 2;
+		posZ -= width / 2;
 		for (int y = 0; y < height; y++) {
 			for (int z = 0; z < width; z++) {
 				for (int x = 0; x < length; x++) {

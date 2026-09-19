@@ -101,18 +101,28 @@ public final class LiveStructureTicker {
 		int[] waitTicksAfterFrame,
 		/** Null = stationary frame cycler; non-null = path mover */
 		PathMotion path,
+		/** Static shell schematic name (placed once before animation starts); null = no shell */
+		String shellStructure,
 		String... frames
 	) {
 		public LiveDef(String baseName, int ticksPerFrame, String... frames) {
-			this(baseName, ticksPerFrame, null, null, frames);
+			this(baseName, ticksPerFrame, null, null, null, frames);
 		}
 
 		public LiveDef(String baseName, int ticksPerFrame, int[] waitTicksAfterFrame, String... frames) {
-			this(baseName, ticksPerFrame, waitTicksAfterFrame, null, frames);
+			this(baseName, ticksPerFrame, waitTicksAfterFrame, null, null, frames);
 		}
 
 		public LiveDef(String baseName, PathMotion path, String... frames) {
-			this(baseName, path.ticksPerStep(), null, path, frames);
+			this(baseName, path.ticksPerStep(), null, path, null, frames);
+		}
+		
+		public LiveDef(String baseName, int ticksPerFrame, String shellStructure, String... frames) {
+			this(baseName, ticksPerFrame, null, null, shellStructure, frames);
+		}
+		
+		public LiveDef(String baseName, int ticksPerFrame, int[] waitTicksAfterFrame, String shellStructure, String... frames) {
+			this(baseName, ticksPerFrame, waitTicksAfterFrame, null, shellStructure, frames);
 		}
 
 		public boolean matches(String structureName) {
@@ -246,17 +256,17 @@ public final class LiveStructureTicker {
 	 * Stationary frame-cyclers + path movers from legacy BlockLiveStructure / EventHandler.getAnimationFor.
 	 */
 	private static final LiveDef[] DEFINITIONS = {
-		new LiveDef("Live_FerrisWheel", 40,
+		new LiveDef("Live_FerrisWheel", 40, "Live_FerrisWheel",
 			"Live_FerrisWheel", "Live_FerrisWheel0", "Live_FerrisWheel1", "Live_FerrisWheel2"),
-		new LiveDef("Live_Mill", 15,
+		new LiveDef("Live_Mill", 15, "Live_Mill",
 			"Live_Mill0", "Live_Mill1", "Live_Mill2", "Live_Mill3", "Live_Mill4", "Live_Mill5"),
-		new LiveDef("Live_WaterMill", 15,
+		new LiveDef("Live_WaterMill", 15, "Live_WaterMill",
 			"Live_WaterMill0", "Live_WaterMill1", "Live_WaterMill2"),
-		new LiveDef("Live_Power_Windmill_East", 15,
+		new LiveDef("Live_Power_Windmill_East", 15, "Live_Power_Windmill_East",
 			"Live_Power_Windmill_East0", "Live_Power_Windmill_East1", "Live_Power_Windmill_East2"),
-		new LiveDef("Live_Helicopter", 10,
+		new LiveDef("Live_Helicopter", 10, "Live_Helicopter",
 			"Live_Helicopter0", "Live_Helicopter1", "Live_Helicopter2", "Live_Helicopter3"),
-		new LiveDef("Live_Cinema", 20,
+		new LiveDef("Live_Cinema", 20, "Live_Cinema",
 			"Live_Cinema0", "Live_Cinema1", "Live_Cinema2", "Live_Cinema3", "Live_Cinema4", "Live_Cinema5",
 			"Live_Cinema6", "Live_Cinema7", "Live_Cinema8", "Live_Cinema9", "Live_Cinema10", "Live_Cinema11",
 			"Live_Cinema12", "Live_Cinema13", "Live_Cinema14", "Live_Cinema15", "Live_Cinema16", "Live_Cinema17",
@@ -265,7 +275,7 @@ public final class LiveStructureTicker {
 			"Live_Cinema30", "Live_Cinema31", "Live_Cinema32", "Live_Cinema33", "Live_Cinema34", "Live_Cinema35",
 			"Live_Cinema36", "Live_Cinema37", "Live_Cinema38", "Live_Cinema39", "Live_Cinema40", "Live_Cinema41",
 			"Live_Cinema42"),
-		new LiveDef("Live_Fair_FreeFall", 4, FREEFALL_WAIT_AFTER,
+		new LiveDef("Live_Fair_FreeFall", 4, FREEFALL_WAIT_AFTER, "Live_Fair_FreeFall",
 			"Live_Fair_FreeFall0", "Live_Fair_FreeFall1", "Live_Fair_FreeFall2", "Live_Fair_FreeFall3",
 			"Live_Fair_FreeFall4", "Live_Fair_FreeFall5", "Live_Fair_FreeFall6", "Live_Fair_FreeFall7",
 			"Live_Fair_FreeFall8", "Live_Fair_FreeFall9", "Live_Fair_FreeFall10", "Live_Fair_FreeFall11",
@@ -422,6 +432,9 @@ public final class LiveStructureTicker {
 			inst.loopEnabled = loopOverride;
 		}
 		try {
+			if (def.shellStructure() != null) {
+				inst.placeShell();
+			}
 			inst.placeCurrentFrame(true);
 			if (def.isPathMover()) {
 				inst.clearSpawnCorridor();
@@ -431,17 +444,18 @@ public final class LiveStructureTicker {
 			LiveStructurePersistence.saveAll(ACTIVE);
 			if (def.isPathMover()) {
 				PathMotion pm = def.path();
-				InstantMassiveStructures.LOGGER.info(
+				InstantMassiveStructures.LOGGER.debug(
 					"Started {} path live at {} ({} frames, distance {}, levelSteps {}, climb {}/{}, descend {}/{}, step {}t, boarding {}t, loop={}, aviation={})",
 					def.baseName(), origin, def.frames().length, inst.flyDistance,
 					inst.levelSteps, pm.climbCount(),
 					formatStep(pm.climb()), pm.descendCount(), formatStep(pm.descend()),
 					pm.ticksPerStep(), pm.boardingTicks(), inst.loopEnabled, pm.aviation());
 			} else {
-				InstantMassiveStructures.LOGGER.info(
-					"Started {} live animation at {} ({} frames, base {} ticks{})",
+				InstantMassiveStructures.LOGGER.debug(
+					"Started {} live animation at {} ({} frames, base {} ticks{}{})",
 					def.baseName(), origin, def.frames().length, def.ticksPerFrame(),
-					def.hasVariableWaits() ? ", variable waits" : "");
+					def.hasVariableWaits() ? ", variable waits" : "",
+					def.shellStructure() != null ? ", with shell" : "");
 			}
 			return def.baseName();
 		} catch (Exception e) {
@@ -539,7 +553,7 @@ public final class LiveStructureTicker {
 		nearest.rideHoldZ = player.getZ();
 		player.sendSystemMessage(Component.literal(
 			"We'll pick you up on our next ride! Please hop aboard then."));
-		InstantMassiveStructures.LOGGER.info("Player {} queued {} ride at {}",
+		InstantMassiveStructures.LOGGER.debug("Player {} queued {} ride at {}",
 			player.getName().getString(), nearest.baseName, nearest.origin);
 		return true;
 	}
@@ -703,7 +717,7 @@ public final class LiveStructureTicker {
 					return;
 				}
 			} else if (stepsDone == 0) {
-				InstantMassiveStructures.LOGGER.info(
+				InstantMassiveStructures.LOGGER.debug(
 					"{} lightpath mode: skipping place/clear/explode after first frame", baseName);
 			}
 			carryNearbyPlayers(step.dx(), step.dy(), step.dz());
@@ -748,11 +762,11 @@ public final class LiveStructureTicker {
 			int cleared = 0;
 			for (int i = 0; i < sample; i++) {
 				cursor = cursor.offset(primary.dx(), primary.dy(), primary.dz());
-				cleared += clearLeadProbeColumns(cursor, primary);
-			}
-			InstantMassiveStructures.LOGGER.info(
-				"{} cleared spawn corridor ({} lead cells, {} slices, grace {} steps) from {}",
-				baseName, cleared, sample, probeGraceSteps(), startOrigin);
+			cleared += clearLeadProbeColumns(cursor, primary);
+		}
+		InstantMassiveStructures.LOGGER.debug(
+			"{} cleared spawn corridor ({} lead cells, {} slices, grace {} steps) from {}",
+			baseName, cleared, sample, probeGraceSteps(), startOrigin);
 		}
 
 		/** Clear the 5-column mid-height lead face just outside craft AABB at {@code at}. */
@@ -807,39 +821,39 @@ public final class LiveStructureTicker {
 		/** After boarding: climb (aviation) or cruise (boat). */
 		private void enterMotionPhaseAfterBoard() {
 			if (path.aviation() && path.climbCount() > 0) {
-				pathPhase = 1;
-				stepsRemaining = path.climbCount();
-				InstantMassiveStructures.LOGGER.info(
-					"{} departing {} — climb {} steps {} then level {} (fly distance {})",
-					baseName, origin, path.climbCount(), formatStep(path.climb()),
-					levelSteps, flyDistance);
-			} else {
-				pathPhase = 2;
-				stepsRemaining = levelSteps;
-				InstantMassiveStructures.LOGGER.info(
-					"{} departing {} for {} blocks {}",
-					baseName, origin, levelSteps, formatStep(path.cruise()));
+			pathPhase = 1;
+			stepsRemaining = path.climbCount();
+			InstantMassiveStructures.LOGGER.debug(
+				"{} departing {} — climb {} steps {} then level {} (fly distance {})",
+				baseName, origin, path.climbCount(), formatStep(path.climb()),
+				levelSteps, flyDistance);
+		} else {
+			pathPhase = 2;
+			stepsRemaining = levelSteps;
+			InstantMassiveStructures.LOGGER.debug(
+				"{} departing {} for {} blocks {}",
+				baseName, origin, levelSteps, formatStep(path.cruise()));
 			}
 			ticksUntilNext = lightPathMode() ? 1 : Math.max(1, path.ticksPerStep());
 		}
 
 		private void advanceMotionPhase() throws Exception {
 			if (pathPhase == 1) {
-				// Climb done → level
-				pathPhase = 2;
-				stepsRemaining = levelSteps;
-				InstantMassiveStructures.LOGGER.info(
-					"{} climb complete at {}; level {} steps {}",
-					baseName, origin, levelSteps, formatStep(path.cruise()));
-				return;
-			}
-			if (pathPhase == 2) {
-				if (path.aviation() && path.descendCount() > 0) {
-					pathPhase = 3;
-					stepsRemaining = path.descendCount();
-					InstantMassiveStructures.LOGGER.info(
-						"{} level complete at {}; descend {} steps {}",
-						baseName, origin, path.descendCount(), formatStep(path.descend()));
+			// Climb done → level
+			pathPhase = 2;
+			stepsRemaining = levelSteps;
+			InstantMassiveStructures.LOGGER.debug(
+				"{} climb complete at {}; level {} steps {}",
+				baseName, origin, levelSteps, formatStep(path.cruise()));
+			return;
+		}
+		if (pathPhase == 2) {
+			if (path.aviation() && path.descendCount() > 0) {
+				pathPhase = 3;
+				stepsRemaining = path.descendCount();
+				InstantMassiveStructures.LOGGER.debug(
+					"{} level complete at {}; descend {} steps {}",
+					baseName, origin, path.descendCount(), formatStep(path.descend()));
 					return;
 				}
 				finishOrLoop();
@@ -856,18 +870,18 @@ public final class LiveStructureTicker {
 				origin = startOrigin;
 				frameIndex = 0;
 				placeCurrentFrame(false);
-				stepsDone = 0;
-				pathPhase = 0;
-				stepsRemaining = 0;
-				ticksUntilNext = Math.max(1, path.boardingTicks() / 2);
-				InstantMassiveStructures.LOGGER.info(
-					"{} completed short loop; returning to {} (reboard)", baseName, startOrigin);
-			} else {
-				// Legacy doLoop=false: leave last frame, drop from ACTIVE next tick
-				pathPhase = 4;
-				ticksUntilNext = 1;
-				InstantMassiveStructures.LOGGER.info(
-					"{} voyage complete (legacy one-shot); removing", baseName);
+			stepsDone = 0;
+			pathPhase = 0;
+			stepsRemaining = 0;
+			ticksUntilNext = Math.max(1, path.boardingTicks() / 2);
+			InstantMassiveStructures.LOGGER.debug(
+				"{} completed short loop; returning to {} (reboard)", baseName, startOrigin);
+		} else {
+			// Legacy doLoop=false: leave last frame, drop from ACTIVE next tick
+			pathPhase = 4;
+			ticksUntilNext = 1;
+			InstantMassiveStructures.LOGGER.debug(
+				"{} voyage complete (legacy one-shot); removing", baseName);
 			}
 		}
 
@@ -891,6 +905,17 @@ public final class LiveStructureTicker {
 			} else {
 				ticksUntilNext = Math.max(1, w);
 			}
+		}
+
+		void placeShell() throws Exception {
+			LiveDef def = findDefinition(baseName);
+			if (def == null || def.shellStructure() == null) {
+				return;
+			}
+			SchematicStructure shell = new SchematicStructure(def.shellStructure());
+			shell.readFromFile();
+			shell.process(world, origin.getX(), origin.getY(), origin.getZ());
+			InstantMassiveStructures.LOGGER.debug("Placed {} shell at {}", def.shellStructure(), origin);
 		}
 
 		void placeCurrentFrame(boolean first) throws Exception {
@@ -1027,7 +1052,7 @@ public final class LiveStructureTicker {
 			if (rideProgress == -2) {
 				if (frameIndex >= waitSlide) {
 					rideProgress = -1;
-					InstantMassiveStructures.LOGGER.info("{} ride: waiting for mount near {}",
+					InstantMassiveStructures.LOGGER.debug("{} ride: waiting for mount near {}",
 						baseName, origin);
 				}
 				return;
@@ -1047,12 +1072,12 @@ public final class LiveStructureTicker {
 					if (ferris) {
 						teleportFerrisRide(rider, ox, oy, oz);
 					} else {
-						rideHoldX = rider.getX();
-						rideHoldZ = rider.getZ();
-						teleportFreeFallRide(rider, oy);
-					}
-					InstantMassiveStructures.LOGGER.info("{} ride started for {}",
-						baseName, rider.getName().getString());
+					rideHoldX = rider.getX();
+					rideHoldZ = rider.getZ();
+					teleportFreeFallRide(rider, oy);
+				}
+				InstantMassiveStructures.LOGGER.debug("{} ride started for {}",
+					baseName, rider.getName().getString());
 				}
 				return;
 			}
@@ -1072,11 +1097,11 @@ public final class LiveStructureTicker {
 					clearRide();
 					return;
 				}
-				if (rideProgress >= FERRIS_RIDE_Y.length - 1) {
-					rider.sendSystemMessage(Component.literal(
-						"Thanks for your visit. We hope to see you again soon!"));
-					InstantMassiveStructures.LOGGER.info(
-						"{} ride complete ({} cart points)", baseName, FERRIS_RIDE_Y.length);
+			if (rideProgress >= FERRIS_RIDE_Y.length - 1) {
+				rider.sendSystemMessage(Component.literal(
+					"Thanks for your visit. We hope to see you again soon!"));
+				InstantMassiveStructures.LOGGER.debug(
+					"{} ride complete ({} cart points)", baseName, FERRIS_RIDE_Y.length);
 					clearRide();
 					return;
 				}
