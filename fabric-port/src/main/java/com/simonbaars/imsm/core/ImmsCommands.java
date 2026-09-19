@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.properties.Half;
 import com.simonbaars.imsm.structureloader.SchematicStructure;
 import com.simonbaars.imsm.structureloader.LegacyBlockStates;
+import com.simonbaars.imsm.testing.PlacementVerifier;
 import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.Direction;
@@ -88,6 +89,10 @@ public final class ImmsCommands {
 				.then(Commands.literal("metastats")
 					.then(Commands.argument("structure", StringArgumentType.word())
 						.executes(ctx -> metaStats(ctx.getSource(),
+							StringArgumentType.getString(ctx, "structure")))))
+				.then(Commands.literal("verify")
+					.then(Commands.argument("structure", StringArgumentType.word())
+						.executes(ctx -> verify(ctx.getSource(),
 							StringArgumentType.getString(ctx, "structure")))))
 				.then(Commands.literal("removelive")
 					.executes(ctx -> removelive(ctx.getSource()))));
@@ -184,6 +189,30 @@ public final class ImmsCommands {
 			return stairs;
 		} catch (Exception e) {
 			source.sendFailure(Component.literal("metastats failed: " + e.getMessage()));
+			return 0;
+		}
+	}
+
+	/** Verify chest items and sign text after placement (CoS playtest fixes). */
+	private static int verify(CommandSourceStack source, String structureName) {
+		try {
+			ServerPlayer player = source.getPlayerOrException();
+			ServerLevel world = player.level();
+			BlockPos origin = player.blockPosition();
+			
+			String report = PlacementVerifier.verifyStructure(world, structureName, 
+				origin.getX(), origin.getY(), origin.getZ());
+			
+			// Send report line by line
+			for (String line : report.split("\n")) {
+				String finalLine = line;
+				source.sendSuccess(() -> Component.literal(finalLine), false);
+			}
+			
+			InstantMassiveStructures.LOGGER.info(report);
+			return 1;
+		} catch (Exception e) {
+			source.sendFailure(Component.literal("verify failed: " + e.getMessage()));
 			return 0;
 		}
 	}
