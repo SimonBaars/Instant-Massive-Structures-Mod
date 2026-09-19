@@ -908,7 +908,7 @@ public final class LegacyBlockStates {
 	}
 	
 	private static BlockState carvedPumpkin(int meta) {
-		Direction facing = facingCardinal(meta & 0x3);
+		Direction facing = facingNESW(meta);
 		return Blocks.CARVED_PUMPKIN.defaultBlockState()
 			.setValue(BlockStateProperties.HORIZONTAL_FACING, facing);
 	}
