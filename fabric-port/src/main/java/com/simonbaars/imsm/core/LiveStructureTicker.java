@@ -257,7 +257,7 @@ public final class LiveStructureTicker {
 	 */
 	private static final LiveDef[] DEFINITIONS = {
 		LiveDef.withShell("Live_FerrisWheel", 40, "Live_FerrisWheel",
-			"Live_FerrisWheel", "Live_FerrisWheel0", "Live_FerrisWheel1", "Live_FerrisWheel2"),
+			"Live_FerrisWheel0", "Live_FerrisWheel0", "Live_FerrisWheel1", "Live_FerrisWheel2"),
 		LiveDef.withShell("Live_Mill", 15, "Live_Mill",
 			"Live_Mill0", "Live_Mill1", "Live_Mill2", "Live_Mill3", "Live_Mill4", "Live_Mill5"),
 		LiveDef.withShell("Live_WaterMill", 15, "Live_WaterMill",

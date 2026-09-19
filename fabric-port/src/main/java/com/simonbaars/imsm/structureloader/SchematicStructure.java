@@ -162,6 +162,18 @@ public class SchematicStructure {
 			BlockPos worldPos = new BlockPos(originX + schematicX, posY + schematicY, originZ + schematicZ);
 			
 			try {
+				BlockState blockState = world.getBlockState(worldPos);
+				
+				// For signs, ensure BlockEntity is created if it doesn't exist
+				if (blockState.getBlock() instanceof net.minecraft.world.level.block.SignBlock) {
+					BlockEntity existing = world.getBlockEntity(worldPos);
+					if (existing == null) {
+						// Re-set the block to force BE creation
+						world.setBlock(worldPos, blockState, Block.UPDATE_ALL | Block.UPDATE_CLIENTS);
+						InstantMassiveStructures.LOGGER.debug("Forced sign BE creation at {}", worldPos);
+					}
+				}
+				
 				BlockEntity blockEntity = world.getBlockEntity(worldPos);
 				if (blockEntity != null) {
 					CompoundTag tileEntityData = entry.getValue().copy();
@@ -182,6 +194,13 @@ public class SchematicStructure {
 						convertLegacySignText(tileEntityData);
 					}
 
+					// Strip legacy Items before loadStatic to avoid decode warnings
+					ListTag legacyItems = null;
+					if (tileEntityData.contains("Items")) {
+						legacyItems = tileEntityData.getList("Items").orElse(new ListTag());
+						tileEntityData.remove("Items");
+					}
+
 					// MC 26.2: load tile entity data
 					try {
 						blockEntity.loadStatic(worldPos, blockEntity.getBlockState(), tileEntityData, world.registryAccess());
@@ -192,26 +211,34 @@ public class SchematicStructure {
 							worldPos, loadEx.getMessage());
 					}
 
-					// Apply legacy Items to Container (chests, furnaces, etc.)
-					if (blockEntity instanceof Container container && tileEntityData.contains("Items")) {
-						ListTag itemsList = tileEntityData.getList("Items").orElse(new ListTag());
-						for (int i = 0; i < itemsList.size(); i++) {
-							CompoundTag itemTag = itemsList.getCompound(i).orElse(new CompoundTag());
+					// Apply legacy Items to Container (chests, furnaces, etc.) after loadStatic
+					if (blockEntity instanceof Container container && legacyItems != null) {
+						for (int i = 0; i < legacyItems.size(); i++) {
+							CompoundTag itemTag = legacyItems.getCompound(i).orElse(new CompoundTag());
 							try {
 								byte slot = itemTag.getByte("Slot").orElse((byte)0);
-								short legacyId = itemTag.getShort("id").orElse((short)0);
+								// Legacy schematics may use capital "Id" instead of lowercase "id"
+								short legacyId = itemTag.contains("Id") 
+									? itemTag.getShort("Id").orElse((short)0)
+									: itemTag.getShort("id").orElse((short)0);
 								byte count = itemTag.getByte("Count").orElse((byte)0);
 								short damage = itemTag.getShort("Damage").orElse((short)0);
+								
+								if (legacyId == 0) {
+									continue;
+								}
 								
 								// Convert legacy item ID to modern Item
 								var modernItem = LegacyItems.fromLegacyId(legacyId);
 								if (modernItem != null && !modernItem.equals(net.minecraft.world.item.Items.AIR)) {
 									ItemStack stack = new ItemStack(modernItem, count);
-									// Note: damage/meta conversion would go here if needed
 									if (slot >= 0 && slot < container.getContainerSize()) {
 										container.setItem(slot, stack);
 										containerItemsApplied++;
 									}
+								} else if (legacyId > 0) {
+									InstantMassiveStructures.LOGGER.debug("Unknown legacy item ID {} at slot {} in TE at {}",
+										legacyId, slot, worldPos);
 								}
 							} catch (Exception itemEx) {
 								InstantMassiveStructures.LOGGER.warn("Failed to parse item in TE at {}: {}", 
