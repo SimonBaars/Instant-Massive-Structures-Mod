@@ -145,3 +145,19 @@ task runParityDump(type: JavaExec) {
 		println "Working directory: ${workingDir}"
 	}
 }
+
+// Task to run PathMoverTest for path motion configuration verification
+task runPathMoverTest(type: JavaExec) {
+	group = 'verification'
+	description = 'Runs PathMoverTest to verify path-moving live structure configurations'
+	
+	classpath = sourceSets.test.runtimeClasspath
+	mainClass = 'com.simonbaars.imsm.testing.PathMoverTest'
+	
+	workingDir = project.projectDir
+	
+	doFirst {
+		println "Running PathMoverTest..."
+		println "Testing path mover configurations (airplane, plane, ships, boat, bus, etc.)..."
+	}
+}

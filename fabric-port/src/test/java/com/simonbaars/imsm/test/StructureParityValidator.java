@@ -249,19 +249,19 @@ public class StructureParityValidator {
             }
             
             // Validate tile entities
-            ListTag tileEntitiesList = nbt.getListOrEmpty("TileEntities", 10);
+            ListTag tileEntitiesList = nbt.getList("TileEntities").orElse(new ListTag());
             result.tileEntities = tileEntitiesList.size();
             
             for (int i = 0; i < tileEntitiesList.size(); i++) {
-                CompoundTag te = tileEntitiesList.getCompound(i);
+                CompoundTag te = tileEntitiesList.getCompound(i).orElseThrow();
                 
                 // Check for Items (chest/furnace contents)
-                if (te.contains("Items", 9)) {
-                    ListTag items = te.getList("Items", 10);
+                if (te.contains("Items")) {
+                    ListTag items = te.getList("Items").orElse(new ListTag());
                     for (int j = 0; j < items.size(); j++) {
-                        CompoundTag itemTag = items.getCompound(j);
+                        CompoundTag itemTag = items.getCompound(j).orElseThrow();
                         if (itemTag.contains("id")) {
-                            short legacyItemId = itemTag.getShort("id");
+                            short legacyItemId = itemTag.getShort("id").orElse((short)0);
                             var modernItem = LegacyItems.fromLegacyId(legacyItemId);
                             if (modernItem == null || modernItem.equals(net.minecraft.world.item.Items.AIR)) {
                                 result.unmappedLegacyItems.merge((int)legacyItemId, 1, Integer::sum);
