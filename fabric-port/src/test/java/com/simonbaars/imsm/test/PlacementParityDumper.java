@@ -5,8 +5,10 @@ import com.google.gson.GsonBuilder;
 import com.simonbaars.imsm.structureloader.LegacyBlockStates;
 import com.simonbaars.imsm.structureloader.SchematicStructure;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.*;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -88,24 +90,24 @@ public class PlacementParityDumper {
 			nbt = NbtIo.readCompressed(input, NbtAccounter.unlimitedHeap());
 		}
 		
-		// Extract dimensions
-		ListTag size = nbt.getList("size", 3); // 3 = IntTag
-		int width = size.getInt(0);
-		int height = size.getInt(1);
-		int length = size.getInt(2);
+	// Extract dimensions
+	ListTag size = nbt.getList("size").orElse(new ListTag());
+	int width = size.size() > 0 ? ((IntTag) size.get(0)).intValue() : 0;
+	int height = size.size() > 1 ? ((IntTag) size.get(1)).intValue() : 0;
+	int length = size.size() > 2 ? ((IntTag) size.get(2)).intValue() : 0;
 		
 		// Extract block arrays
-		byte[] blocks = nbt.getByteArray("blocks");
-		byte[] data = nbt.getByteArray("data");
+		byte[] blocks = nbt.getByteArray("blocks").orElse(new byte[0]);
+		byte[] data = nbt.getByteArray("data").orElse(new byte[0]);
 		
 		// Extract TileEntities
-		ListTag tileEntities = nbt.getList("TileEntities", 10); // 10 = CompoundTag
+		ListTag tileEntities = nbt.getList("TileEntities").orElse(new ListTag());
 		Map<BlockPos, CompoundTag> tileEntityMap = new HashMap<>();
 		for (Tag tag : tileEntities) {
 			CompoundTag te = (CompoundTag) tag;
-			int x = te.getInt("x");
-			int y = te.getInt("y");
-			int z = te.getInt("z");
+			int x = te.getInt("x").orElse(0);
+			int y = te.getInt("y").orElse(0);
+			int z = te.getInt("z").orElse(0);
 			tileEntityMap.put(new BlockPos(x, y, z), te);
 		}
 		
@@ -137,7 +139,7 @@ public class PlacementParityDumper {
 						blockRecord.put("blockId", "UNMAPPED");
 						blockRecord.put("properties", Map.of());
 					} else {
-						blockRecord.put("blockId", state.getBlock().builtInRegistryHolder().key().location().toString());
+						blockRecord.put("blockId", BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString());
 						blockRecord.put("properties", extractProperties(state));
 					}
 					
@@ -158,28 +160,28 @@ public class PlacementParityDumper {
 	
 	private static Map<String, String> extractProperties(BlockState state) {
 		Map<String, String> props = new LinkedHashMap<>();
-		state.getValues().forEach((property, value) -> {
-			props.put(property.getName(), value.toString());
-		});
+		for (Property<?> prop : state.getProperties()) {
+			props.put(prop.getName(), state.getValue(prop).toString());
+		}
 		return props;
 	}
 	
 	private static Map<String, Object> extractTileEntitySummary(CompoundTag te) {
 		Map<String, Object> summary = new LinkedHashMap<>();
-		summary.put("id", te.getString("id"));
+		summary.put("id", te.getString("id").orElse(""));
 		
 		// Include Items list if present (chests, furnaces)
-		if (te.contains("Items", 9)) { // 9 = ListTag
-			ListTag items = te.getList("Items", 10);
+		if (te.contains("Items")) {
+			ListTag items = te.getList("Items").orElse(new ListTag());
 			List<Map<String, Object>> itemList = new ArrayList<>();
 			for (Tag tag : items) {
 				CompoundTag item = (CompoundTag) tag;
 				Map<String, Object> itemSummary = new LinkedHashMap<>();
-				itemSummary.put("Slot", item.getByte("Slot"));
-				itemSummary.put("id", item.getShort("id"));
-				itemSummary.put("Count", item.getByte("Count"));
+				itemSummary.put("Slot", item.getByte("Slot").orElse((byte)0));
+				itemSummary.put("id", item.getShort("id").orElse((short)0));
+				itemSummary.put("Count", item.getByte("Count").orElse((byte)0));
 				if (item.contains("Damage")) {
-					itemSummary.put("Damage", item.getShort("Damage"));
+					itemSummary.put("Damage", item.getShort("Damage").orElse((short)0));
 				}
 				itemList.add(itemSummary);
 			}

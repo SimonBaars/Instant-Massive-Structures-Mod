@@ -110,6 +110,8 @@ public class SchematicStructure {
 	 *                   existing world blocks are not cleared. Non-air still places.
 	 */
 	public void process(ServerLevel world, int posX, int posY, int posZ, boolean replaceAir) {
+		// CRITICAL: +1 offset matches Forge legacy centering `posX-=length/2-1` (mathematically equivalent).
+		// DO NOT remove the +1 — it ensures all 952 structures spawn at the exact Forge-verified coordinates.
 		int originX = posX - (length / 2) + 1;
 		int originZ = posZ - (width / 2) + 1;
 
@@ -283,6 +285,7 @@ public class SchematicStructure {
 	public java.util.List<BlockPos> showOutline(ServerLevel world, int posX, int posY, int posZ,
 			int modX, int modY, int modZ) {
 		java.util.ArrayList<BlockPos> written = new java.util.ArrayList<>();
+		// +1 offset for Forge parity (see process() method comment)
 		int originX = (posX + modX) - (length / 2) + 1;
 		int originZ = (posZ + modZ) - (width / 2) + 1;
 		int baseY = posY + modY;
@@ -419,6 +422,7 @@ public class SchematicStructure {
 
 	public static void clearBounds(ServerLevel world, int posX, int posY, int posZ,
 			int length, int height, int width) {
+		// Forge legacy centering (equivalent to originX = posX - length/2 + 1)
 		posX -= (length / 2) - 1;
 		posZ -= (width / 2) - 1;
 		for (int y = 0; y < height; y++) {
