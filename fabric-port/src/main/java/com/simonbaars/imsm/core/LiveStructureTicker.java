@@ -92,7 +92,13 @@ public final class LiveStructureTicker {
 		}
 	}
 
-	/** One animated live type: entry base name + frame schematic names + tick interval. */
+	/**
+	 * One animated live type: entry base name + frame schematic names + tick interval.
+	 * <p>
+	 * {@code shellMod*} is Forge {@code modifierx/y/z} (shell anchor, or path-mover spawn
+	 * when there is no shell). {@code spawnMod*} is Forge {@code spawnPosModifier}
+	 * ({@code livemodx/y/z}). Frames are placed at {@code shellOrigin − spawnMod}.
+	 */
 	public record LiveDef(
 		String baseName,
 		int ticksPerFrame,
@@ -103,26 +109,47 @@ public final class LiveStructureTicker {
 		PathMotion path,
 		/** Static shell schematic name (placed once before animation starts); null = no shell */
 		String shellStructure,
+		/** Forge modifierx/y/z. Shell (or path spawn) is the click position plus this. */
+		int shellModX,
+		int shellModY,
+		int shellModZ,
+		/** Forge spawnPosModifier. Live frames sit at shell origin minus this. */
+		int spawnModX,
+		int spawnModY,
+		int spawnModZ,
 		String... frames
 	) {
 	public LiveDef(String baseName, int ticksPerFrame, String... frames) {
-		this(baseName, ticksPerFrame, null, null, null, frames);
+		this(baseName, ticksPerFrame, null, null, null, 0, 0, 0, 0, 0, 0, frames);
 	}
 
 	public LiveDef(String baseName, int ticksPerFrame, int[] waitTicksAfterFrame, String... frames) {
-		this(baseName, ticksPerFrame, waitTicksAfterFrame, null, null, frames);
+		this(baseName, ticksPerFrame, waitTicksAfterFrame, null, null, 0, 0, 0, 0, 0, 0, frames);
 	}
 
-	public LiveDef(String baseName, PathMotion path, String... frames) {
-		this(baseName, path.ticksPerStep(), null, path, null, frames);
+	/** Path mover. {@code shellMod*} is the Forge spawn modifier; spawnPosModifier is 0. */
+	public LiveDef(String baseName, PathMotion path, int shellModX, int shellModY, int shellModZ, String... frames) {
+		this(baseName, path.ticksPerStep(), null, path, null, shellModX, shellModY, shellModZ, 0, 0, 0, frames);
 	}
-	
-	public static LiveDef withShell(String baseName, int ticksPerFrame, String shellStructure, String... frames) {
-		return new LiveDef(baseName, ticksPerFrame, null, null, shellStructure, frames);
+
+	/**
+	 * Shell cycler. Offsets are the Forge {@code BlockLiveStructure} constructor pair
+	 * (modifier, then spawnPosModifier).
+	 */
+	public static LiveDef withShell(String baseName, int ticksPerFrame, String shellStructure,
+			int shellModX, int shellModY, int shellModZ,
+			int spawnModX, int spawnModY, int spawnModZ,
+			String... frames) {
+		return new LiveDef(baseName, ticksPerFrame, null, null, shellStructure,
+			shellModX, shellModY, shellModZ, spawnModX, spawnModY, spawnModZ, frames);
 	}
-	
-	public static LiveDef withShell(String baseName, int ticksPerFrame, int[] waitTicksAfterFrame, String shellStructure, String... frames) {
-		return new LiveDef(baseName, ticksPerFrame, waitTicksAfterFrame, null, shellStructure, frames);
+
+	public static LiveDef withShell(String baseName, int ticksPerFrame, int[] waitTicksAfterFrame, String shellStructure,
+			int shellModX, int shellModY, int shellModZ,
+			int spawnModX, int spawnModY, int spawnModZ,
+			String... frames) {
+		return new LiveDef(baseName, ticksPerFrame, waitTicksAfterFrame, null, shellStructure,
+			shellModX, shellModY, shellModZ, spawnModX, spawnModY, spawnModZ, frames);
 	}
 
 		public boolean matches(String structureName) {
@@ -254,19 +281,32 @@ public final class LiveStructureTicker {
 
 	/**
 	 * Stationary frame-cyclers + path movers from legacy BlockLiveStructure / EventHandler.getAnimationFor.
+	 * Shell and spawn triples are copied from each {@code livestructures/*.java} {@code super(...)} call.
 	 */
 	private static final LiveDef[] DEFINITIONS = {
+		// BlockFerrisWheel: modifier (1,-1,36), spawnPos (4,-2,0) → frames at shell−(4,-2,0)
 		LiveDef.withShell("Live_FerrisWheel", 40, "Live_FerrisWheel",
+			1, -1, 36, 4, -2, 0,
 			"Live_FerrisWheel0", "Live_FerrisWheel0", "Live_FerrisWheel1", "Live_FerrisWheel2"),
+		// Live_Mill: modifier (15,-1,15), spawnPos (14,-13,0)
 		LiveDef.withShell("Live_Mill", 15, "Live_Mill",
+			15, -1, 15, 14, -13, 0,
 			"Live_Mill0", "Live_Mill1", "Live_Mill2", "Live_Mill3", "Live_Mill4", "Live_Mill5"),
+		// Live_WaterMill: modifier (14,-3,9), spawnPos (2,-2,3)
 		LiveDef.withShell("Live_WaterMill", 15, "Live_WaterMill",
+			14, -3, 9, 2, -2, 3,
 			"Live_WaterMill0", "Live_WaterMill1", "Live_WaterMill2"),
+		// Live_Power_Windmill_East: modifier (0,0,0), spawnPos (6,-16,0)
 		LiveDef.withShell("Live_Power_Windmill_East", 15, "Live_Power_Windmill_East",
+			0, 0, 0, 6, -16, 0,
 			"Live_Power_Windmill_East0", "Live_Power_Windmill_East1", "Live_Power_Windmill_East2"),
+		// Live_Helicopter: modifier (0,0,0), spawnPos (0,0,0)
 		LiveDef.withShell("Live_Helicopter", 10, "Live_Helicopter",
+			0, 0, 0, 0, 0, 0,
 			"Live_Helicopter0", "Live_Helicopter1", "Live_Helicopter2", "Live_Helicopter3"),
+		// Live_Cinema: modifier (49,-1,25), spawnPos (69-66, 3-6, 46-36) = (3,-3,10)
 		LiveDef.withShell("Live_Cinema", 20, "Live_Cinema",
+			49, -1, 25, 69 - 66, 3 - 6, 46 - 36,
 			"Live_Cinema0", "Live_Cinema1", "Live_Cinema2", "Live_Cinema3", "Live_Cinema4", "Live_Cinema5",
 			"Live_Cinema6", "Live_Cinema7", "Live_Cinema8", "Live_Cinema9", "Live_Cinema10", "Live_Cinema11",
 			"Live_Cinema12", "Live_Cinema13", "Live_Cinema14", "Live_Cinema15", "Live_Cinema16", "Live_Cinema17",
@@ -275,40 +315,42 @@ public final class LiveStructureTicker {
 			"Live_Cinema30", "Live_Cinema31", "Live_Cinema32", "Live_Cinema33", "Live_Cinema34", "Live_Cinema35",
 			"Live_Cinema36", "Live_Cinema37", "Live_Cinema38", "Live_Cinema39", "Live_Cinema40", "Live_Cinema41",
 			"Live_Cinema42"),
+		// Live_Fair_FreeFall: modifier (0,0,0), spawnPos (4,0,4)
 		LiveDef.withShell("Live_Fair_FreeFall", 4, FREEFALL_WAIT_AFTER, "Live_Fair_FreeFall",
+			0, 0, 0, 4, 0, 4,
 			"Live_Fair_FreeFall0", "Live_Fair_FreeFall1", "Live_Fair_FreeFall2", "Live_Fair_FreeFall3",
 			"Live_Fair_FreeFall4", "Live_Fair_FreeFall5", "Live_Fair_FreeFall6", "Live_Fair_FreeFall7",
 			"Live_Fair_FreeFall8", "Live_Fair_FreeFall9", "Live_Fair_FreeFall10", "Live_Fair_FreeFall11",
 			"Live_Fair_FreeFall12", "Live_Fair_FreeFall13", "Live_Fair_FreeFall14", "Live_Fair_FreeFall15",
 			"Live_Fair_FreeFall16", "Live_Fair_FreeFall17", "Live_Fair_FreeFall18", "Live_Fair_FreeFall19",
 			"Live_Fair_FreeFall20"),
-		// Legacy LiveBoat: nslides=4, path +Z for dialog distance (EventHandler boat/bus animation)
-		new LiveDef("LiveBoat", BOAT_BUS_PATH,
+		// Legacy LiveBoat: modifier (0,-2,0), spawnPos (0,0,0); path +Z
+		new LiveDef("LiveBoat", BOAT_BUS_PATH, 0, -2, 0,
 			"LiveBoat0", "LiveBoat1", "LiveBoat2", "LiveBoat3"),
-		// Legacy Live_Bus: nslides=1 → Live_Bus0 only; same +Z path
-		new LiveDef("Live_Bus", BOAT_BUS_PATH,
+		// Legacy Live_Bus: modifier (0,0,0); nslides=1 → Live_Bus0 only; same +Z path
+		new LiveDef("Live_Bus", BOAT_BUS_PATH, 0, 0, 0,
 			"Live_Bus0"),
-		// Legacy Live_Bus2: nslides=1 → dedicated Live_Bus20 (distinct schematic); same +Z path
-		new LiveDef("Live_Bus2", BOAT_BUS_PATH,
+		// Legacy Live_Bus2: modifier (0,0,0); nslides=1 → Live_Bus20; same +Z path
+		new LiveDef("Live_Bus2", BOAT_BUS_PATH, 0, 0, 0,
 			"Live_Bus20"),
-		// Legacy LiveAirplane: nslides=1, aviation climb/level/descend +Z
-		new LiveDef("LiveAirplane", AIRPLANE_PATH,
+		// Legacy LiveAirplane: modifier (0,0,0); aviation climb/level/descend +Z
+		new LiveDef("LiveAirplane", AIRPLANE_PATH, 0, 0, 0,
 			"LiveAirplane0"),
-		// Legacy Live_Flying_Helicopter: nslides=4 @200ms, aviation −Z
-		new LiveDef("Live_Flying_Helicopter", FLYING_HELI_PATH,
+		// Legacy Live_Flying_Helicopter: modifier (0,0,0); nslides=4 @200ms, aviation −Z
+		new LiveDef("Live_Flying_Helicopter", FLYING_HELI_PATH, 0, 0, 0,
 			"Live_Flying_Helicopter0", "Live_Flying_Helicopter1",
 			"Live_Flying_Helicopter2", "Live_Flying_Helicopter3"),
-		// Legacy LivePlane: nslides=1 @100ms, aviation −X
-		new LiveDef("LivePlane", PLANE_PATH,
+		// Legacy LivePlane: modifier (26,0,19); nslides=1 @100ms, aviation −X
+		new LiveDef("LivePlane", PLANE_PATH, 26, 0, 19,
 			"LivePlane0"),
-		// Legacy LiveAirBalloon: nslides=1 @500ms, aviation −Z (same path as FlyingShip1)
-		new LiveDef("LiveAirBalloon", BALLOON_SHIP1_PATH,
+		// Legacy LiveAirBalloon: modifier (0,0,0); nslides=1 @500ms, aviation −Z
+		new LiveDef("LiveAirBalloon", BALLOON_SHIP1_PATH, 0, 0, 0,
 			"LiveAirBalloon0"),
-		// Legacy LiveFlyingShip → structure LiveFlyingShip1, nslides=3 @500ms, aviation −Z
-		new LiveDef("LiveFlyingShip1", BALLOON_SHIP1_PATH,
+		// Legacy LiveFlyingShip → LiveFlyingShip1: modifier (15,-10,24); aviation −Z
+		new LiveDef("LiveFlyingShip1", BALLOON_SHIP1_PATH, 15, -10, 24,
 			"LiveFlyingShip10", "LiveFlyingShip11", "LiveFlyingShip12"),
-		// Legacy LiveFlyingShip2: nslides=3 @500ms, aviation +X
-		new LiveDef("LiveFlyingShip2", FLYING_SHIP2_PATH,
+		// Legacy LiveFlyingShip2: modifier (22,-8,16); aviation +X
+		new LiveDef("LiveFlyingShip2", FLYING_SHIP2_PATH, 22, -8, 16,
 			"LiveFlyingShip20", "LiveFlyingShip21", "LiveFlyingShip22"),
 	};
 
@@ -424,10 +466,17 @@ public final class LiveStructureTicker {
 
 	/**
 	 * @param loopOverride null → PathMotion.loop() (legacy false); true forces short loop for playtest
+	 * @param origin shell anchor (Forge {@code pos + modifier}). Callers apply {@link LiveDef#shellModX()}
+	 *               (creative block mods or {@code /imsm live}). Frames are placed at
+	 *               {@code origin − spawnPosModifier}; path movers have a zero spawn modifier so their
+	 *               moving origin is unchanged.
 	 */
 	public static String startLive(ServerLevel world, BlockPos origin, LiveDef def, int distance,
 		Boolean loopOverride) {
-		LiveInstance inst = new LiveInstance(world, origin, def, distance);
+		BlockPos shellOrigin = origin.immutable();
+		// Forge LiveStructureServer position: pos + modifier − spawnPosModifier.
+		BlockPos frameOrigin = shellOrigin.offset(-def.spawnModX(), -def.spawnModY(), -def.spawnModZ());
+		LiveInstance inst = new LiveInstance(world, frameOrigin, def, distance);
 		if (loopOverride != null) {
 			inst.loopEnabled = loopOverride;
 		}
@@ -446,14 +495,14 @@ public final class LiveStructureTicker {
 				PathMotion pm = def.path();
 				InstantMassiveStructures.LOGGER.debug(
 					"Started {} path live at {} ({} frames, distance {}, levelSteps {}, climb {}/{}, descend {}/{}, step {}t, boarding {}t, loop={}, aviation={})",
-					def.baseName(), origin, def.frames().length, inst.flyDistance,
+					def.baseName(), frameOrigin, def.frames().length, inst.flyDistance,
 					inst.levelSteps, pm.climbCount(),
 					formatStep(pm.climb()), pm.descendCount(), formatStep(pm.descend()),
 					pm.ticksPerStep(), pm.boardingTicks(), inst.loopEnabled, pm.aviation());
 			} else {
 				InstantMassiveStructures.LOGGER.debug(
-					"Started {} live animation at {} ({} frames, base {} ticks{}{})",
-					def.baseName(), origin, def.frames().length, def.ticksPerFrame(),
+					"Started {} live animation shell {} frames {} ({} frames, base {} ticks{}{})",
+					def.baseName(), shellOrigin, frameOrigin, def.frames().length, def.ticksPerFrame(),
 					def.hasVariableWaits() ? ", variable waits" : "",
 					def.shellStructure() != null ? ", with shell" : "");
 			}
@@ -912,10 +961,13 @@ public final class LiveStructureTicker {
 			if (def == null || def.shellStructure() == null) {
 				return;
 			}
+			// origin is the Forge live-frame position. Shell sits at frame + spawnPosModifier.
+			BlockPos shellAt = origin.offset(def.spawnModX(), def.spawnModY(), def.spawnModZ());
 			SchematicStructure shell = new SchematicStructure(def.shellStructure());
 			shell.readFromFile();
-			shell.process(world, origin.getX(), origin.getY(), origin.getZ());
-			InstantMassiveStructures.LOGGER.debug("Placed {} shell at {}", def.shellStructure(), origin);
+			shell.process(world, shellAt.getX(), shellAt.getY(), shellAt.getZ());
+			InstantMassiveStructures.LOGGER.debug("Placed {} shell at {} (frames at {})",
+				def.shellStructure(), shellAt, origin);
 		}
 
 		void placeCurrentFrame(boolean first) throws Exception {

@@ -224,7 +224,7 @@ public class StructureRegistry {
 		registerStructureBlock("live__bus0", "Live_Bus0", 0, 0, 0, false);
 		registerStructureBlock("live__bus2", "Live_Bus2", 0, 0, 0, false);
 		registerStructureBlock("live__bus20", "Live_Bus20", 0, 0, 0, false);
-		registerStructureBlock("live__cinema", "Live_Cinema", 0, 0, 0);
+		registerStructureBlock("live__cinema", "Live_Cinema", 49, -1, 25);
 		registerStructureBlock("live__cinema0", "Live_Cinema0", 0, 0, 0, false);
 		registerStructureBlock("live__cinema1", "Live_Cinema1", 0, 0, 0, false);
 		registerStructureBlock("live__cinema10", "Live_Cinema10", 0, 0, 0, false);
@@ -268,6 +268,7 @@ public class StructureRegistry {
 		registerStructureBlock("live__cinema7", "Live_Cinema7", 0, 0, 0, false);
 		registerStructureBlock("live__cinema8", "Live_Cinema8", 0, 0, 0, false);
 		registerStructureBlock("live__cinema9", "Live_Cinema9", 0, 0, 0, false);
+		// Shell modifier is (0,0,0); frames use spawnPosModifier (4,0,4) from LiveDef.
 		registerStructureBlock("live__fair__free_fall", "Live_Fair_FreeFall", 0, 0, 0);
 		registerStructureBlock("live__fair__free_fall0", "Live_Fair_FreeFall0", 0, 0, 0, false);
 		registerStructureBlock("live__fair__free_fall1", "Live_Fair_FreeFall1", 0, 0, 0, false);
@@ -290,7 +291,7 @@ public class StructureRegistry {
 		registerStructureBlock("live__fair__free_fall7", "Live_Fair_FreeFall7", 0, 0, 0, false);
 		registerStructureBlock("live__fair__free_fall8", "Live_Fair_FreeFall8", 0, 0, 0, false);
 		registerStructureBlock("live__fair__free_fall9", "Live_Fair_FreeFall9", 0, 0, 0, false);
-		registerStructureBlock("live__ferris_wheel", "Live_FerrisWheel", 0, 0, 0);
+		registerStructureBlock("live__ferris_wheel", "Live_FerrisWheel", 1, -1, 36);
 		registerStructureBlock("live__ferris_wheel0", "Live_FerrisWheel0", 0, 0, 0, false);
 		registerStructureBlock("live__ferris_wheel1", "Live_FerrisWheel1", 0, 0, 0, false);
 		registerStructureBlock("live__ferris_wheel2", "Live_FerrisWheel2", 0, 0, 0, false);
@@ -304,18 +305,19 @@ public class StructureRegistry {
 		registerStructureBlock("live__helicopter1", "Live_Helicopter1", 0, 0, 0, false);
 		registerStructureBlock("live__helicopter2", "Live_Helicopter2", 0, 0, 0, false);
 		registerStructureBlock("live__helicopter3", "Live_Helicopter3", 0, 0, 0, false);
-		registerStructureBlock("live__mill", "Live_Mill", 0, 0, 0);
+		registerStructureBlock("live__mill", "Live_Mill", 15, -1, 15);
 		registerStructureBlock("live__mill0", "Live_Mill0", 0, 0, 0, false);
 		registerStructureBlock("live__mill1", "Live_Mill1", 0, 0, 0, false);
 		registerStructureBlock("live__mill2", "Live_Mill2", 0, 0, 0, false);
 		registerStructureBlock("live__mill3", "Live_Mill3", 0, 0, 0, false);
 		registerStructureBlock("live__mill4", "Live_Mill4", 0, 0, 0, false);
 		registerStructureBlock("live__mill5", "Live_Mill5", 0, 0, 0, false);
+		// Shell modifier is (0,0,0); blades use spawnPosModifier (6,-16,0) from LiveDef.
 		registerStructureBlock("live__power__windmill__east", "Live_Power_Windmill_East", 0, 0, 0);
 		registerStructureBlock("live__power__windmill__east0", "Live_Power_Windmill_East0", 0, 0, 0, false);
 		registerStructureBlock("live__power__windmill__east1", "Live_Power_Windmill_East1", 0, 0, 0, false);
 		registerStructureBlock("live__power__windmill__east2", "Live_Power_Windmill_East2", 0, 0, 0, false);
-		registerStructureBlock("live__water_mill", "Live_WaterMill", 0, 0, 0);
+		registerStructureBlock("live__water_mill", "Live_WaterMill", 14, -3, 9);
 		registerStructureBlock("live__water_mill0", "Live_WaterMill0", 0, 0, 0, false);
 		registerStructureBlock("live__water_mill1", "Live_WaterMill1", 0, 0, 0, false);
 		registerStructureBlock("live__water_mill2", "Live_WaterMill2", 0, 0, 0, false);
