@@ -465,11 +465,37 @@ public final class LiveStructureTicker {
 	}
 
 	/**
+	 * Anchor passed to {@link SchematicStructure#process} for one live frame.
+	 * <p>
+	 * Forge {@code StructureUtils.getWorldPos} places local {@code (x,z)} at
+	 * {@code anchor + local - 2*(size/2) + 1}. Fabric process uses
+	 * {@code anchor - size/2 + 1 + local}. Those agree for a single schematic only up to
+	 * {@code +size/2}. Shell and frame files differ in size, so passing the Forge frame
+	 * anchor straight through Fabric leaves blades and screens off the shell by
+	 * {@code shellHalf - frameHalf} on X/Z. Adding that delta makes frame voxels land on
+	 * the same cells Forge paints over the shell. Y is uncentered in both ports.
+	 * Path movers have no shell ({@code shellLength == 0}) and are not shifted.
+	 */
+	public static BlockPos fabricFrameAnchor(BlockPos shellAnchor,
+			int spawnModX, int spawnModY, int spawnModZ,
+			int shellLength, int shellWidth,
+			int frameLength, int frameWidth) {
+		BlockPos forgeFrame = shellAnchor.offset(-spawnModX, -spawnModY, -spawnModZ);
+		if (shellLength <= 0 && shellWidth <= 0) {
+			return forgeFrame;
+		}
+		return forgeFrame.offset(
+			shellLength / 2 - frameLength / 2,
+			0,
+			shellWidth / 2 - frameWidth / 2);
+	}
+
+	/**
 	 * @param loopOverride null → PathMotion.loop() (legacy false); true forces short loop for playtest
 	 * @param origin shell anchor (Forge {@code pos + modifier}). Callers apply {@link LiveDef#shellModX()}
-	 *               (creative block mods or {@code /imsm live}). Frames are placed at
-	 *               {@code origin − spawnPosModifier}; path movers have a zero spawn modifier so their
-	 *               moving origin is unchanged.
+	 *               (creative block mods or {@code /imsm live}). The Forge live origin is
+	 *               {@code origin − spawnPosModifier}. {@link #fabricFrameAnchor} then corrects X/Z
+	 *               for Fabric's centering. Path movers have a zero spawn modifier and no shell.
 	 */
 	public static String startLive(ServerLevel world, BlockPos origin, LiveDef def, int distance,
 		Boolean loopOverride) {
@@ -619,7 +645,8 @@ public final class LiveStructureTicker {
 			if (inst.riderUuid != null) {
 				continue;
 			}
-			double d = Math.sqrt(inst.origin.distToCenterSqr(pos.x, pos.y, pos.z));
+			BlockPos near = inst.rideAnchor();
+			double d = Math.sqrt(near.distToCenterSqr(pos.x, pos.y, pos.z));
 			if (d < bestDist) {
 				bestDist = d;
 				best = inst;
@@ -652,6 +679,11 @@ public final class LiveStructureTicker {
 		int lastLength;
 		int lastHeight;
 		int lastWidth;
+		/** NBT Width/Length of the shell. Zero when this live has no shell (path movers). */
+		int shellLength;
+		int shellWidth;
+		/** Anchor last passed to process/clear for the current frame (Fabric centering). */
+		BlockPos lastPlacedAt;
 
 		// Path mover state: 0=boarding, 1=climb, 2=level/cruise, 3=descend, 4=done
 		int pathPhase;
@@ -715,7 +747,31 @@ public final class LiveStructureTicker {
 			inst.flyDistance = Math.max(1, distance > 0 ? distance : (def.isPathMover()
 				? def.path().defaultDistance() : 0));
 			inst.loopEnabled = loopEnabled;
+			inst.loadShellDimensions();
 			return inst;
+		}
+
+		/** Forge live origin shifted onto the Fabric-placed shell (ride seats). */
+		BlockPos rideAnchor() {
+			return origin.offset(shellLength / 2, 0, shellWidth / 2);
+		}
+
+		void loadShellDimensions() {
+			if (shellLength > 0 || shellWidth > 0) {
+				return;
+			}
+			LiveDef def = findDefinition(baseName);
+			if (def == null || def.shellStructure() == null) {
+				return;
+			}
+			try {
+				SchematicStructure shell = new SchematicStructure(def.shellStructure());
+				shell.readFromFile();
+				shellLength = shell.getLength();
+				shellWidth = shell.getWidth();
+			} catch (Exception e) {
+				InstantMassiveStructures.LOGGER.warn("Could not read shell size for {}", baseName, e);
+			}
 		}
 
 		void advanceFrame() throws Exception {
@@ -965,9 +1021,12 @@ public final class LiveStructureTicker {
 			BlockPos shellAt = origin.offset(def.spawnModX(), def.spawnModY(), def.spawnModZ());
 			SchematicStructure shell = new SchematicStructure(def.shellStructure());
 			shell.readFromFile();
+			shellLength = shell.getLength();
+			shellWidth = shell.getWidth();
 			shell.process(world, shellAt.getX(), shellAt.getY(), shellAt.getZ());
-			InstantMassiveStructures.LOGGER.debug("Placed {} shell at {} (frames at {})",
-				def.shellStructure(), shellAt, origin);
+			InstantMassiveStructures.LOGGER.info(
+				"Placed {} shell at {} (forge frame origin {}, shell {}x{})",
+				def.shellStructure(), shellAt, origin, shellLength, shellWidth);
 		}
 
 		void placeCurrentFrame(boolean first) throws Exception {
@@ -976,26 +1035,47 @@ public final class LiveStructureTicker {
 			lastLength = structure.getLength();
 			lastHeight = structure.getHeight();
 			lastWidth = structure.getWidth();
+			BlockPos placeAt = framePlaceAnchor(lastLength, lastWidth);
+			lastPlacedAt = placeAt.immutable();
 			if (lightPathMode() && path != null) {
 				// Measure-only + gold marker — skip 35k voxel place so phase FSM can finish on VM.
-				world.setBlock(origin, Blocks.GOLD_BLOCK.defaultBlockState(), Block.UPDATE_ALL);
+				world.setBlock(placeAt, Blocks.GOLD_BLOCK.defaultBlockState(), Block.UPDATE_ALL);
 				InstantMassiveStructures.LOGGER.info(
 					"{} lightpath place skip {} (measured {}x{}x{}, marker at {})",
-					baseName, frames[frameIndex], lastLength, lastHeight, lastWidth, origin);
+					baseName, frames[frameIndex], lastLength, lastHeight, lastWidth, placeAt);
 				return;
 			}
-			structure.process(world, origin.getX(), origin.getY(), origin.getZ());
-			if (!first) {
+			structure.process(world, placeAt.getX(), placeAt.getY(), placeAt.getZ());
+			if (first) {
+				InstantMassiveStructures.LOGGER.info(
+					"Live {} frame {} fabricPlace {} forgeOrigin {} ({}x{}x{})",
+					baseName, frames[frameIndex], placeAt, origin,
+					lastLength, lastHeight, lastWidth);
+			} else {
 				InstantMassiveStructures.LOGGER.debug("Live frame {} at {} (next wait {} ticks)",
-					frames[frameIndex], origin, ticksUntilNext);
+					frames[frameIndex], placeAt, ticksUntilNext);
 			}
+		}
+
+		/** Fabric process anchor for this frame. Equals {@code origin} when there is no shell. */
+		BlockPos framePlaceAnchor(int frameLength, int frameWidth) {
+			if (shellLength <= 0 && shellWidth <= 0) {
+				return origin;
+			}
+			LiveDef def = findDefinition(baseName);
+			int sx = def != null ? def.spawnModX() : 0;
+			int sy = def != null ? def.spawnModY() : 0;
+			int sz = def != null ? def.spawnModZ() : 0;
+			BlockPos shellAt = origin.offset(sx, sy, sz);
+			return fabricFrameAnchor(shellAt, sx, sy, sz, shellLength, shellWidth, frameLength, frameWidth);
 		}
 
 		void clearLastBounds() {
 			if (lastLength <= 0 || lastHeight <= 0 || lastWidth <= 0) {
 				return;
 			}
-			SchematicStructure.clearBounds(world, origin.getX(), origin.getY(), origin.getZ(),
+			BlockPos at = lastPlacedAt != null ? lastPlacedAt : origin;
+			SchematicStructure.clearBounds(world, at.getX(), at.getY(), at.getZ(),
 				lastLength, lastHeight, lastWidth);
 		}
 
@@ -1110,9 +1190,10 @@ public final class LiveStructureTicker {
 				return;
 			}
 
-			double ox = origin.getX();
-			double oy = origin.getY();
-			double oz = origin.getZ();
+			BlockPos seat = rideAnchor();
+			double ox = seat.getX();
+			double oy = seat.getY();
+			double oz = seat.getZ();
 
 			if (rideProgress == -1) {
 				boolean mounted = ferris
@@ -1190,9 +1271,10 @@ public final class LiveStructureTicker {
 				clearRide();
 				return;
 			}
-			double ox = origin.getX();
-			double oy = origin.getY();
-			double oz = origin.getZ();
+			BlockPos seat = rideAnchor();
+			double ox = seat.getX();
+			double oy = seat.getY();
+			double oz = seat.getZ();
 			if ("Live_FerrisWheel".equals(baseName)) {
 				teleportFerrisRide(rider, ox, oy, oz);
 			} else {
