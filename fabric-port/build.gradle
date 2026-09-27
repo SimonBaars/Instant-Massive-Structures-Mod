@@ -146,6 +146,15 @@ task runParityDump(type: JavaExec) {
 	}
 }
 
+// Compares every static schematic origin to Forge StructureUtils + BlockStructure modifiers.
+task runStaticSpawnParity(type: JavaExec) {
+	group = 'verification'
+	description = 'Asserts Fabric static spawn origins match Forge for every structure id'
+	classpath = sourceSets.test.runtimeClasspath
+	mainClass = 'com.simonbaars.imsm.testing.StaticSpawnParityTest'
+	workingDir = project.projectDir
+}
+
 // Task to run PathMoverTest for path motion configuration verification
 task runPathMoverTest(type: JavaExec) {
 	group = 'verification'
