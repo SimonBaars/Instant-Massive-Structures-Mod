@@ -1,7 +1,9 @@
 package com.simonbaars.imsm.testing;
 
 import com.simonbaars.imsm.InstantMassiveStructures;
+import com.simonbaars.imsm.core.StaticSpawn;
 import com.simonbaars.imsm.structureloader.SchematicStructure;
+import com.simonbaars.imsm.structureloader.SpawnOrigin;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
@@ -29,17 +31,19 @@ public class PlacementVerifier {
 		try {
 			SchematicStructure structure = new SchematicStructure(structureName);
 			structure.readFromFile();
-			
-			int originX = x - (structure.getLength() / 2) + 1;
-			int originZ = z - (structure.getWidth() / 2) + 1;
+
+			BlockPos anchor = StaticSpawn.placeAnchor(structureName, structure, new BlockPos(x, y, z));
+			int originX = SpawnOrigin.fabricOriginX(anchor.getX(), structure.getLength());
+			int originY = anchor.getY();
+			int originZ = SpawnOrigin.fabricOriginZ(anchor.getZ(), structure.getWidth());
 			
 			report.append("Dimensions: ")
 				.append(structure.getLength()).append("x")
 				.append(structure.getHeight()).append("x")
 				.append(structure.getWidth()).append("\n");
 			
-			// Place the structure
-			structure.process(world, x, y, z);
+			// Place the structure at the same anchor creative click and /imsm place use.
+			structure.process(world, anchor.getX(), anchor.getY(), anchor.getZ());
 			
 			// Wait a tick for block entities to settle
 			try {
@@ -58,7 +62,7 @@ public class PlacementVerifier {
 			for (int dy = 0; dy < structure.getHeight(); dy++) {
 				for (int dz = 0; dz < structure.getWidth(); dz++) {
 					for (int dx = 0; dx < structure.getLength(); dx++) {
-						BlockPos pos = new BlockPos(originX + dx, y + dy, originZ + dz);
+						BlockPos pos = new BlockPos(originX + dx, originY + dy, originZ + dz);
 						BlockEntity be = world.getBlockEntity(pos);
 						
 						if (be instanceof Container container) {

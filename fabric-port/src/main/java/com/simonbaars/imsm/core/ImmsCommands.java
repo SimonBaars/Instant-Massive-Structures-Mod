@@ -131,12 +131,14 @@ public final class ImmsCommands {
 		try {
 			ServerPlayer player = source.getPlayerOrException();
 			ServerLevel world = player.level();
-			BlockPos origin = player.blockPosition();
+			BlockPos click = player.blockPosition();
 			SchematicStructure structure = new SchematicStructure(structureName);
 			structure.readFromFile();
-			structure.process(world, origin.getX(), origin.getY(), origin.getZ(), true);
+			BlockPos anchor = StaticSpawn.placeAnchor(structureName, structure, click);
+			structure.process(world, anchor.getX(), anchor.getY(), anchor.getZ(), true);
 			source.sendSuccess(() -> Component.literal(
-				"Placed static " + structureName + " at " + origin
+				"Placed static " + structureName + " at click " + click
+					+ " processAnchor " + anchor
 					+ " (" + structure.getLength() + "x" + structure.getHeight() + "x" + structure.getWidth() + ")"), true);
 			return 1;
 		} catch (Exception e) {

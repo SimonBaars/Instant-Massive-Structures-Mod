@@ -914,6 +914,8 @@ public final class LiveStructureTicker {
 			}
 			SchematicStructure shell = new SchematicStructure(def.shellStructure());
 			shell.readFromFile();
+			// Click anchor, single half-size inside process. Do not use staticProcessAnchor:
+			// frame-to-shell alignment assumes this formula for both shell and frame.
 			shell.process(world, origin.getX(), origin.getY(), origin.getZ());
 			InstantMassiveStructures.LOGGER.debug("Placed {} shell at {}", def.shellStructure(), origin);
 		}
@@ -932,6 +934,7 @@ public final class LiveStructureTicker {
 					baseName, frames[frameIndex], lastLength, lastHeight, lastWidth, origin);
 				return;
 			}
+			// Same click anchor as the shell. Static schematics use staticProcessAnchor instead.
 			structure.process(world, origin.getX(), origin.getY(), origin.getZ());
 			if (!first) {
 				InstantMassiveStructures.LOGGER.debug("Live frame {} at {} (next wait {} ticks)",

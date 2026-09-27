@@ -29,7 +29,11 @@ import java.util.List;
  * </ul>
  */
 public class StructureBlock extends Block {
-	/** Last static schematic spawn for fire-charge undo (legacy StructureCreatorServer remove). */
+	/**
+	 * Last static schematic spawn for fire-charge undo.
+	 * {@code origin} is the anchor passed to {@code process} (Forge modifier and extra half-size
+	 * already applied), which is what {@code clearBounds} expects.
+	 */
 	private static LastPlaced lastPlaced;
 
 	private final String structureName;
@@ -97,13 +101,16 @@ public class StructureBlock extends Block {
 			return handleFireChargeUndo(serverWorld, player);
 		}
 
-		BlockPos spawnPos = pos.offset(modX, modY, modZ);
 		try {
+			SchematicStructure structure = new SchematicStructure(structureName);
+			structure.readFromFile();
+			// Forge BlockStructure offset plus the second StructureUtils half-size.
+			// Lives return above and must keep the single-half process anchor.
+			BlockPos spawnPos = structure.staticProcessAnchor(
+				pos.getX(), pos.getY(), pos.getZ(), modX, modY, modZ);
 			world.removeBlock(pos, false);
 			clearOutline(serverWorld);
 
-			SchematicStructure structure = new SchematicStructure(structureName);
-			structure.readFromFile();
 			structure.process(serverWorld, spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), doReplaceAir);
 			lastPlaced = new LastPlaced(structureName, spawnPos.immutable(),
 				structure.getLength(), structure.getHeight(), structure.getWidth());
@@ -173,8 +180,10 @@ public class StructureBlock extends Block {
 			}
 			SchematicStructure structure = new SchematicStructure(structureName);
 			structure.readFromFile();
-			outlinePositions = structure.showOutline(world, pos.getX(), pos.getY(), pos.getZ(),
-				modX, modY, modZ);
+			BlockPos anchor = structure.staticProcessAnchor(
+				pos.getX(), pos.getY(), pos.getZ(), modX, modY, modZ);
+			outlinePositions = structure.showOutline(world, anchor.getX(), anchor.getY(), anchor.getZ(),
+				0, 0, 0);
 			hasOutline = true;
 			player.sendSystemMessage(Component.literal(
 				"Structure outline preview (" + outlinePositions.size() + " glass). Right-click with redstone again to clear."));

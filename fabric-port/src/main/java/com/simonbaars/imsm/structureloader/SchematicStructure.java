@@ -110,10 +110,12 @@ public class SchematicStructure {
 	 *                   existing world blocks are not cleared. Non-air still places.
 	 */
 	public void process(ServerLevel world, int posX, int posY, int posZ, boolean replaceAir) {
-		// CRITICAL: +1 offset matches Forge legacy centering `posX-=length/2-1` (mathematically equivalent).
-		// DO NOT remove the +1 — it ensures all 952 structures spawn at the exact Forge-verified coordinates.
-		int originX = posX - (length / 2) + 1;
-		int originZ = posZ - (width / 2) + 1;
+		// Single half-size. Live shells and frames pass their click/spawn anchor through here.
+		// Static spawns must pass staticProcessAnchor() first: Forge also subtracts center
+		// (another size/2) inside StructureUtils. Do not fold that second shift into this
+		// method — it would move every live shell relative to the frame fix.
+		int originX = SpawnOrigin.fabricOriginX(posX, length);
+		int originZ = SpawnOrigin.fabricOriginZ(posZ, width);
 
 		int blocksPlaced = 0;
 		int tilesPlaced = 0;
@@ -285,9 +287,11 @@ public class SchematicStructure {
 	public java.util.List<BlockPos> showOutline(ServerLevel world, int posX, int posY, int posZ,
 			int modX, int modY, int modZ) {
 		java.util.ArrayList<BlockPos> written = new java.util.ArrayList<>();
-		// +1 offset for Forge parity (see process() method comment)
-		int originX = (posX + modX) - (length / 2) + 1;
-		int originZ = (posZ + modZ) - (width / 2) + 1;
+		// Same single half-size as process(). Static previews pass staticProcessAnchor and 0 mods
+		// so the glass box is the box that will be filled. Forge's own glass outline uses a
+		// different mirrored formula and does not match StructureUtils; this preview matches the spawn.
+		int originX = SpawnOrigin.fabricOriginX(posX + modX, length);
+		int originZ = SpawnOrigin.fabricOriginZ(posZ + modZ, width);
 		int baseY = posY + modY;
 		
 		for (int y = 0; y < height; y++) {
@@ -313,6 +317,18 @@ public class SchematicStructure {
 		}
 	}
 
+
+	/**
+	 * Anchor for {@link #process}, {@link #showOutline}, and {@link #clearBounds} so a
+	 * non-live schematic's cells match Forge {@code StructureUtils} relative to the clicked block.
+	 * Requires {@link #readFromFile()}. Live shells must not use this.
+	 */
+	public BlockPos staticProcessAnchor(int clickX, int clickY, int clickZ, int modX, int modY, int modZ) {
+		return new BlockPos(
+			SpawnOrigin.staticAnchorX(clickX, modX, length),
+			SpawnOrigin.staticAnchorY(clickY, modY),
+			SpawnOrigin.staticAnchorZ(clickZ, modZ, width));
+	}
 
 	public int getLength() {
 		return length;
@@ -422,13 +438,14 @@ public class SchematicStructure {
 
 	public static void clearBounds(ServerLevel world, int posX, int posY, int posZ,
 			int length, int height, int width) {
-		// Forge legacy centering (equivalent to originX = posX - length/2 + 1)
-		posX -= (length / 2) - 1;
-		posZ -= (width / 2) - 1;
+		// Same single half-size as process(). Pass the anchor process() received
+		// (for static spawns, that is staticProcessAnchor, not the raw click).
+		int originX = SpawnOrigin.fabricOriginX(posX, length);
+		int originZ = SpawnOrigin.fabricOriginZ(posZ, width);
 		for (int y = 0; y < height; y++) {
 			for (int z = 0; z < width; z++) {
 				for (int x = 0; x < length; x++) {
-					BlockPos pos = new BlockPos(posX + x, posY + y, posZ + z);
+					BlockPos pos = new BlockPos(originX + x, posY + y, originZ + z);
 					world.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
 				}
 			}
