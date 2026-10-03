@@ -1045,7 +1045,9 @@ public final class LiveStructureTicker {
 					baseName, frames[frameIndex], lastLength, lastHeight, lastWidth, placeAt);
 				return;
 			}
-			structure.process(world, placeAt.getX(), placeAt.getY(), placeAt.getZ());
+			LiveDef def = findDefinition(baseName);
+			structure.process(world, placeAt.getX(), placeAt.getY(), placeAt.getZ(), true,
+				first && (def == null || def.shellStructure() == null));
 			if (first) {
 				InstantMassiveStructures.LOGGER.info(
 					"Live {} frame {} fabricPlace {} forgeOrigin {} ({}x{}x{})",
@@ -1076,7 +1078,7 @@ public final class LiveStructureTicker {
 			}
 			BlockPos at = lastPlacedAt != null ? lastPlacedAt : origin;
 			SchematicStructure.clearBounds(world, at.getX(), at.getY(), at.getZ(),
-				lastLength, lastHeight, lastWidth);
+				lastLength, lastHeight, lastWidth, false);
 		}
 
 		/**

@@ -1,915 +1,131 @@
 package com.simonbaars.imsm.structureloader;
 
+import com.mojang.serialization.Dynamic;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.datafix.fixes.BlockStateData;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.LadderBlock;
-import net.minecraft.world.level.block.RotatedPillarBlock;
-import net.minecraft.world.level.block.SlabBlock;
-import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.LeavesBlock;
+import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.BedBlock;
-import net.minecraft.world.level.block.DoorBlock;
-import net.minecraft.world.level.block.VineBlock;
-import net.minecraft.world.level.block.state.properties.AttachFace;
-import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DoorHingeSide;
-import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import net.minecraft.world.level.block.state.properties.Half;
-import net.minecraft.world.level.block.state.properties.RailShape;
-import net.minecraft.world.level.block.state.properties.SlabType;
+import net.minecraft.world.level.block.state.properties.Property;
 
 /**
- * Converts pre-flattening (≈1.12) schematic {@code Blocks}/{@code Data} pairs into modern
- * {@link BlockState}s. Legacy IMS used {@code Block#getStateFromMeta}; the Fabric port previously
- * placed {@code defaultBlockState()} only, dropping facing/axis/color/slab half.
+ * Converts schematic numeric block IDs and metadata with Minecraft's own flattening table.
+ * The table preserves variants and encoded properties; the adapters below handle names and
+ * properties that changed after flattening. Neighbor connections and properties shared between
+ * door/plant halves are reconstructed by {@link SchematicStructure} from the complete schematic.
  */
 public final class LegacyBlockStates {
-	private static final String[] DYE = {
-		"white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray",
-		"light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black"
-	};
-	private static final String[] WOOD = {
-		"oak", "spruce", "birch", "jungle", "acacia", "dark_oak"
-	};
-	/** Stone slab (44/43) variants. */
-	private static final String[] STONE_SLAB = {
-		"smooth_stone_slab", "sandstone_slab", "petrified_oak_slab", "cobblestone_slab",
-		"brick_slab", "stone_brick_slab", "nether_brick_slab", "quartz_slab"
-	};
-	/** Legacy stair block IDs that use the standard stair meta encoding. */
-	private static final int[] STAIR_IDS = {
-		53, 67, 108, 109, 114, 128, 134, 135, 136, 156, 163, 164, 180, 203
-	};
+	private static final BlockState[] STATES = new BlockState[256 * 16];
 
 	private LegacyBlockStates() {}
 
 	public static BlockState fromLegacy(int id, int meta) {
-		meta &= 0xF;
-		BlockState state = mapKnown(id, meta);
+		if (id < 0 || id > 255) return null;
+		int key = id << 4 | (meta & 15);
+		BlockState state = STATES[key];
 		if (state == null) {
-			Block block = blockByLegacyIdOnly(id);
-			if (block == null) {
-				return null;
-			}
-			state = block.defaultBlockState();
+			state = convert(id, meta & 15, key);
+			STATES[key] = state;
 		}
-		return applyGenericOrientation(id, meta, state);
-	}
-
-	private static BlockState mapKnown(int id, int meta) {
-		return switch (id) {
-			case 0 -> Blocks.AIR.defaultBlockState();
-			case 1 -> stone(meta);
-			case 3 -> dirt(meta);
-			case 5 -> planks(meta);
-			case 6 -> sapling(meta);
-			case 17 -> log(meta, false);
-			case 18 -> leaves(meta, false);
-			case 19 -> meta == 1 ? block("wet_sponge") : Blocks.SPONGE.defaultBlockState();
-			case 23 -> dispenserDropper(meta); // dispenser
-			case 24 -> sandstone(meta, false);
-			case 31 -> tallGrass(meta);
-			case 34 -> pistonHead(meta); // piston_head (not moving_piston)
-			case 35 -> colored("wool", meta);
-			case 38 -> flower(meta);
-			case 43 -> stoneSlab(meta, true);
-			case 44 -> stoneSlab(meta, false);
-			case 50 -> torch(meta); // torch with proper wall handling
-			case 61 -> furnace(meta, false); // furnace
-			case 62 -> furnace(meta, true); // lit_furnace
-			case 75 -> redstoneTorch(meta, false); // unlit
-			case 76 -> redstoneTorch(meta, true); // lit
-			case 86 -> carvedPumpkin(meta); // pumpkin → carved_pumpkin
-			case 90 -> netherPortal(meta);
-			case 91 -> carvedPumpkin(meta); // jack_o_lantern (also carved)
-			case 158 -> dispenserDropper(meta); // dropper
-			case 95 -> colored("stained_glass", meta);
-			case 97 -> infested(meta);
-			case 98 -> stoneBricks(meta);
-			case 125 -> woodSlab(meta, true);
-			case 126 -> woodSlab(meta, false);
-			case 140 -> flowerPot(meta);
-			case 155 -> quartz(meta);
-			case 159 -> colored("terracotta", meta);
-			case 160 -> colored("stained_glass_pane", meta);
-			case 161 -> leaves(meta, true);
-			case 162 -> log(meta, true);
-			case 168 -> prismarine(meta);
-			case 171 -> colored("carpet", meta);
-			case 175 -> tallFlower(meta);
-			case 179 -> sandstone(meta, true);
-			case 204 -> colored("concrete", meta);
-			case 205 -> colored("concrete_powder", meta);
-			default -> null;
-		};
-	}
-
-	private static BlockState applyGenericOrientation(int id, int meta, BlockState state) {
-		if (state == null || state.isAir()) {
-			return state;
-		}
-
-		// Stairs: facing 0=E 1=W 2=S 3=N; bit4 = upside-down
-		if (isStairId(id) || state.getBlock() instanceof StairBlock) {
-			Direction facing = switch (meta & 3) {
-				case 0 -> Direction.EAST;
-				case 1 -> Direction.WEST;
-				case 2 -> Direction.SOUTH;
-				default -> Direction.NORTH;
-			};
-			Half half = (meta & 4) != 0 ? Half.TOP : Half.BOTTOM;
-			if (state.hasProperty(StairBlock.FACING)) {
-				state = state.setValue(StairBlock.FACING, facing);
-			}
-			if (state.hasProperty(StairBlock.HALF)) {
-				state = state.setValue(StairBlock.HALF, half);
-			}
-			return state;
-		}
-
-		// Slabs: bit 0x8 = top half (single). Double handled in mapKnown.
-		if (state.getBlock() instanceof SlabBlock && state.hasProperty(SlabBlock.TYPE)) {
-			if (state.getValue(SlabBlock.TYPE) != SlabType.DOUBLE) {
-				state = state.setValue(SlabBlock.TYPE, (meta & 8) != 0 ? SlabType.TOP : SlabType.BOTTOM);
-			}
-			return state;
-		}
-
-		// Pillar / log axis already applied in mapKnown for 17/162/155/170/216; still apply AXIS if present
-		if (state.getBlock() instanceof RotatedPillarBlock && state.hasProperty(RotatedPillarBlock.AXIS)
-				&& (id == 170 || id == 216 || id == 202)) {
-			Direction.Axis axis = switch ((meta >> 2) & 3) {
-				case 1 -> Direction.Axis.X;
-				case 2 -> Direction.Axis.Z;
-				default -> Direction.Axis.Y;
-			};
-			return state.setValue(RotatedPillarBlock.AXIS, axis);
-		}
-
-		// Ladder
-		if (id == 65 || state.getBlock() instanceof LadderBlock) {
-			Direction facing = facingNESW(meta);
-			if (state.hasProperty(LadderBlock.FACING)) {
-				return state.setValue(LadderBlock.FACING, facing);
-			}
-		}
-
-		// Furnace / lit furnace / chest / trapped chest / ender chest / dispenser / dropper / hopper
-		if (id == 61 || id == 62 || id == 54 || id == 146 || id == 130 || id == 23 || id == 158 || id == 154) {
-			if (id == 154 && state.hasProperty(BlockStateProperties.FACING_HOPPER)) {
-				Direction f = meta == 0 ? Direction.DOWN : facingNESW(meta);
-				if (meta == 1) {
-					f = Direction.UP; // unused historically but keep safe
-				}
-				return state.setValue(BlockStateProperties.FACING_HOPPER, f == Direction.UP ? Direction.DOWN : f);
-			}
-			if (state.hasProperty(BlockStateProperties.FACING)) {
-				return state.setValue(BlockStateProperties.FACING, facingFull(meta));
-			}
-			if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-				return state.setValue(BlockStateProperties.HORIZONTAL_FACING, facingNESW(meta));
-			}
-		}
-
-		// Torch / redstone torch wall vs floor
-		if (id == 50 || id == 75 || id == 76) {
-			if (meta >= 1 && meta <= 4 && state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-				Direction facing = switch (meta) {
-					case 1 -> Direction.EAST;
-					case 2 -> Direction.WEST;
-					case 3 -> Direction.SOUTH;
-					default -> Direction.NORTH;
-				};
-				// Wall torch is a different block in modern MC
-				String wall = id == 50 ? "wall_torch" : (id == 75 ? "redstone_wall_torch" : "redstone_wall_torch");
-				BlockState wallState = block(wall);
-				if (wallState != null && wallState.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-					wallState = wallState.setValue(BlockStateProperties.HORIZONTAL_FACING, facing);
-					if (id == 75 && wallState.hasProperty(BlockStateProperties.LIT)) {
-						wallState = wallState.setValue(BlockStateProperties.LIT, false);
-					}
-					return wallState;
-				}
-			}
-			if (id == 75 && state.hasProperty(BlockStateProperties.LIT)) {
-				return state.setValue(BlockStateProperties.LIT, false);
-			}
-			return state;
-		}
-
-		// Pumpkin / jack o lantern / carved
-		if (id == 86 || id == 91) {
-			if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-				return state.setValue(BlockStateProperties.HORIZONTAL_FACING, facingCardinal(meta & 3));
-			}
-		}
-
-		// Fence gate / trapdoor-ish horizontal
-		if (id == 107 || id == 183 || id == 184 || id == 185 || id == 186 || id == 187) {
-			if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-				state = state.setValue(BlockStateProperties.HORIZONTAL_FACING, facingCardinal(meta & 3));
-			}
-			if (state.hasProperty(BlockStateProperties.OPEN)) {
-				state = state.setValue(BlockStateProperties.OPEN, (meta & 4) != 0);
-			}
-			return state;
-		}
-
-		// Wooden / iron trapdoor (96 / 167)
-		if (id == 96 || id == 167) {
-			Direction facing = switch (meta & 3) {
-				case 0 -> Direction.NORTH;
-				case 1 -> Direction.SOUTH;
-				case 2 -> Direction.WEST;
-				default -> Direction.EAST;
-			};
-			if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-				state = state.setValue(BlockStateProperties.HORIZONTAL_FACING, facing);
-			}
-			if (state.hasProperty(BlockStateProperties.OPEN)) {
-				state = state.setValue(BlockStateProperties.OPEN, (meta & 4) != 0);
-			}
-			if (state.hasProperty(BlockStateProperties.HALF)) {
-				state = state.setValue(BlockStateProperties.HALF, (meta & 8) != 0 ? Half.TOP : Half.BOTTOM);
-			}
-			return state;
-		}
-
-		// Button (77 stone / 143 wood): facing + powered
-		if (id == 77 || id == 143) {
-			Direction facing = switch (meta & 7) {
-				case 1 -> Direction.EAST;
-				case 2 -> Direction.WEST;
-				case 3 -> Direction.SOUTH;
-				case 4 -> Direction.NORTH;
-				case 5 -> Direction.UP;
-				default -> Direction.DOWN;
-			};
-			if (state.hasProperty(BlockStateProperties.ATTACH_FACE)) {
-				AttachFace face = facing.getAxis().isVertical()
-					? (facing == Direction.UP ? AttachFace.FLOOR : AttachFace.CEILING)
-					: AttachFace.WALL;
-				state = state.setValue(BlockStateProperties.ATTACH_FACE, face);
-			}
-			if (facing.getAxis().isHorizontal() && state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-				state = state.setValue(BlockStateProperties.HORIZONTAL_FACING, facing);
-			}
-			if (state.hasProperty(BlockStateProperties.POWERED)) {
-				state = state.setValue(BlockStateProperties.POWERED, (meta & 8) != 0);
-			}
-			return state;
-		}
-
-		// Lever (69)
-		if (id == 69) {
-			int facingMeta = meta & 7;
-			Direction facing;
-			AttachFace face;
-			switch (facingMeta) {
-				case 1 -> { facing = Direction.EAST; face = AttachFace.WALL; }
-				case 2 -> { facing = Direction.WEST; face = AttachFace.WALL; }
-				case 3 -> { facing = Direction.SOUTH; face = AttachFace.WALL; }
-				case 4 -> { facing = Direction.NORTH; face = AttachFace.WALL; }
-				case 5, 6 -> { facing = Direction.NORTH; face = AttachFace.FLOOR; }
-				default -> { facing = Direction.NORTH; face = AttachFace.CEILING; }
-			}
-			if (state.hasProperty(BlockStateProperties.ATTACH_FACE)) {
-				state = state.setValue(BlockStateProperties.ATTACH_FACE, face);
-			}
-			if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-				state = state.setValue(BlockStateProperties.HORIZONTAL_FACING, facing);
-			}
-			if (state.hasProperty(BlockStateProperties.POWERED)) {
-				state = state.setValue(BlockStateProperties.POWERED, (meta & 8) != 0);
-			}
-			return state;
-		}
-
-		// Piston / sticky (33/29) + head (34)
-		if (id == 33 || id == 29 || id == 34) {
-			if (state.hasProperty(BlockStateProperties.FACING)) {
-				state = state.setValue(BlockStateProperties.FACING, facingFull(meta & 7));
-			}
-			if (id != 34 && state.hasProperty(BlockStateProperties.EXTENDED)) {
-				state = state.setValue(BlockStateProperties.EXTENDED, (meta & 8) != 0);
-			}
-			return state;
-		}
-
-		// Rails (66 normal, 27/28/157 powered variants)
-		if (id == 66 || id == 27 || id == 28 || id == 157) {
-			if (state.hasProperty(BlockStateProperties.RAIL_SHAPE)) {
-				RailShape shape = railShape(meta);
-				if (shape != null && state.getValue(BlockStateProperties.RAIL_SHAPE).ordinal() >= 0) {
-					try {
-						state = state.setValue(BlockStateProperties.RAIL_SHAPE, shape);
-					} catch (IllegalArgumentException ignored) {
-						// powered rails reject curves
-					}
-				}
-			} else if (state.hasProperty(BlockStateProperties.RAIL_SHAPE_STRAIGHT)) {
-				RailShape shape = railShapeStraight(meta);
-				if (shape != null) {
-					try {
-						state = state.setValue(BlockStateProperties.RAIL_SHAPE_STRAIGHT, shape);
-					} catch (IllegalArgumentException ignored) {
-					}
-				}
-			}
-			if (state.hasProperty(BlockStateProperties.POWERED) && (id == 27 || id == 28 || id == 157)) {
-				state = state.setValue(BlockStateProperties.POWERED, (meta & 8) != 0);
-			}
-			return state;
-		}
-
-		// Anvil (145): facing + damage → chipped/damaged blocks
-		if (id == 145) {
-			int dmg = (meta >> 2) & 3;
-			String name = dmg == 1 ? "chipped_anvil" : dmg >= 2 ? "damaged_anvil" : "anvil";
-			BlockState anvil = block(name);
-			if (anvil != null) {
-				state = anvil;
-			}
-			if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-				state = state.setValue(BlockStateProperties.HORIZONTAL_FACING, facingCardinal(meta & 3));
-			}
-			return state;
-		}
-
-		// Glazed terracotta 235-250: facing
-		if (id >= 235 && id <= 250 && state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-			return state.setValue(BlockStateProperties.HORIZONTAL_FACING, facingCardinal(meta & 3));
-		}
-
-		// Observer (218)
-		if (id == 218 && state.hasProperty(BlockStateProperties.FACING)) {
-			return state.setValue(BlockStateProperties.FACING, facingFull(meta & 7));
-		}
-
-		// End rod (198)
-		if (id == 198 && state.hasProperty(BlockStateProperties.FACING)) {
-			return state.setValue(BlockStateProperties.FACING, facingFull(meta & 7));
-		}
-
-		// Doors (64 oak / 71 iron / 193-197 wood variants)
-		if (id == 64 || id == 71 || id == 193 || id == 194 || id == 195 || id == 196 || id == 197
-				|| state.getBlock() instanceof DoorBlock) {
-			boolean upper = (meta & 8) != 0;
-			if (state.hasProperty(DoorBlock.HALF)) {
-				state = state.setValue(DoorBlock.HALF, upper ? DoubleBlockHalf.UPPER : DoubleBlockHalf.LOWER);
-			}
-			if (upper) {
-				if (state.hasProperty(DoorBlock.HINGE)) {
-					state = state.setValue(DoorBlock.HINGE, (meta & 1) != 0 ? DoorHingeSide.RIGHT : DoorHingeSide.LEFT);
-				}
-				if (state.hasProperty(DoorBlock.POWERED)) {
-					state = state.setValue(DoorBlock.POWERED, (meta & 2) != 0);
-				}
-			} else {
-				Direction facing = switch (meta & 3) {
-					case 0 -> Direction.EAST;
-					case 1 -> Direction.SOUTH;
-					case 2 -> Direction.WEST;
-					default -> Direction.NORTH;
-				};
-				if (state.hasProperty(DoorBlock.FACING)) {
-					state = state.setValue(DoorBlock.FACING, facing);
-				}
-				if (state.hasProperty(DoorBlock.OPEN)) {
-					state = state.setValue(DoorBlock.OPEN, (meta & 4) != 0);
-				}
-			}
-			return state;
-		}
-
-		// Bed (26): facing + occupied + head/foot
-		if (id == 26 || state.getBlock() instanceof BedBlock) {
-			Direction facing = facingCardinal(meta & 3);
-			if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-				state = state.setValue(BlockStateProperties.HORIZONTAL_FACING, facing);
-			}
-			if (state.hasProperty(BedBlock.PART)) {
-				state = state.setValue(BedBlock.PART, (meta & 8) != 0 ? BedPart.HEAD : BedPart.FOOT);
-			}
-			if (state.hasProperty(BedBlock.OCCUPIED)) {
-				state = state.setValue(BedBlock.OCCUPIED, (meta & 4) != 0);
-			}
-			return state;
-		}
-
-		// Vines (106): south=1 west=2 north=4 east=8
-		if (id == 106 || state.getBlock() instanceof VineBlock) {
-			if (state.hasProperty(VineBlock.SOUTH)) {
-				state = state.setValue(VineBlock.SOUTH, (meta & 1) != 0);
-			}
-			if (state.hasProperty(VineBlock.WEST)) {
-				state = state.setValue(VineBlock.WEST, (meta & 2) != 0);
-			}
-			if (state.hasProperty(VineBlock.NORTH)) {
-				state = state.setValue(VineBlock.NORTH, (meta & 4) != 0);
-			}
-			if (state.hasProperty(VineBlock.EAST)) {
-				state = state.setValue(VineBlock.EAST, (meta & 8) != 0);
-			}
-			return state;
-		}
-
-		// Tripwire hook (131): facing 0-3 cardinal + attached + powered
-		if (id == 131) {
-			if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-				state = state.setValue(BlockStateProperties.HORIZONTAL_FACING, facingCardinal(meta & 3));
-			}
-			if (state.hasProperty(BlockStateProperties.ATTACHED)) {
-				state = state.setValue(BlockStateProperties.ATTACHED, (meta & 4) != 0);
-			}
-			if (state.hasProperty(BlockStateProperties.POWERED)) {
-				state = state.setValue(BlockStateProperties.POWERED, (meta & 8) != 0);
-			}
-			return state;
-		}
-
-		// Repeater (93 unpowered / 94 powered): facing + delay
-		if (id == 93 || id == 94) {
-			if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-				state = state.setValue(BlockStateProperties.HORIZONTAL_FACING, facingCardinal(meta & 3));
-			}
-			if (state.hasProperty(BlockStateProperties.DELAY)) {
-				state = state.setValue(BlockStateProperties.DELAY, ((meta >> 2) & 3) + 1);
-			}
-			if (state.hasProperty(BlockStateProperties.POWERED)) {
-				state = state.setValue(BlockStateProperties.POWERED, id == 94);
-			}
-			return state;
-		}
-
-		// Skull / head (144): 1=floor, 2-5=wall NESW → wall skull block
-		if (id == 144) {
-			int facingMeta = meta & 7;
-			if (facingMeta >= 2 && facingMeta <= 5) {
-				BlockState wall = block("skeleton_wall_skull");
-				if (wall != null && wall.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-					Direction facing = switch (facingMeta) {
-						case 2 -> Direction.NORTH;
-						case 3 -> Direction.SOUTH;
-						case 4 -> Direction.WEST;
-						default -> Direction.EAST;
-					};
-					return wall.setValue(BlockStateProperties.HORIZONTAL_FACING, facing);
-				}
-			}
-			// Floor skull — rotation lived in TE historically; leave default rotation
-			return state;
-		}
-
-		// Wall sign (68): furnace-style facing 2-5
-		if (id == 68 && state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-			return state.setValue(BlockStateProperties.HORIZONTAL_FACING, facingNESW(meta));
-		}
-
-		// Standing sign / banner (63 / 176): 16-way rotation
-		if ((id == 63 || id == 176) && state.hasProperty(BlockStateProperties.ROTATION_16)) {
-			return state.setValue(BlockStateProperties.ROTATION_16, meta & 15);
-		}
-
-		// Generic horizontal facing fallback (signs, banners, etc.)
-		if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)
-				&& !state.hasProperty(BlockStateProperties.ATTACH_FACE)) {
-			// Only apply when meta looks like NESW (2-5) furnace-style OR 0-3 cardinal
-			if (meta >= 2 && meta <= 5) {
-				return state.setValue(BlockStateProperties.HORIZONTAL_FACING, facingNESW(meta));
-			}
-		}
-
 		return state;
 	}
 
-	private static boolean isStairId(int id) {
-		for (int s : STAIR_IDS) {
-			if (s == id) return true;
+	private static BlockState convert(int id, int meta, int key) {
+		// These flattening entries are placeholders: their type/contents lived in tile entities.
+		if (id == 144) return skull(meta);
+		if (id == 140) return flowerPot(meta);
+
+		Dynamic<?> tag = BlockStateData.getTag(key);
+		String name = modernName(tag.get("Name").asString("minecraft:air"));
+		if (id == 118 && !tag.get("Properties").get("level").asString("0").equals("0")) {
+			name = "minecraft:water_cauldron";
 		}
-		return false;
+		Block block = BuiltInRegistries.BLOCK.get(Identifier.parse(name))
+			.map(holder -> holder.value())
+			.orElseThrow(() -> new IllegalArgumentException("Unknown flattened block for " + id + ":" + meta));
+		BlockState state = block.defaultBlockState();
+		var properties = tag.get("Properties").asMapOpt().result();
+		if (properties.isPresent()) {
+			for (var entry : properties.get().toList()) {
+				String propertyName = entry.getFirst().asString("");
+				String value = entry.getSecond().asString("");
+				if (block instanceof LeavesBlock) {
+					// Legacy check_decay was a pending decay check, not persistence.
+					if (propertyName.equals("check_decay")) continue;
+					if (propertyName.equals("decayable")) {
+						propertyName = "persistent";
+						value = Boolean.toString(!Boolean.parseBoolean(value));
+					}
+				}
+				if (block instanceof WallBlock && !propertyName.equals("up")) {
+					value = Boolean.parseBoolean(value) ? "low" : "none";
+				}
+				if (id == 118 && block == Blocks.CAULDRON && propertyName.equals("level")) continue;
+				Property<?> property = block.getStateDefinition().getProperty(propertyName);
+				if (property == null) {
+					throw new IllegalArgumentException("Unknown flattened property " + name + "[" + propertyName + "]");
+				}
+				state = setProperty(state, property, value);
+			}
+		}
+		return state;
 	}
 
-	private static Direction facingNESW(int meta) {
-		return switch (meta) {
-			case 3 -> Direction.SOUTH;
-			case 4 -> Direction.WEST;
-			case 5 -> Direction.EAST;
-			default -> Direction.NORTH;
+	private static String modernName(String name) {
+		return switch (name) {
+			case "minecraft:grass" -> "minecraft:short_grass";
+			case "minecraft:grass_path" -> "minecraft:dirt_path";
+			case "minecraft:melon_block" -> "minecraft:melon";
+			case "minecraft:mob_spawner" -> "minecraft:spawner";
+			case "minecraft:portal" -> "minecraft:nether_portal";
+			case "minecraft:sign" -> "minecraft:oak_sign";
+			case "minecraft:wall_sign" -> "minecraft:oak_wall_sign";
+			// The old smooth stone slab predates the current ordinary stone slab.
+			case "minecraft:stone_slab" -> "minecraft:smooth_stone_slab";
+			default -> name.endsWith("_bark") ? name.substring(0, name.length() - 5) + "_wood" : name;
 		};
 	}
 
-	private static Direction facingFull(int meta) {
-		return switch (meta) {
-			case 0 -> Direction.DOWN;
-			case 1 -> Direction.UP;
+	private static <T extends Comparable<T>> BlockState setProperty(BlockState state, Property<T> property, String value) {
+		return state.setValue(property, property.getValue(value).orElseThrow(() ->
+			new IllegalArgumentException("Invalid flattened property " + property.getName() + "=" + value)));
+	}
+
+	private static BlockState skull(int meta) {
+		Direction facing = switch (meta & 7) {
 			case 2 -> Direction.NORTH;
 			case 3 -> Direction.SOUTH;
 			case 4 -> Direction.WEST;
 			case 5 -> Direction.EAST;
-			default -> Direction.NORTH;
-		};
-	}
-
-	private static Direction facingCardinal(int meta) {
-		return switch (meta & 3) {
-			case 1 -> Direction.WEST;
-			case 2 -> Direction.NORTH;
-			case 3 -> Direction.EAST;
-			default -> Direction.SOUTH;
-		};
-	}
-
-	private static RailShape railShape(int meta) {
-		return switch (meta & 15) {
-			case 0 -> RailShape.NORTH_SOUTH;
-			case 1 -> RailShape.EAST_WEST;
-			case 2 -> RailShape.ASCENDING_EAST;
-			case 3 -> RailShape.ASCENDING_WEST;
-			case 4 -> RailShape.ASCENDING_NORTH;
-			case 5 -> RailShape.ASCENDING_SOUTH;
-			case 6 -> RailShape.SOUTH_EAST;
-			case 7 -> RailShape.SOUTH_WEST;
-			case 8 -> RailShape.NORTH_WEST;
-			case 9 -> RailShape.NORTH_EAST;
 			default -> null;
 		};
-	}
-
-	private static RailShape railShapeStraight(int meta) {
-		return switch (meta & 7) {
-			case 0 -> RailShape.NORTH_SOUTH;
-			case 1 -> RailShape.EAST_WEST;
-			case 2 -> RailShape.ASCENDING_EAST;
-			case 3 -> RailShape.ASCENDING_WEST;
-			case 4 -> RailShape.ASCENDING_NORTH;
-			case 5 -> RailShape.ASCENDING_SOUTH;
-			default -> null;
-		};
-	}
-
-	private static BlockState stone(int meta) {
-		return switch (meta) {
-			case 1 -> block("granite");
-			case 2 -> block("polished_granite");
-			case 3 -> block("diorite");
-			case 4 -> block("polished_diorite");
-			case 5 -> block("andesite");
-			case 6 -> block("polished_andesite");
-			default -> Blocks.STONE.defaultBlockState();
-		};
-	}
-
-	private static BlockState dirt(int meta) {
-		return switch (meta) {
-			case 1 -> block("coarse_dirt");
-			case 2 -> block("podzol");
-			default -> Blocks.DIRT.defaultBlockState();
-		};
-	}
-
-	private static BlockState planks(int meta) {
-		String wood = WOOD[Math.min(meta & 7, WOOD.length - 1)];
-		return block(wood + "_planks");
-	}
-
-	private static BlockState sapling(int meta) {
-		String wood = WOOD[Math.min(meta & 7, WOOD.length - 1)];
-		return block(wood + "_sapling");
-	}
-
-	private static BlockState log(int meta, boolean newLog) {
-		int woodIdx = meta & 3;
-		String wood;
-		if (newLog) {
-			wood = woodIdx == 0 ? "acacia" : "dark_oak";
-		} else {
-			wood = WOOD[Math.min(woodIdx, 3)];
-		}
-		int axisBits = (meta >> 2) & 3;
-		if (axisBits == 3) {
-			BlockState woodBlock = block(wood + "_wood");
-			return woodBlock != null ? woodBlock : block(wood + "_log");
-		}
-		BlockState log = block(wood + "_log");
-		if (log == null) return null;
-		Direction.Axis axis = switch (axisBits) {
-			case 1 -> Direction.Axis.X;
-			case 2 -> Direction.Axis.Z;
-			default -> Direction.Axis.Y;
-		};
-		if (log.hasProperty(RotatedPillarBlock.AXIS)) {
-			log = log.setValue(RotatedPillarBlock.AXIS, axis);
-		}
-		return log;
-	}
-
-	private static BlockState leaves(int meta, boolean newLeaves) {
-		int woodIdx = meta & 3;
-		String wood;
-		if (newLeaves) {
-			wood = woodIdx == 0 ? "acacia" : "dark_oak";
-		} else {
-			wood = WOOD[Math.min(woodIdx, 3)];
-		}
-		BlockState leaves = block(wood + "_leaves");
-		if (leaves != null && leaves.hasProperty(BlockStateProperties.PERSISTENT)) {
-			// bit 4 in legacy = no-decay check; treat as persistent when set
-			leaves = leaves.setValue(BlockStateProperties.PERSISTENT, (meta & 4) != 0);
-		}
-		return leaves;
-	}
-
-	private static BlockState sandstone(int meta, boolean red) {
-		String base = red ? "red_sandstone" : "sandstone";
-		return switch (meta) {
-			case 1 -> block("chiseled_" + base);
-			case 2 -> block("cut_" + base);
-			default -> block(base);
-		};
-	}
-
-	private static BlockState stoneBricks(int meta) {
-		return switch (meta) {
-			case 1 -> block("mossy_stone_bricks");
-			case 2 -> block("cracked_stone_bricks");
-			case 3 -> block("chiseled_stone_bricks");
-			default -> Blocks.STONE_BRICKS.defaultBlockState();
-		};
-	}
-
-	private static BlockState quartz(int meta) {
-		return switch (meta) {
-			case 1 -> block("chiseled_quartz_block");
-			case 2 -> pillarAxis(block("quartz_pillar"), Direction.Axis.Y);
-			case 3 -> pillarAxis(block("quartz_pillar"), Direction.Axis.X);
-			case 4 -> pillarAxis(block("quartz_pillar"), Direction.Axis.Z);
-			default -> Blocks.QUARTZ_BLOCK.defaultBlockState();
-		};
-	}
-
-	private static BlockState pillarAxis(BlockState state, Direction.Axis axis) {
-		if (state != null && state.hasProperty(RotatedPillarBlock.AXIS)) {
-			return state.setValue(RotatedPillarBlock.AXIS, axis);
-		}
-		return state;
-	}
-
-	private static BlockState prismarine(int meta) {
-		return switch (meta) {
-			case 1 -> block("prismarine_bricks");
-			case 2 -> block("dark_prismarine");
-			default -> Blocks.PRISMARINE.defaultBlockState();
-		};
-	}
-
-	private static BlockState tallFlower(int meta) {
-		// lower half variants; upper half is meta 8+
-		boolean upper = (meta & 8) != 0;
-		String name = switch (meta & 7) {
-			case 1 -> "lilac";
-			case 2 -> "tall_grass";
-			case 3 -> "large_fern";
-			case 4 -> "rose_bush";
-			case 5 -> "peony";
-			default -> "sunflower";
-		};
-		BlockState state = block(name);
-		if (state != null && state.hasProperty(BlockStateProperties.DOUBLE_BLOCK_HALF)) {
-			state = state.setValue(BlockStateProperties.DOUBLE_BLOCK_HALF,
-				upper ? net.minecraft.world.level.block.state.properties.DoubleBlockHalf.UPPER
-					: net.minecraft.world.level.block.state.properties.DoubleBlockHalf.LOWER);
-		}
-		return state;
-	}
-
-	private static BlockState stoneSlab(int meta, boolean doubleSlab) {
-		String name = STONE_SLAB[Math.min(meta & 7, STONE_SLAB.length - 1)];
-		BlockState state = block(name);
-		if (state == null) return null;
-		if (state.hasProperty(SlabBlock.TYPE)) {
-			if (doubleSlab) {
-				state = state.setValue(SlabBlock.TYPE, SlabType.DOUBLE);
-			} else {
-				state = state.setValue(SlabBlock.TYPE, (meta & 8) != 0 ? SlabType.TOP : SlabType.BOTTOM);
-			}
-		}
-		return state;
-	}
-
-	private static BlockState woodSlab(int meta, boolean doubleSlab) {
-		String wood = WOOD[Math.min(meta & 7, WOOD.length - 1)];
-		BlockState state = block(wood + "_slab");
-		if (state == null) return null;
-		if (state.hasProperty(SlabBlock.TYPE)) {
-			if (doubleSlab) {
-				state = state.setValue(SlabBlock.TYPE, SlabType.DOUBLE);
-			} else {
-				state = state.setValue(SlabBlock.TYPE, (meta & 8) != 0 ? SlabType.TOP : SlabType.BOTTOM);
-			}
-		}
-		return state;
-	}
-
-	private static BlockState tallGrass(int meta) {
-		return switch (meta & 3) {
-			case 2 -> block("fern");
-			case 0 -> block("dead_bush"); // legacy dead shrub
-			default -> Blocks.SHORT_GRASS.defaultBlockState();
-		};
-	}
-
-	private static BlockState flower(int meta) {
-		return switch (meta & 15) {
-			case 1 -> block("blue_orchid");
-			case 2 -> block("allium");
-			case 3 -> block("azure_bluet");
-			case 4 -> block("red_tulip");
-			case 5 -> block("orange_tulip");
-			case 6 -> block("white_tulip");
-			case 7 -> block("pink_tulip");
-			case 8 -> block("oxeye_daisy");
-			default -> block("poppy");
-		};
-	}
-
-	private static BlockState netherPortal(int meta) {
-		BlockState state = Blocks.NETHER_PORTAL.defaultBlockState();
-		if (state.hasProperty(BlockStateProperties.AXIS)) {
-			Direction.Axis axis = (meta & 3) == 2 ? Direction.Axis.Z : Direction.Axis.X;
-			state = state.setValue(BlockStateProperties.AXIS, axis);
-		}
-		return state;
-	}
-
-	private static BlockState infested(int meta) {
-		return switch (meta & 7) {
-			case 1 -> block("infested_cobblestone");
-			case 2 -> block("infested_stone_bricks");
-			case 3 -> block("infested_mossy_stone_bricks");
-			case 4 -> block("infested_cracked_stone_bricks");
-			case 5 -> block("infested_chiseled_stone_bricks");
-			default -> block("infested_stone");
-		};
+		return facing == null ? Blocks.SKELETON_SKULL.defaultBlockState()
+			: Blocks.SKELETON_WALL_SKULL.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, facing);
 	}
 
 	private static BlockState flowerPot(int meta) {
-		// Legacy pot contents in meta → modern potted_* blocks
-		return switch (meta & 15) {
-			case 1 -> block("potted_poppy");
-			case 2 -> block("potted_dandelion");
-			case 3 -> block("potted_oak_sapling");
-			case 4 -> block("potted_spruce_sapling");
-			case 5 -> block("potted_birch_sapling");
-			case 6 -> block("potted_jungle_sapling");
-			case 7 -> block("potted_red_mushroom");
-			case 8 -> block("potted_brown_mushroom");
-			case 9 -> block("potted_cactus");
-			case 10 -> block("potted_dead_bush");
-			case 11 -> block("potted_fern");
-			case 12 -> block("potted_acacia_sapling");
-			case 13 -> block("potted_dark_oak_sapling");
-			default -> block("flower_pot");
+		// Pre-1.8 pots could encode contents in metadata. Later schematics use FlowerPot NBT.
+		String name = switch (meta) {
+			case 1 -> "potted_poppy";
+			case 2 -> "potted_dandelion";
+			case 3 -> "potted_oak_sapling";
+			case 4 -> "potted_spruce_sapling";
+			case 5 -> "potted_birch_sapling";
+			case 6 -> "potted_jungle_sapling";
+			case 7 -> "potted_red_mushroom";
+			case 8 -> "potted_brown_mushroom";
+			case 9 -> "potted_cactus";
+			case 10 -> "potted_dead_bush";
+			case 11 -> "potted_fern";
+			case 12 -> "potted_acacia_sapling";
+			case 13 -> "potted_dark_oak_sapling";
+			default -> "flower_pot";
 		};
-	}
-
-	private static BlockState colored(String suffix, int meta) {
-		String color = DYE[Math.min(meta & 15, DYE.length - 1)];
-		return block(color + "_" + suffix);
-	}
-
-	/**
-	 * Fallback ID→block for IDs not fully handled in {@link #mapKnown}. Mirrors the existing
-	 * SchematicStructure table so unmapped orientation-only blocks still resolve.
-	 */
-	private static Block blockByLegacyIdOnly(int legacyId) {
-		// CRITICAL: Array index MUST match legacy block ID exactly (0-235)
-		String[] legacyMappings = {
-			"air", "stone", "grass_block", "dirt", "cobblestone", "oak_planks",
-			"oak_sapling", "bedrock", "water", "water", "lava", "lava",
-			"sand", "gravel", "gold_ore", "iron_ore", "coal_ore", "oak_log",
-			"oak_leaves", "sponge", "glass", "lapis_ore", "lapis_block", "dispenser",
-			"sandstone", "note_block", "red_bed", "powered_rail", "detector_rail", "sticky_piston",
-			"cobweb", "short_grass", "dead_bush", "piston", "moving_piston", "white_wool",
-			"moving_piston", "dandelion", "poppy", "brown_mushroom", "red_mushroom", "gold_block",
-			"iron_block", "smooth_stone_slab", "stone_slab", "bricks", "tnt", "bookshelf",
-			"mossy_cobblestone", "obsidian", "torch", "fire", "spawner", "oak_stairs",
-			"chest", "redstone_wire", "diamond_ore", "diamond_block", "crafting_table", "wheat",
-			"farmland", "furnace", "furnace", "oak_sign", "oak_door", "ladder",
-			"rail", "cobblestone_stairs", "oak_wall_sign", "lever", "stone_pressure_plate", "iron_door",
-			"oak_pressure_plate", "redstone_ore", "redstone_ore", "redstone_torch", "redstone_torch", "stone_button",
-			"snow", "ice", "snow_block", "cactus", "clay", "sugar_cane",
-			"jukebox", "oak_fence", "pumpkin", "netherrack", "soul_sand", "glowstone",
-			"nether_portal", "jack_o_lantern", "cake", "repeater", "repeater", "white_stained_glass",
-			"oak_trapdoor", "infested_stone", "stone_bricks", "brown_mushroom_block", "red_mushroom_block", "iron_bars",
-			"glass_pane", "melon", "pumpkin_stem", "melon_stem", "vine", "oak_fence_gate",
-			"brick_stairs", "stone_brick_stairs", "mycelium", "lily_pad", "nether_bricks", "nether_brick_fence",
-			"nether_brick_stairs", "nether_wart", "enchanting_table", "brewing_stand", "cauldron", "end_portal",
-			"end_portal_frame", "end_stone", "dragon_egg", "redstone_lamp", "redstone_lamp", "oak_slab",
-			"oak_slab", "cocoa", "sandstone_stairs", "emerald_ore", "ender_chest", "tripwire_hook",
-			"tripwire", "emerald_block", "spruce_stairs", "birch_stairs", "jungle_stairs", "command_block",
-			"beacon", "cobblestone_wall", "flower_pot", "carrots", "potatoes", "oak_button",
-			"skeleton_skull", "anvil", "trapped_chest", "light_weighted_pressure_plate", "heavy_weighted_pressure_plate", "comparator",
-			"comparator", "daylight_detector", "redstone_block", "nether_quartz_ore", "hopper", "quartz_block",
-			"quartz_stairs", "activator_rail", "dropper", "white_terracotta", "white_stained_glass_pane", "acacia_leaves",
-			"acacia_log", "acacia_stairs", "dark_oak_stairs", "slime_block", "barrier", "iron_trapdoor",
-			"prismarine", "sea_lantern", "hay_block", "white_carpet", "terracotta", "coal_block",
-			"packed_ice", "sunflower", "white_banner", "white_wall_banner", "daylight_detector", "red_sandstone",
-			"red_sandstone_stairs", "red_sandstone_slab", "red_sandstone_slab", "spruce_fence_gate", "birch_fence_gate", "jungle_fence_gate",
-			"dark_oak_fence_gate", "acacia_fence_gate", "spruce_fence", "birch_fence", "jungle_fence", "dark_oak_fence",
-			"acacia_fence", "spruce_door", "birch_door", "jungle_door", "acacia_door", "dark_oak_door",
-			"end_rod", "chorus_plant", "chorus_flower", "purpur_block", "purpur_pillar", "purpur_stairs",
-			"purpur_slab", "purpur_slab", "end_stone_bricks", "beetroots", "dirt_path", "end_gateway",
-			"repeating_command_block", "chain_command_block", "frosted_ice", "magma_block", "nether_wart_block", "red_nether_bricks",
-			"bone_block", "structure_void", "observer", "white_shulker_box", "orange_shulker_box", "magenta_shulker_box",
-			"light_blue_shulker_box", "yellow_shulker_box", "lime_shulker_box", "pink_shulker_box", "gray_shulker_box", "light_gray_shulker_box",
-			"cyan_shulker_box", "purple_shulker_box", "blue_shulker_box", "brown_shulker_box", "green_shulker_box", "red_shulker_box",
-			"black_shulker_box", "white_glazed_terracotta",
-			// Pad 236-255 for safety (MC 1.10.2 added blocks up to ~235; higher IDs rare but possible)
-			"air", "air", "air", "air", "air", "air", "air", "air", "air", "air",
-			"air", "air", "air", "air", "air", "air", "air", "air", "air", "air"
-		};
-		if (legacyId < 0 || legacyId >= legacyMappings.length) {
-			return null;
-		}
-		return BuiltInRegistries.BLOCK.get(Identifier.fromNamespaceAndPath("minecraft", legacyMappings[legacyId]))
-			.map(h -> h.value())
-			.orElse(null);
-	}
-
-	private static BlockState block(String name) {
-		return BuiltInRegistries.BLOCK.get(Identifier.fromNamespaceAndPath("minecraft", name))
-			.map(h -> h.value().defaultBlockState())
-			.orElse(null);
-	}
-	
-	private static BlockState pistonHead(int meta) {
-		Direction facing = facingFull(meta & 0x7);
-		boolean sticky = (meta & 0x8) != 0;
-		net.minecraft.world.level.block.state.properties.PistonType type = sticky 
-			? net.minecraft.world.level.block.state.properties.PistonType.STICKY 
-			: net.minecraft.world.level.block.state.properties.PistonType.DEFAULT;
-		return Blocks.PISTON_HEAD.defaultBlockState()
-			.setValue(BlockStateProperties.FACING, facing)
-			.setValue(BlockStateProperties.PISTON_TYPE, type);
-	}
-	
-	private static BlockState torch(int meta) {
-		if (meta >= 1 && meta <= 4) {
-			Direction facing = switch(meta) {
-				case 1 -> Direction.EAST;
-				case 2 -> Direction.WEST;
-				case 3 -> Direction.SOUTH;
-				case 4 -> Direction.NORTH;
-				default -> Direction.NORTH;
-			};
-			return Blocks.WALL_TORCH.defaultBlockState()
-				.setValue(BlockStateProperties.HORIZONTAL_FACING, facing);
-		} else {
-			return Blocks.TORCH.defaultBlockState();
-		}
-	}
-	
-	private static BlockState redstoneTorch(int meta, boolean lit) {
-		if (meta >= 1 && meta <= 4) {
-			Direction facing = switch(meta) {
-				case 1 -> Direction.EAST;
-				case 2 -> Direction.WEST;
-				case 3 -> Direction.SOUTH;
-				case 4 -> Direction.NORTH;
-				default -> Direction.NORTH;
-			};
-			return Blocks.REDSTONE_WALL_TORCH.defaultBlockState()
-				.setValue(BlockStateProperties.HORIZONTAL_FACING, facing)
-				.setValue(BlockStateProperties.LIT, lit);
-		} else {
-			return Blocks.REDSTONE_TORCH.defaultBlockState()
-				.setValue(BlockStateProperties.LIT, lit);
-		}
-	}
-	
-	private static BlockState dispenserDropper(int meta) {
-		Direction facing = facingFull(meta & 0x7);
-		boolean triggered = (meta & 0x8) != 0;
-		return Blocks.DISPENSER.defaultBlockState()
-			.setValue(BlockStateProperties.FACING, facing)
-			.setValue(BlockStateProperties.TRIGGERED, triggered);
-	}
-	
-	private static BlockState furnace(int meta, boolean lit) {
-		Direction facing = facingNESW(meta & 0x7);
-		return Blocks.FURNACE.defaultBlockState()
-			.setValue(BlockStateProperties.HORIZONTAL_FACING, facing)
-			.setValue(BlockStateProperties.LIT, lit);
-	}
-	
-	private static BlockState carvedPumpkin(int meta) {
-		Direction facing = facingNESW(meta);
-		return Blocks.CARVED_PUMPKIN.defaultBlockState()
-			.setValue(BlockStateProperties.HORIZONTAL_FACING, facing);
+		return BuiltInRegistries.BLOCK.get(Identifier.withDefaultNamespace(name)).orElseThrow().value().defaultBlockState();
 	}
 }
