@@ -23,8 +23,7 @@ import java.util.zip.GZIPInputStream;
  * Forge BlockStructure modifier + StructureUtils centering versus Fabric static spawn.
  * Run: {@code ./gradlew runStaticSpawnParity} from {@code fabric-port}.
  *
- * <p>Live shells and frames are asserted to stay on the single half-size process anchor.
- * That is the formula the separate frame-to-shell fix is built on.
+ * <p>Live shells and frames keep their own anchors, separate from static centering.
  */
 public class StaticSpawnParityTest {
 	private static final int CLICK_X = 0;
@@ -39,20 +38,17 @@ public class StaticSpawnParityTest {
 		"BlockSkyscraper2", "BlockStadium2", "BlockStandardBrickHouse", "BlockStreet"
 	);
 
-	/**
-	 * Live shell registry triples on master. Not updated here: frame alignment is a
-	 * separate change and several of these still differ from Forge on purpose.
-	 */
-	private static final Map<String, int[]> LIVE_SHELLS_UNCHANGED = Map.ofEntries(
+	/** Forge live shell modifiers, kept separate from static spawn centering. */
+	private static final Map<String, int[]> LIVE_SHELL_MODIFIERS = Map.ofEntries(
 		Map.entry("LiveBoat", new int[] {0, -2, 0}),
 		Map.entry("LiveFlyingShip1", new int[] {15, -10, 24}),
 		Map.entry("LiveFlyingShip2", new int[] {22, -8, 16}),
 		Map.entry("LivePlane", new int[] {26, 0, 19}),
-		Map.entry("Live_Cinema", new int[] {0, 0, 0}),
-		Map.entry("Live_Mill", new int[] {0, 0, 0}),
-		Map.entry("Live_WaterMill", new int[] {0, 0, 0}),
+		Map.entry("Live_Cinema", new int[] {49, -1, 25}),
+		Map.entry("Live_Mill", new int[] {15, -1, 15}),
+		Map.entry("Live_WaterMill", new int[] {14, -3, 9}),
 		Map.entry("Live_Power_Windmill_East", new int[] {0, 0, 0}),
-		Map.entry("Live_FerrisWheel", new int[] {0, 0, 0}),
+		Map.entry("Live_FerrisWheel", new int[] {1, -1, 36}),
 		Map.entry("Live_Fair_FreeFall", new int[] {0, 0, 0}),
 		Map.entry("Live_Helicopter", new int[] {0, 0, 0}),
 		Map.entry("LiveAirplane", new int[] {0, 0, 0}),
@@ -145,7 +141,7 @@ public class StaticSpawnParityTest {
 
 		assertAlgebra();
 		assertShowcase(structsDir);
-		assertLivesUnchanged(registry);
+		assertLiveModifiers(registry);
 		assertCallSites(structureBlock, schematic, liveTicker, staticSpawn, commands);
 
 		// Schematics with no Forge BlockStructure (clouds, OtherLighthouse) still use mod 0,0,0
@@ -239,11 +235,11 @@ public class StaticSpawnParityTest {
 		check(name + " after", Arrays.equals(after, gotAfter), "got " + Arrays.toString(gotAfter));
 	}
 
-	private static void assertLivesUnchanged(Map<String, int[]> registry) {
-		for (Map.Entry<String, int[]> entry : LIVE_SHELLS_UNCHANGED.entrySet()) {
+	private static void assertLiveModifiers(Map<String, int[]> registry) {
+		for (Map.Entry<String, int[]> entry : LIVE_SHELL_MODIFIERS.entrySet()) {
 			int[] got = registry.get(entry.getKey());
 			int[] want = entry.getValue();
-			check("live shell left alone " + entry.getKey(),
+			check("live shell modifier " + entry.getKey(),
 				got != null && got[0] == want[0] && got[1] == want[1] && got[2] == want[2],
 				"got " + Arrays.toString(got));
 		}
@@ -261,8 +257,8 @@ public class StaticSpawnParityTest {
 		String spawn = Files.readString(staticSpawn);
 		String cmd = Files.readString(commands);
 		check("creative static uses staticProcessAnchor", block.contains("structure.staticProcessAnchor("), "missing");
-		check("live click still offsets by block modifier only",
-			block.contains("BlockPos spawnPos = pos.offset(modX, modY, modZ);"), "live anchor changed");
+		check("live click uses shell modifier",
+			block.contains("BlockPos spawnPos = pos.offset(sx, sy, sz);"), "live anchor changed");
 		int processStart = process.indexOf(
 			"public void process(ServerLevel world, int posX, int posY, int posZ, boolean replaceAir)");
 		int processEnd = process.indexOf("public java.util.List<BlockPos> showOutline", processStart);
@@ -272,10 +268,10 @@ public class StaticSpawnParityTest {
 			"process formula moved");
 		check("process does not static-shift", !processMethod.contains("staticAnchor"),
 			"process folded in the second half");
-		check("shell stays on click anchor",
-			live.contains("shell.process(world, origin.getX(), origin.getY(), origin.getZ());"), "shell call changed");
-		check("frame stays on click anchor",
-			live.contains("structure.process(world, origin.getX(), origin.getY(), origin.getZ());"), "frame call changed");
+		check("shell uses live shell anchor",
+			live.contains("shell.process(world, shellAt.getX(), shellAt.getY(), shellAt.getZ());"), "shell call changed");
+		check("frame uses corrected live anchor",
+			live.contains("structure.process(world, placeAt.getX(), placeAt.getY(), placeAt.getZ());"), "frame call changed");
 		check("live ticker does not static-shift", !live.contains("staticProcessAnchor("), "live path calls static anchor");
 		check("command uses StaticSpawn", cmd.contains("StaticSpawn.placeAnchor"), "command bypass");
 		check("static spawn skips lives", spawn.contains("LiveStructureTicker.isAnimatedLive"), "live guard missing");

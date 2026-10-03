@@ -229,16 +229,12 @@ public final class ImmsCommands {
 		return "{" + s.dx() + "," + s.dy() + "," + s.dz() + "}";
 	}
 
-	/** Legacy BlockLiveStructure spawn modifiers for path craft. */
-	private static BlockPos originFor(ServerPlayer player, String baseName) {
-		BlockPos p = player.blockPosition();
-		return switch (baseName) {
-			case "LiveBoat" -> p.offset(0, -2, 0);
-			case "LivePlane" -> p.offset(26, 0, 19);
-			case "LiveFlyingShip1" -> p.offset(15, -10, 24);
-			case "LiveFlyingShip2" -> p.offset(22, -8, 16);
-			default -> p;
-		};
+	/**
+	 * Forge {@code modifierx/y/z} (shell anchor). Same triple as the creative live block.
+	 * {@code startLive} places frames at this origin minus {@code spawnPosModifier}.
+	 */
+	private static BlockPos originFor(ServerPlayer player, LiveStructureTicker.LiveDef def) {
+		return player.blockPosition().offset(def.shellModX(), def.shellModY(), def.shellModZ());
 	}
 
 	private static int startLive(CommandSourceStack source, ServerPlayer player, String type, int distance,
@@ -274,7 +270,7 @@ public final class ImmsCommands {
 			return 0;
 		}
 		ServerLevel level = player.level();
-		BlockPos origin = originFor(player, def.baseName());
+		BlockPos origin = originFor(player, def);
 		try {
 			int dist = distance > 0
 				? distance

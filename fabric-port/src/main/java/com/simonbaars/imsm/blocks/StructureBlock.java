@@ -128,7 +128,18 @@ public class StructureBlock extends Block {
 
 	private InteractionResult startLive(ServerLevel serverWorld, Level world, BlockPos pos,
 			Player player, LiveStructureTicker.LiveDef liveDef) {
-		BlockPos spawnPos = pos.offset(modX, modY, modZ);
+		// Forge modifierx/y/z: creative live blocks store the shell triple. Hidden frame
+		// variants are registered at (0,0,0); use the LiveDef shell mods so they match.
+		int sx = modX;
+		int sy = modY;
+		int sz = modZ;
+		if (sx == 0 && sy == 0 && sz == 0
+				&& (liveDef.shellModX() != 0 || liveDef.shellModY() != 0 || liveDef.shellModZ() != 0)) {
+			sx = liveDef.shellModX();
+			sy = liveDef.shellModY();
+			sz = liveDef.shellModZ();
+		}
+		BlockPos spawnPos = pos.offset(sx, sy, sz);
 		try {
 			world.removeBlock(pos, false);
 			String started = LiveStructureTicker.startLive(serverWorld, spawnPos, liveDef);

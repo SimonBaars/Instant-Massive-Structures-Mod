@@ -1,6 +1,7 @@
 package com.simonbaars.imsm.testing;
 
 import com.simonbaars.imsm.core.LiveStructureTicker;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Items;
 
 /**
@@ -19,6 +20,8 @@ public class PlaytestFixesTest {
 		testFerrisWheelShellNoDoublePlacement();
 		testOtherLiveShellStructuresCorrect();
 		testLiveStructureFrameCounts();
+		testForgeLivePlacementOffsets();
+		testFabricFrameAnchorMatchesShellCells();
 		testLegacyBlockStatesCompiles();
 		
 		System.out.println("\n=== Test Results ===");
@@ -165,6 +168,91 @@ public class PlaytestFixesTest {
 		});
 	}
 	
+	public static void testForgeLivePlacementOffsets() {
+		test("Forge live shell mods and frame deltas", () -> {
+			// shell = Forge modifier; spawn = spawnPosModifier; frames at shell − spawn.
+			assertOffset("Live_Cinema", 49, -1, 25, 3, -3, 10);
+			assertOffset("Live_Power_Windmill_East", 0, 0, 0, 6, -16, 0);
+			assertOffset("Live_Mill", 15, -1, 15, 14, -13, 0);
+			assertOffset("Live_WaterMill", 14, -3, 9, 2, -2, 3);
+			assertOffset("Live_FerrisWheel", 1, -1, 36, 4, -2, 0);
+			assertOffset("Live_Fair_FreeFall", 0, 0, 0, 4, 0, 4);
+			assertOffset("Live_Helicopter", 0, 0, 0, 0, 0, 0);
+			assertOffset("LiveBoat", 0, -2, 0, 0, 0, 0);
+			assertOffset("Live_Bus", 0, 0, 0, 0, 0, 0);
+			assertOffset("Live_Bus2", 0, 0, 0, 0, 0, 0);
+			assertOffset("LiveAirplane", 0, 0, 0, 0, 0, 0);
+			assertOffset("Live_Flying_Helicopter", 0, 0, 0, 0, 0, 0);
+			assertOffset("LivePlane", 26, 0, 19, 0, 0, 0);
+			assertOffset("LiveAirBalloon", 0, 0, 0, 0, 0, 0);
+			assertOffset("LiveFlyingShip1", 15, -10, 24, 0, 0, 0);
+			assertOffset("LiveFlyingShip2", 22, -8, 16, 0, 0, 0);
+
+			LiveStructureTicker.LiveDef cinema = LiveStructureTicker.findDefinition("Live_Cinema");
+			assertEquals(46, cinema.shellModX() - cinema.spawnModX(), "Cinema live X = 49-(69-66)");
+			assertEquals(2, cinema.shellModY() - cinema.spawnModY(), "Cinema live Y = -1-(3-6)");
+			assertEquals(15, cinema.shellModZ() - cinema.spawnModZ(), "Cinema live Z = 25-(46-36)");
+		});
+	}
+
+	private static void assertOffset(String base, int sx, int sy, int sz, int px, int py, int pz) {
+		LiveStructureTicker.LiveDef def = LiveStructureTicker.findDefinition(base);
+		assertNotNull(def, base + " definition should exist");
+		assertEquals(sx, def.shellModX(), base + " shellModX");
+		assertEquals(sy, def.shellModY(), base + " shellModY");
+		assertEquals(sz, def.shellModZ(), base + " shellModZ");
+		assertEquals(px, def.spawnModX(), base + " spawnModX");
+		assertEquals(py, def.spawnModY(), base + " spawnModY");
+		assertEquals(pz, def.spawnModZ(), base + " spawnModZ");
+	}
+
+	/**
+	 * Fabric centers with {@code anchor - size/2 + 1}. Forge also subtracts a full half-size,
+	 * so the process() anchor must add {@code shellHalf - frameHalf} or frame voxels miss the shell.
+	 * Expected anchors are relative to shell (0,0,0) and were checked against schematic bytes:
+	 * every non-air frame cell maps onto a shell cell under Forge's transform.
+	 */
+	public static void testFabricFrameAnchorMatchesShellCells() {
+		test("Fabric frame anchor corrects shell/frame size", () -> {
+			BlockPos shell = BlockPos.ZERO;
+			// Windmill East: shell 16x32, blades 1x32, spawn (6,-16,0) → place (2,16,0)
+			assertAnchor(shell, "windmill", 6, -16, 0, 16, 32, 1, 32, 2, 16, 0);
+			// Playtest shell (500,80,200) → fabric blades (502,96,200), not forge-only (494,96,200)
+			BlockPos millShell = new BlockPos(500, 80, 200);
+			BlockPos blades = LiveStructureTicker.fabricFrameAnchor(millShell, 6, -16, 0, 16, 32, 1, 32);
+			assertEquals(502, blades.getX(), "windmill blade X on hub");
+			assertEquals(96, blades.getY(), "windmill blade Y");
+			assertEquals(200, blades.getZ(), "windmill blade Z");
+			// Cinema: shell 51x50, screen 1x30, spawn (3,-3,10) → place (22,3,0)
+			assertAnchor(shell, "cinema", 3, -3, 10, 51, 50, 1, 30, 22, 3, 0);
+			// Mill 19x33 / 4x33, spawn (14,-13,0) → (-7,13,0)
+			assertAnchor(shell, "mill", 14, -13, 0, 19, 33, 4, 33, -7, 13, 0);
+			// Water mill 19x25 / 11x5, spawn (2,-2,3) → (2,2,7)
+			assertAnchor(shell, "watermill", 2, -2, 3, 19, 25, 11, 5, 2, 2, 7);
+			// Ferris 18x75 / 10x75, spawn (4,-2,0) → (0,2,0)
+			assertAnchor(shell, "ferris", 4, -2, 0, 18, 75, 10, 75, 0, 2, 0);
+			// FreeFall 16x16 / 8x8, spawn (4,0,4) → (0,0,0) (half-size cancels spawn)
+			assertAnchor(shell, "freefall", 4, 0, 4, 16, 16, 8, 8, 0, 0, 0);
+			// Helicopter same size, spawn 0
+			assertAnchor(shell, "heli", 0, 0, 0, 23, 27, 23, 27, 0, 0, 0);
+			// Path mover: no shell, anchor stays at the spawn modifier
+			BlockPos boat = LiveStructureTicker.fabricFrameAnchor(
+				new BlockPos(0, -2, 0), 0, 0, 0, 0, 0, 20, 10);
+			assertEquals(0, boat.getX(), "boat X");
+			assertEquals(-2, boat.getY(), "boat Y");
+			assertEquals(0, boat.getZ(), "boat Z");
+		});
+	}
+
+	private static void assertAnchor(BlockPos shell, String name,
+			int sx, int sy, int sz, int shellL, int shellW, int frameL, int frameW,
+			int ex, int ey, int ez) {
+		BlockPos at = LiveStructureTicker.fabricFrameAnchor(shell, sx, sy, sz, shellL, shellW, frameL, frameW);
+		assertEquals(ex, at.getX(), name + " X");
+		assertEquals(ey, at.getY(), name + " Y");
+		assertEquals(ez, at.getZ(), name + " Z");
+	}
+
 	public static void testLegacyBlockStatesCompiles() {
 		test("Legacy block states compiles", () -> {
 			var oakPlanks = com.simonbaars.imsm.structureloader.LegacyBlockStates.fromLegacy(5, 0);
