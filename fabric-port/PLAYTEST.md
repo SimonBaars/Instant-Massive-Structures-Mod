@@ -1,5 +1,13 @@
 # Playtest Checklist
 
+## Automated spawning regressions
+
+The Fabric port uses Java 25. Run `JAVA_HOME=/usr/lib/jvm/java-25-openjdk PATH=/usr/lib/jvm/java-25-openjdk/bin:$PATH ./gradlew build check` from `fabric-port`.
+
+`check` verifies all bundled block metadata, inventory item conversions, and static spawn origins, then starts a headless Minecraft server for placement regressions. The server tests cover House chest inventories and repeated spawning, WoodenHouse doors/panes/stairs/torches, overlays, clearing without item drops, spawner data, JSON sign text, paired metadata, and paintings/item frames. They use a disposable world under `build/spawn-regression-world`; existing playtest worlds are untouched. The XML result is written to `build/reports/spawn-regression.xml`.
+
+Run only the server regressions with `./gradlew runGameTest`. A specific test can be selected with `-PspawnTestFilter=imsm_spawn_tests:structure_spawn_game_test_house_inventories_survive_respawn`. Rebuild the synthetic legacy schematic fixture with `python3 src/gametest/fixtures/generate_schematic.py` after changing its generator.
+
 ## Pre-Testing Setup
 
 - [ ] Install Minecraft 26.2

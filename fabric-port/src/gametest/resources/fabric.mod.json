@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "imsm_spawn_tests",
+  "version": "1.0.0",
+  "name": "IMSM Structure Spawn Regression Tests",
+  "environment": "server",
+  "entrypoints": {
+    "fabric-gametest": ["com.simonbaars.imsm.testing.StructureSpawnGameTest"]
+  },
+  "depends": {
+    "imsm": "*",
+    "fabric-gametest-api-v1": "*"
+  }
+}

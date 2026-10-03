@@ -271,7 +271,8 @@ public class StaticSpawnParityTest {
 		check("shell uses live shell anchor",
 			live.contains("shell.process(world, shellAt.getX(), shellAt.getY(), shellAt.getZ());"), "shell call changed");
 		check("frame uses corrected live anchor",
-			live.contains("structure.process(world, placeAt.getX(), placeAt.getY(), placeAt.getZ());"), "frame call changed");
+			live.contains("structure.process(world, placeAt.getX(), placeAt.getY(), placeAt.getZ(), true,")
+				&& live.contains("first && (def == null || def.shellStructure() == null)"), "frame call changed");
 		check("live ticker does not static-shift", !live.contains("staticProcessAnchor("), "live path calls static anchor");
 		check("command uses StaticSpawn", cmd.contains("StaticSpawn.placeAnchor"), "command bypass");
 		check("static spawn skips lives", spawn.contains("LiveStructureTicker.isAnimatedLive"), "live guard missing");

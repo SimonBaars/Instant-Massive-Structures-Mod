@@ -103,6 +103,32 @@ dependencies {
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 }
 
+// Server game tests use a separate test mod and a disposable world under build/.
+fabricApi {
+	configureTests {
+		createSourceSet = true
+		modId = 'imsm_spawn_tests'
+		enableClientGameTests = false
+	}
+}
+
+loom.runs.gameTest {
+	runDir = 'build/spawn-regression-world'
+	vmArg "-Dfabric-api.gametest.filter=${findProperty('spawnTestFilter') ?: 'imsm_spawn_tests:*'}"
+	vmArg "-Dfabric-api.gametest.report-file=${layout.buildDirectory.file('reports/spawn-regression.xml').get().asFile}"
+}
+
+tasks.named('runGameTest') {
+	doFirst {
+		layout.buildDirectory.dir('reports').get().asFile.mkdirs()
+	}
+}
+
+// The existing lightweight tests are executable main classes, rather than JUnit tests.
+tasks.named('test') {
+	failOnNoDiscoveredTests = false
+}
+
 processResources {
 	inputs.property "version", project.version
 
@@ -153,6 +179,34 @@ task runStaticSpawnParity(type: JavaExec) {
 	classpath = sourceSets.test.runtimeClasspath
 	mainClass = 'com.simonbaars.imsm.testing.StaticSpawnParityTest'
 	workingDir = project.projectDir
+}
+
+task runLegacyBlockStatesTest(type: JavaExec) {
+	group = 'verification'
+	description = 'Verifies legacy block metadata against Minecraft flattening data'
+	classpath = sourceSets.test.runtimeClasspath
+	mainClass = 'com.simonbaars.imsm.testing.LegacyBlockStatesTest'
+	workingDir = project.projectDir
+}
+
+task runLegacyItemsTest(type: JavaExec) {
+	group = 'verification'
+	description = 'Verifies legacy inventories and item data across every schematic'
+	classpath = sourceSets.test.runtimeClasspath
+	mainClass = 'com.simonbaars.imsm.testing.LegacyItemsTest'
+	workingDir = project.projectDir
+}
+
+task runLegacyEntitiesTest(type: JavaExec) {
+	group = 'verification'
+	description = 'Verifies legacy hanging entities, items, artwork, and coordinate translation'
+	classpath = sourceSets.test.runtimeClasspath
+	mainClass = 'com.simonbaars.imsm.testing.LegacyEntitiesTest'
+	workingDir = project.projectDir
+}
+
+tasks.named('check') {
+	dependsOn runStaticSpawnParity, runLegacyBlockStatesTest, runLegacyItemsTest, runLegacyEntitiesTest
 }
 
 // Task to run PathMoverTest for path motion configuration verification
